@@ -1,0 +1,9 @@
+direct_prompt: |
+  Review this code for the restaurant management Flutter app. Focus on:
+  - Architecture pattern compliance (Clean Architecture)
+  - Riverpod state management best practices
+  - Business logic correctness (loyalty, payments, reservations)
+  - Security issues, especially around payments and user data
+  - Performance implications
+  - Flutter/Dart best practices
+  Be concise and focus on critical issues only.
