@@ -1,23 +1,7 @@
 import '../../features/country/presentation/country_selection_screen.dart';
 
 class ValidationService {
-  // Phone number validation patterns for each country
-  static final Map<Country, RegExp> _phonePatterns = {
-    Country.uae: RegExp(r'^(50|51|52|54|55|56|58)[0-9]{7}$'), // UAE mobile patterns
-    Country.saudi: RegExp(r'^(50|51|52|53|54|55|56|57|58|59)[0-9]{7}$'), // Saudi mobile patterns
-    Country.qatar: RegExp(r'^(3|4|5|6|7)[0-9]{7}$'), // Qatar mobile patterns
-    Country.uk: RegExp(r'^7[0-9]{9}$'), // UK mobile patterns (starts with 7, 10 digits total)
-  };
-
-  // Expected phone number lengths for each country (without country code)
-  static const Map<Country, int> _phoneLength = {
-    Country.uae: 9,
-    Country.saudi: 9,
-    Country.qatar: 8,
-    Country.uk: 10,
-  };
-
-  // Validate phone number for specific country
+  // Validate phone number - simplified to only check for digits
   static String? validatePhoneNumber(String phoneNumber, Country country) {
     if (phoneNumber.isEmpty) {
       return 'Phone number is required';
@@ -31,32 +15,12 @@ class ValidationService {
       return 'Phone number must contain only digits';
     }
 
-    // Check length
-    int expectedLength = _phoneLength[country]!;
-    if (cleanNumber.length != expectedLength) {
-      return 'Phone number must be $expectedLength digits for ${country.displayName}';
-    }
-
-    // Check pattern
-    RegExp pattern = _phonePatterns[country]!;
-    if (!pattern.hasMatch(cleanNumber)) {
-      return _getCountrySpecificError(country);
+    // Basic length check - must be at least 6 digits
+    if (cleanNumber.length < 6) {
+      return 'Phone number must be at least 6 digits';
     }
 
     return null; // Valid
-  }
-
-  static String _getCountrySpecificError(Country country) {
-    switch (country) {
-      case Country.uae:
-        return 'UAE mobile numbers must start with 50, 51, 52, 54, 55, 56, or 58';
-      case Country.saudi:
-        return 'Saudi mobile numbers must start with 50-59';
-      case Country.qatar:
-        return 'Qatar mobile numbers must start with 3, 4, 5, 6, or 7';
-      case Country.uk:
-        return 'UK mobile numbers must start with 7';
-    }
   }
 
   // Validate email
@@ -108,15 +72,6 @@ class ValidationService {
 
   // Get sample phone number format for country
   static String getSampleFormat(Country country) {
-    switch (country) {
-      case Country.uae:
-        return 'e.g., 501234567';
-      case Country.saudi:
-        return 'e.g., 501234567';
-      case Country.qatar:
-        return 'e.g., 31234567';
-      case Country.uk:
-        return 'e.g., 7123456789';
-    }
+    return 'e.g., 1234567890';
   }
 }

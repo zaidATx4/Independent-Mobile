@@ -442,7 +442,8 @@ class WelcomeScreen extends ConsumerWidget {
     // Clear any existing error
     ref.read(phoneErrorProvider.notifier).state = null;
     
-    // Navigate to OTP verification screen
-    context.go('/otp-verification');
+    // Navigate to OTP verification screen with phone number data
+    final formattedNumber = '${selectedCountry.countryCode} $phoneNumber';
+    context.go('/otp-verification?phone=${Uri.encodeComponent(formattedNumber)}');
   }
 }

@@ -30,6 +30,7 @@ class AppSpacing {
   static const double elevation1 = 1.0;
   static const double elevation2 = 2.0;
   static const double elevation4 = 4.0;
+  static const double elevation6 = 6.0;
   static const double elevation8 = 8.0;
   static const double elevation16 = 16.0;
 }

@@ -53,6 +53,9 @@ dependencies:
   # UI components
   google_fonts: ^6.1.0
   
+  # SVG support
+  flutter_svg: ^2.0.9
+  
   # Video player
   video_player: ^2.8.1
 
@@ -83,6 +86,8 @@ flutter:
     - assets/videos/
     - assets/images/logos/
     - assets/images/icons/
+    - assets/images/icons/SVGs/
+    - assets/images/icons/SVGs/Settings/
     - assets/images/backgrounds/
     - assets/images/illustrations/
     - assets/animations/

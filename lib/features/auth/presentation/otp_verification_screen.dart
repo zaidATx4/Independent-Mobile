@@ -6,7 +6,7 @@ import '../../../core/theme/auth_colors.dart';
 import '../../../core/utils/validation_service.dart';
 
 final otpProvider = StateProvider<String>((ref) => '');
-final phoneNumberDisplayProvider = StateProvider<String>((ref) => '+971 - 1234567');
+final phoneNumberDisplayProvider = StateProvider<String>((ref) => '');
 final otpErrorProvider = StateProvider<String?>((ref) => null);
 
 class OtpVerificationScreen extends ConsumerWidget {
@@ -15,9 +15,21 @@ class OtpVerificationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final otp = ref.watch(otpProvider);
-    final phoneNumber = ref.watch(phoneNumberDisplayProvider);
     final otpError = ref.watch(otpErrorProvider);
     final screenSize = MediaQuery.of(context).size;
+
+    // Get phone number from URL parameters
+    final uri = GoRouterState.of(context).uri;
+    final phoneFromUrl = uri.queryParameters['phone'] ?? '';
+    
+    // Update phone number provider if we have data from URL
+    if (phoneFromUrl.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(phoneNumberDisplayProvider.notifier).state = phoneFromUrl;
+      });
+    }
+    
+    final phoneNumber = ref.watch(phoneNumberDisplayProvider);
 
     // Calculate responsive dimensions based on 393x808 reference
     final containerWidth = (screenSize.width * 361 / 393);
@@ -138,7 +150,7 @@ class OtpVerificationScreen extends ConsumerWidget {
                           children: [
                             // OTP sent message
                             Text(
-                              'OTP has been sent to $phoneNumber',
+                              'OTP has been sent to ${phoneNumber.isNotEmpty ? phoneNumber : '+971 - 1234567'}',
                               style: const TextStyle(
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w400,
@@ -218,30 +230,18 @@ class OtpVerificationScreen extends ConsumerWidget {
                                 },
                                 style: const TextStyle(
                                   fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  height: 1.5, // line-height: 21px / font-size: 14px = 1.5
-                                  color: AuthColors.textPrimary, // Use primary color for entered text
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: AuthColors.textPrimary,
                                 ),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   counterText: '',
                                   border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
                                   fillColor: Colors.transparent,
-                                  filled: true,
-                                  hintText: '${index + 1}', // Placeholder showing box number
-                                  hintStyle: const TextStyle(
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    height: 1.5,
-                                    color: AuthColors.textSecondary,
-                                  ),
-                                  contentPadding: const EdgeInsets.only(
-                                    top: 12,
-                                    right: 16,
-                                    bottom: 12,
-                                    left: 16,
-                                  ),
+                                  filled: false,
+                                  contentPadding: EdgeInsets.zero,
                                 ),
                               ),
                             );

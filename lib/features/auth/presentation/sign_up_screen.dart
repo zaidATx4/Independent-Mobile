@@ -570,9 +570,11 @@ class SignUpScreen extends ConsumerWidget {
       hasErrors = true;
     }
     
-    // If no errors, navigate to OTP verification
+    // If no errors, navigate to OTP verification with phone number data
     if (!hasErrors) {
-      context.go('/otp-verification');
+      // Format the phone number display with country code
+      final formattedNumber = '${selectedCountry.countryCode} $mobileNumber';
+      context.go('/otp-verification?phone=${Uri.encodeComponent(formattedNumber)}');
     }
   }
 
