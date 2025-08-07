@@ -85,11 +85,14 @@ flutter:
   assets:
     - assets/videos/
     - assets/images/logos/
+    - assets/images/logos/brands/
     - assets/images/icons/
     - assets/images/icons/SVGs/
     - assets/images/icons/SVGs/Settings/
+    - assets/images/icons/SVGs/Loyalty/
     - assets/images/backgrounds/
     - assets/images/illustrations/
+    - assets/images/Static/
     - assets/animations/
     - assets/sounds/
 

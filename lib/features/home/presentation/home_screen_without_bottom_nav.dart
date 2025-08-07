@@ -5,18 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/theme_extensions.dart';
+import '../../../shared/providers/navigation_providers.dart';
 
-// Providers
-final selectedTabProvider = StateProvider<int>((ref) => 0);
-final userNameProvider = StateProvider<String>((ref) => 'John Doe');
-final userLoyaltyPointsProvider = StateProvider<int>((ref) => 2500);
-final userMembershipProvider = StateProvider<String>((ref) => 'Gold Member');
-final loyaltyProgressProvider = StateProvider<double>(
-  (ref) => 0.5,
-); // 2500/5000
-
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class HomeScreenWithoutBottomNav extends ConsumerWidget {
+  const HomeScreenWithoutBottomNav({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,7 +38,6 @@ class HomeScreen extends ConsumerWidget {
     // Responsive padding and sizes
     final horizontalPadding = (screenWidth * 0.04).clamp(12.0, 20.0);
     final headerFontSize = (screenWidth * 0.06).clamp(20.0, 28.0);
-    final iconSize = (screenWidth * 0.06).clamp(20.0, 28.0);
 
     // Get theme colors
     final theme = Theme.of(context);
@@ -170,9 +161,6 @@ class HomeScreen extends ConsumerWidget {
                 ),
 
                 SizedBox(height: cardSpacing),
-
-                // Bottom Navigation Bar - Part of main column
-                _buildBottomNavigationBar(ref, context, theme, isDarkMode),
               ],
             ),
           ),
@@ -697,195 +685,6 @@ class HomeScreen extends ConsumerWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar(
-    WidgetRef ref,
-    BuildContext context,
-    ThemeData theme,
-    bool isDarkMode,
-  ) {
-    final selectedTab = ref.watch(selectedTabProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // Responsive padding and sizing
-    final horizontalPadding = (screenWidth * 0.04).clamp(12.0, 20.0);
-    final verticalPadding = (screenHeight * 0.015).clamp(10.0, 16.0);
-    final iconSize = 24.0; // Fixed 24px as per Figma
-    final fontSize = 10.0; // Fixed 10px as per Figma
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isDarkMode
-            ? const Color(0xFF242424) // Dark theme color (ORIGINAL)
-            : const Color(0xFFFEFEFF), // Light theme: #fefeff (Figma)
-        border: Border(
-          top: BorderSide(
-            color: isDarkMode
-                ? const Color(0xFF4D4E52) // Dark theme border (ORIGINAL)
-                : const Color(0xFFD9D9D9), // Light theme: #d9d9d9 (Figma)
-            width: 1,
-          ),
-        ),
-        // Light theme gets a subtle shadow
-        boxShadow: isDarkMode
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: verticalPadding,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Navigation items row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/Home_Icon_Light.svg',
-                  label: 'Home',
-                  isSelected: selectedTab == 0,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 0,
-                ),
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/QR_Icon_light.svg',
-                  label: 'Scan',
-                  isSelected: selectedTab == 1,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 1,
-                ),
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/Order_Icon_light.svg',
-                  label: 'Order',
-                  isSelected: selectedTab == 2,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 2,
-                ),
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/Restaurant_Icon_light.svg',
-                  label: 'Reserve',
-                  isSelected: selectedTab == 3,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 3,
-                ),
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/Feed_Icon_light.svg',
-                  label: 'Feed',
-                  isSelected: selectedTab == 4,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 4,
-                ),
-                _buildNavItem(
-                  svgPath: 'assets/images/icons/SVGs/Location_Icon_light.svg',
-                  label: 'Location',
-                  isSelected: selectedTab == 5,
-                  iconSize: iconSize,
-                  fontSize: fontSize,
-                  theme: theme,
-                  isDarkMode: isDarkMode,
-                  onTap: () => ref.read(selectedTabProvider.notifier).state = 5,
-                ),
-              ],
-            ),
-            // Removed home indicator notch
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem({
-    required String svgPath,
-    required String label,
-    required bool isSelected,
-    required double iconSize,
-    required double fontSize,
-    required ThemeData theme,
-    required bool isDarkMode,
-    required VoidCallback onTap,
-  }) {
-    // Theme-responsive colors (ORIGINAL dark mode + Figma light mode)
-    final unselectedColor = isDarkMode
-        ? const Color(0xFF9C9C9D) // Dark theme tertiary (ORIGINAL)
-        : const Color(0xFF878787); // Light theme: #878787 (Figma)
-
-    final selectedColor = isDarkMode
-        ? const Color(0xFFFFFBF1) // Dark theme sand (ORIGINAL)
-        : const Color(0xFF1A1A1A); // Light theme: #1a1a1a (Figma)
-
-    final selectedBackground = isDarkMode
-        ? const Color(0xFF1A1A1A) // Dark background for selected (ORIGINAL)
-        : const Color(0xFFFFFCF5); // Light theme: #fffcf5 (Figma)
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: isSelected ? (iconSize * 0.5) : (iconSize * 0.33),
-          vertical: (iconSize * 0.33),
-        ),
-        decoration: isSelected
-            ? BoxDecoration(
-                color: selectedBackground,
-                borderRadius: BorderRadius.circular(isDarkMode ? (iconSize * 0.83) : 38), // Original for dark, Figma for light
-              )
-            : null,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              svgPath,
-              width: iconSize,
-              height: iconSize,
-              colorFilter: ColorFilter.mode(
-                isSelected ? selectedColor : unselectedColor,
-                BlendMode.srcIn,
-              ),
-            ),
-            if (isSelected) ...[
-              SizedBox(width: iconSize * 0.25),
-              Text(
-                label,
-                style: AppTypography.labelMedium.copyWith(
-                  color: isDarkMode
-                      ? selectedColor // Dark mode: original color
-                      : selectedColor, // Light mode: same as icon (Figma)
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

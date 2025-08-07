@@ -106,7 +106,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
     onInfoContainer: Color(0xFFBBDEFB),
     
     // Premium colors
-    goldAccent: AppColors.goldAccent,
+    goldAccent: Color(0xFFFFFFFF), // White for dark mode as per Figma
     silverAccent: AppColors.silverAccent,
     foodRating: AppColors.foodRating,
     

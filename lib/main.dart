@@ -10,13 +10,19 @@ import 'features/country/presentation/country_selection_screen.dart';
 import 'features/auth/presentation/welcome_screen.dart';
 import 'features/auth/presentation/otp_verification_screen.dart';
 import 'features/auth/presentation/sign_up_screen.dart';
-import 'features/home/presentation/home_screen.dart';
+import 'features/home/presentation/main_navigation_screen.dart';
 import 'features/settings/presentation/settings_screen.dart';
 import 'features/settings/presentation/screens/theme_screen.dart';
+import 'features/loyalty/presentation/pages/loyalty_hub_screen.dart';
+import 'features/loyalty/presentation/pages/cart_screen.dart';
+import 'features/loyalty/presentation/pages/food_search_screen.dart';
+import 'features/loyalty/presentation/pages/redeemed_qr_screen.dart';
 
 void main() {
   // Disable all debug painting that shows green borders
   debugPaintSizeEnabled = false;
+  debugPaintLayerBordersEnabled = false;
+  debugRepaintRainbowEnabled = false;
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -126,7 +132,7 @@ final GoRouter _router = GoRouter(
       path: '/home',
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
-        child: const HomeScreen(),
+        child: const MainNavigationScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: Tween<Offset>(
@@ -165,6 +171,93 @@ final GoRouter _router = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ThemeScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0), // Slide in from right
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            )),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/loyalty-hub',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const LoyaltyHubScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0), // Slide in from right
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            )),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/cart',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const CartScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0), // Slide in from right
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            )),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/food-search',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FoodSearchScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0), // Slide in from right
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            )),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/redeemed-qr',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: () {
+          final extra = state.extra as Map<String, dynamic>?;
+          print('DEBUG: Route extra data: $extra');
+          print('DEBUG: Extracted brandLogoPath: ${extra?['brandLogoPath']}');
+          
+          return RedeemedQrScreen(
+            rewardTitle: extra?['rewardTitle'] as String?,
+            rewardId: extra?['rewardId'] as String?,
+            qrData: extra?['qrData'] as String?,
+            brandLogoPath: extra?['brandLogoPath'] as String?,
+          );
+        }(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: Tween<Offset>(
