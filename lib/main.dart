@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'core/theme/app_theme.dart';
@@ -23,6 +24,9 @@ void main() {
   debugPaintSizeEnabled = false;
   debugPaintLayerBordersEnabled = false;
   debugRepaintRainbowEnabled = false;
+  debugPaintPointersEnabled = false;
+  debugDisableClipLayers = false;
+  debugDisablePhysicalShapeLayers = false;
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -37,7 +37,7 @@ class LoyaltyScanContent extends ConsumerWidget {
                   ),
                 ),
               ),
-              // Show redeemed rewards from the member's rewards list
+              // Show redeemed rewards with same flow as scan and earn screen
               if (member != null && member.rewards.isNotEmpty)
                 ...member.rewards.where((reward) => reward.isRedeemed).map(
                   (reward) => RewardItem(
@@ -45,26 +45,38 @@ class LoyaltyScanContent extends ConsumerWidget {
                     expiryDate: reward.expiryDate,
                     foodImagePath: reward.foodImageUrl,
                     brandLogoPath: reward.brandLogoUrl,
+                    rewardId: reward.title.toLowerCase().replaceAll(' ', '_'),
+                    isRedeemed: true, // Mark as redeemed to enable QR navigation
                   ),
                 )
               else
-                // Show message when no redeemed rewards are available
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 32),
-                  child: const Center(
-                    child: Text(
-                      'No redeemed rewards yet.\nRedeem rewards from the Redeem tab to see them here.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        height: 20 / 14,
-                        color: Color(0x66FEFEFF), // rgba(254,254,255,0.4)
-                      ),
-                    ),
+                // Show static redeemed rewards like scan and earn screen
+                ...[
+                  const RewardItem(
+                    title: 'Cheeseburger',
+                    expiryDate: 'Expires on April 6, 2025',
+                    foodImagePath: 'assets/images/Static/burger.png',
+                    brandLogoPath: 'assets/images/logos/brands/Salt.png',
+                    rewardId: 'cheeseburger_001',
+                    isRedeemed: true, // Enable QR navigation flow
                   ),
-                ),
+                  const RewardItem(
+                    title: 'Chicken taco',
+                    expiryDate: 'Expires on April 6, 2025',
+                    foodImagePath: 'assets/images/Static/Chicken_taco.png',
+                    brandLogoPath: 'assets/images/logos/brands/Somewhere.png',
+                    rewardId: 'chicken_taco_001',
+                    isRedeemed: true, // Enable QR navigation flow
+                  ),
+                  const RewardItem(
+                    title: 'Orange Juice',
+                    expiryDate: 'Expires on April 6, 2025',
+                    foodImagePath: 'assets/images/Static/greek_salad.png', // Placeholder until we have juice image
+                    brandLogoPath: 'assets/images/logos/brands/Joe_and _juice.png',
+                    rewardId: 'orange_juice_001',
+                    isRedeemed: true, // Enable QR navigation flow
+                  ),
+                ],
             ],
           ),
         ),

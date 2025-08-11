@@ -128,19 +128,6 @@ class MainNavigationScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            // Home indicator
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 120, vertical: 8),
-              color: isDarkMode ? const Color(0xFF242424) : const Color(0xFFFEFEFF),
-              child: Container(
-                height: 5,
-                width: 134,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF9C9C9D),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-              ),
-            ),
           ],
         ),
       ),

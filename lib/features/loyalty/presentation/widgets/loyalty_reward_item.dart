@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../pages/reward_detail_screen.dart';
 
-class LoyaltyRewardItem extends StatelessWidget {
+class LoyaltyRewardItem extends StatefulWidget {
   final String title;
   final String expiryDate;
   final String foodImagePath;
@@ -15,8 +16,27 @@ class LoyaltyRewardItem extends StatelessWidget {
   });
 
   @override
+  State<LoyaltyRewardItem> createState() => _LoyaltyRewardItemState();
+}
+
+class _LoyaltyRewardItemState extends State<LoyaltyRewardItem> {
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => RewardDetailScreen(
+              title: widget.title,
+              expiryDate: widget.expiryDate,
+              foodImagePath: widget.foodImagePath,
+              brandLogoPath: widget.brandLogoPath,
+            ),
+          ),
+        );
+      },
+      child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: const BoxDecoration(
         border: Border(
@@ -33,7 +53,7 @@ class LoyaltyRewardItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
-                image: AssetImage(foodImagePath),
+                image: AssetImage(widget.foodImagePath),
                 fit: BoxFit.cover,
               ),
             ),
@@ -45,7 +65,7 @@ class LoyaltyRewardItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: const TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500, // Medium
@@ -56,7 +76,7 @@ class LoyaltyRewardItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  expiryDate,
+                  widget.expiryDate,
                   style: const TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400, // Regular
@@ -76,13 +96,15 @@ class LoyaltyRewardItem extends StatelessWidget {
               shape: BoxShape.circle,
               color: Colors.white, // White background for brand logos
               image: DecorationImage(
-                image: AssetImage(brandLogoPath),
+                image: AssetImage(widget.brandLogoPath),
                 fit: BoxFit.contain,
               ),
             ),
           ),
         ],
       ),
+      ),
     );
   }
 }
+
