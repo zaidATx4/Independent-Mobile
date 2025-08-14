@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/theme/theme_service.dart';
 
 class LoyaltyHubProgressCard extends StatelessWidget {
   final int points;
@@ -59,12 +60,15 @@ class LoyaltyHubProgressCard extends StatelessWidget {
                           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                           (Match m) => '${m[1]},',
                         ),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w600,
                           fontSize: 32,
                           height: 48 / 32,
-                          color: Color(0xFF1E1E1E),
+                          color: context.getThemedColor(
+                            lightColor: const Color(0xFF1E1E1E), // Dark text for light theme
+                            darkColor: const Color(0xFF1E1E1E), // Keep dark for contrast on golden background
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -73,8 +77,11 @@ class LoyaltyHubProgressCard extends StatelessWidget {
                         'assets/images/icons/SVGs/Star_Icon_Home_dark.svg',
                         width: 32,
                         height: 32,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xFF1E1E1E),
+                        colorFilter: ColorFilter.mode(
+                          context.getThemedColor(
+                            lightColor: const Color(0xFF1E1E1E), // Dark for contrast
+                            darkColor: const Color(0xFF1E1E1E), // Keep dark for contrast on golden background
+                          ),
                           BlendMode.srcIn,
                         ),
                       ),
@@ -83,12 +90,15 @@ class LoyaltyHubProgressCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     membershipTier,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
                       height: 27 / 18,
-                      color: Color(0xFF4E4E4E),
+                      color: context.getThemedColor(
+                        lightColor: const Color(0xFF4E4E4E), // Gray for light theme
+                        darkColor: const Color(0xFF4E4E4E), // Keep same for contrast on golden background
+                      ),
                     ),
                   ),
                 ],
@@ -98,8 +108,11 @@ class LoyaltyHubProgressCard extends StatelessWidget {
                 'assets/images/icons/SVGs/Star_Icon_Home_dark.svg',
                 width: 55,
                 height: 55,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1E1E1E),
+                colorFilter: ColorFilter.mode(
+                  context.getThemedColor(
+                    lightColor: const Color(0xFF1E1E1E), // Dark for contrast
+                    darkColor: const Color(0xFF1E1E1E), // Keep dark for contrast on golden background
+                  ),
                   BlendMode.srcIn,
                 ),
               ),
@@ -109,12 +122,15 @@ class LoyaltyHubProgressCard extends StatelessWidget {
           // Progress description
           Text(
             'Need $pointsNeeded Loyalty points to upgrade to $nextTier',
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w500,
               fontSize: 12,
               height: 18 / 12,
-              color: Color(0xFF4E4E4E),
+              color: context.getThemedColor(
+                lightColor: const Color(0xFF4E4E4E), // Gray for light theme
+                darkColor: const Color(0xFF4E4E4E), // Keep same for contrast on golden background
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -144,22 +160,28 @@ class LoyaltyHubProgressCard extends StatelessWidget {
             children: [
               Text(
                 'Gold',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   height: 18 / 12,
-                  color: Color(0xFF4E4E4E),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF4E4E4E), // Gray for light theme
+                    darkColor: const Color(0xFF4E4E4E), // Keep same for contrast on golden background
+                  ),
                 ),
               ),
               Text(
                 nextTier,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   height: 18 / 12,
-                  color: Color(0xFF4E4E4E),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF4E4E4E), // Gray for light theme
+                    darkColor: const Color(0xFF4E4E4E), // Keep same for contrast on golden background
+                  ),
                 ),
               ),
             ],

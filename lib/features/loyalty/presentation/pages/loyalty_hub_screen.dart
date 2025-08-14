@@ -7,6 +7,7 @@ import '../widgets/loyalty_rewards_section.dart';
 import '../widgets/loyalty_history_content.dart';
 import '../widgets/loyalty_scan_content.dart';
 import '../providers/loyalty_hub_provider.dart';
+import '../../../../core/theme/theme_service.dart';
 
 class LoyaltyHubScreen extends ConsumerWidget {
   const LoyaltyHubScreen({super.key});
@@ -16,7 +17,7 @@ class LoyaltyHubScreen extends ConsumerWidget {
     final loyaltyState = ref.watch(loyaltyHubProvider);
     final member = loyaltyState.member;
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
+      backgroundColor: Theme.of(context).colorScheme.surface, // Theme-aware background
       body: SafeArea(
         child: Column(
           children: [
@@ -30,8 +31,18 @@ class LoyaltyHubScreen extends ConsumerWidget {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: const Color(0x40FFFFFF), // rgba(255,255,255,0.25) - indpt/glass-fill
+                      color: context.getThemedColor(
+                        lightColor: Colors.transparent, // No background for light theme
+                        darkColor: const Color(0x40FFFFFF), // Light glass for dark theme
+                      ),
                       borderRadius: BorderRadius.circular(44),
+                      border: Border.all(
+                        color: context.getThemedColor(
+                          lightColor: const Color(0xFF242424), // Dark border for light theme
+                          darkColor: Colors.transparent, // No border for dark theme
+                        ),
+                        width: 1,
+                      ),
                     ),
                     child: Material(
                       color: Colors.transparent,
@@ -40,10 +51,10 @@ class LoyaltyHubScreen extends ConsumerWidget {
                         onTap: () => context.pop(),
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back_ios_new,
                             size: 16,
-                            color: Color(0xFFFEFEFF), // indpt/text primary
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -51,7 +62,7 @@ class LoyaltyHubScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: 16),
                   // Title
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Loyalty hub',
                       style: TextStyle(
@@ -59,36 +70,7 @@ class LoyaltyHubScreen extends ConsumerWidget {
                         fontWeight: FontWeight.w700, // Bold
                         fontSize: 24,
                         height: 32 / 24, // lineHeight / fontSize
-                        color: Color(0xCCFEFEFF), // #FEFEFFCC 80% opacity
-                      ),
-                    ),
-                  ),
-                  // Search button
-                  Container(
-                    width: 40,
-                    height: 40,
-                    margin: const EdgeInsets.only(right: 8),
-                    child: Material(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(44),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(44),
-                        onTap: () {
-                          print('Search icon tapped!'); // Debug log
-                          context.push('/food-search');
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(44),
-                          ),
-                          child: const Icon(
-                            Icons.search,
-                            size: 24,
-                            color: Color(0xFFFEFEFF), // indpt/text primary
-                          ),
-                        ),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                       ),
                     ),
                   ),
@@ -96,15 +78,21 @@ class LoyaltyHubScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFFBF1), // indpt/sand
+                      color: context.getThemedColor(
+                        lightColor: const Color(0xFF242424), // Dark black for light theme
+                        darkColor: const Color(0xFF2A2A2A), // Dark container for dark theme
+                      ),
                       borderRadius: BorderRadius.circular(44),
                     ),
                     child: GestureDetector(
                       onTap: () => context.pop(),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
                         size: 16,
-                        color: Color(0xFF242424), // indpt/accent
+                        color: context.getThemedColor(
+                          lightColor: const Color(0xFFFEFEFF), // White icon for dark background in light theme
+                          darkColor: const Color(0xFFFEFEFF), // Light for dark theme
+                        ),
                       ),
                     ),
                   ),
@@ -137,17 +125,17 @@ class LoyaltyHubScreen extends ConsumerWidget {
                                     nextTier: member.nextTier,
                                   )
                                 else if (loyaltyState.isLoading)
-                                  const Center(
+                                  Center(
                                     child: CircularProgressIndicator(
-                                      color: Color(0xFFFFFBF1),
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
                                   )
                                 else
-                                  const Center(
+                                  Center(
                                     child: Text(
                                       'Failed to load loyalty data',
                                       style: TextStyle(
-                                        color: Color(0xCCFEFEFF),
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                                         fontSize: 16,
                                       ),
                                     ),
@@ -170,11 +158,11 @@ class LoyaltyHubScreen extends ConsumerWidget {
                                       ],
                                     ),
                                   )
-                                : const Center(
+                                : Center(
                                     child: Text(
                                       'Tab content coming soon',
                                       style: TextStyle(
-                                        color: Color(0xFF9C9C9D),
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                         fontSize: 16,
                                       ),
                                     ),

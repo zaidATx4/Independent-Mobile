@@ -6,6 +6,8 @@ class QrCodeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth = (screenWidth * 0.6).clamp(223.0, 300.0); // Responsive width
     final qrSize = (cardWidth * 0.65).clamp(158.0, 190.0); // Responsive QR size
@@ -17,9 +19,18 @@ class QrCodeSection extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Main ticket card
+          // Main ticket card with border
           Container(
             width: cardWidth,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isDark 
+                    ? Colors.transparent // no border for dark theme
+                    : const Color(0xFF878787), // dark border for light theme: 1px solid var(--dark-text-tertiary, #878787)
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(24),
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -27,9 +38,11 @@ class QrCodeSection extends StatelessWidget {
                 Container(
                   width: cardWidth,
                   padding: EdgeInsets.all(cardWidth * 0.07), // Responsive padding
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFFBF1),
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    color: isDark 
+                        ? const Color(0xFFFFFBF1) // cream for dark theme (matches Figma)
+                        : const Color(0xFFFEFEFF), // white for light theme
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24),
                     ),
@@ -53,26 +66,24 @@ class QrCodeSection extends StatelessWidget {
                 Container(
                   width: cardWidth,
                   height: 16, // Increased height to accommodate moved line
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFFBF1),
+                  decoration: BoxDecoration(
+                    color: isDark 
+                        ? const Color(0xFFFFFBF1) // cream for dark theme
+                        : const Color(0xFFFEFEFF), // white for light theme
                   ),
                   child: Stack(
                     children: [
-                      // Visible separation line through middle
+                      // Visible separation line through middle connecting half-circles
                       Positioned(
                         left: 0, // Start from edge to touch left circle
                         right: 0, // End at edge to touch right circle
                         top: 6 + (circleSize * 0.15), // Move line down to match circle center
                         child: Container(
                           width: double.infinity,
-                          height: 2.5, // Reduced thickness
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1A1A1A), // Same as background color
-                            border: Border.all(
-                              color: const Color(0xFF1A1A1A),
-                              width: 1.0, // Reduced border width
-                            ),
-                          ),
+                          height: 1.0, // Thin line
+                          color: isDark 
+                              ? Colors.transparent // no line for dark theme
+                              : const Color(0xFF878787), // dark border line for light theme
                         ),
                       ),
                     ],
@@ -82,9 +93,11 @@ class QrCodeSection extends StatelessWidget {
                 Container(
                   width: cardWidth,
                   padding: EdgeInsets.all(cardWidth * 0.07), // Responsive padding
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFFBF1),
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    color: isDark 
+                        ? const Color(0xFFFFFBF1) // cream for dark theme
+                        : const Color(0xFFFEFEFF), // white for light theme
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(24),
                       bottomRight: Radius.circular(24),
                     ),
@@ -100,7 +113,9 @@ class QrCodeSection extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           fontSize: (cardWidth * 0.063).clamp(12.0, 16.0), // Responsive font size
                           height: 1.5,
-                          color: const Color(0xFF4D4E52),
+                          color: isDark 
+                              ? const Color(0xFF4D4E52) // dark gray for dark theme
+                              : const Color(0xCC1A1A1A), // semi-transparent dark for light theme
                         ),
                       ),
                       SizedBox(height: cardWidth * 0.07), // Responsive spacing
@@ -128,7 +143,9 @@ class QrCodeSection extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 fontSize: (cardWidth * 0.08).clamp(16.0, 20.0), // Responsive font size
                                 height: 1.5,
-                                color: const Color(0xFF4D4E52),
+                                color: isDark 
+                                    ? const Color(0xFF4D4E52) // dark gray for dark theme
+                                    : const Color(0xCC1A1A1A), // semi-transparent dark for light theme
                               ),
                             ),
                             SizedBox(width: cardWidth * 0.018), // Responsive spacing
@@ -149,7 +166,9 @@ class QrCodeSection extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 fontSize: (cardWidth * 0.08).clamp(16.0, 20.0), // Responsive font size
                                 height: 1.5,
-                                color: const Color(0xFF4D4E52),
+                                color: isDark 
+                                    ? const Color(0xFF4D4E52) // dark gray for dark theme
+                                    : const Color(0xCC1A1A1A), // semi-transparent dark for light theme
                               ),
                             ),
                           ],
@@ -168,9 +187,17 @@ class QrCodeSection extends StatelessWidget {
             child: Container(
               width: circleSize,
               height: circleSize,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF1A1A1A), // Background color showing through
+                color: isDark 
+                    ? const Color(0xFF1A1A1A) // dark background shows through for dark theme
+                    : const Color(0xFFFFFCF5), // light background shows through for light theme
+                border: isDark 
+                    ? null // no border for dark theme
+                    : Border.all(
+                        color: const Color(0xFF878787), // dark border for light theme
+                        width: 1.0,
+                      ),
               ),
             ),
           ),
@@ -181,9 +208,17 @@ class QrCodeSection extends StatelessWidget {
             child: Container(
               width: circleSize,
               height: circleSize,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF1A1A1A), // Background color showing through
+                color: isDark 
+                    ? const Color(0xFF1A1A1A) // dark background shows through for dark theme
+                    : const Color(0xFFFFFCF5), // light background shows through for light theme
+                border: isDark 
+                    ? null // no border for dark theme
+                    : Border.all(
+                        color: const Color(0xFF878787), // dark border for light theme
+                        width: 1.0,
+                      ),
               ),
             ),
           ),

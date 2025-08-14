@@ -18,6 +18,9 @@ class LoyaltyStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     // Calculate progress (example: 2500 out of 7500 total needed)
     final double progress = points / (points + pointsNeeded);
     
@@ -26,7 +29,9 @@ class LoyaltyStatsCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.transparent,
+        color: isDark 
+            ? Colors.transparent 
+            : const Color(0xFFFEFEFF), // White background for light theme
       ),
       child: Column(
         children: [
@@ -41,12 +46,14 @@ class LoyaltyStatsCard extends StatelessWidget {
                     children: [
                       Text(
                         points.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w700,
                           fontSize: 24,
                           height: 32 / 24,
-                          color: Color(0xFFFEFEFF),
+                          color: isDark 
+                              ? const Color(0xFFFEFEFF) // white text for dark theme
+                              : const Color(0xFF1A1A1A), // dark text for light theme
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -60,12 +67,14 @@ class LoyaltyStatsCard extends StatelessWidget {
                   ),
                   Text(
                     membershipTier,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
                       height: 18 / 12,
-                      color: Color(0xFFFEFEFF),
+                      color: isDark 
+                          ? const Color(0xFFFEFEFF) // white text for dark theme
+                          : const Color(0xFF1A1A1A), // dark text for light theme
                     ),
                   ),
                 ],
@@ -76,17 +85,21 @@ class LoyaltyStatsCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFBF1),
+                    color: isDark 
+                        ? const Color(0xFFFFFBF1) // cream background for dark theme
+                        : const Color(0xFF1A1A1A), // dark background for light theme
                     borderRadius: BorderRadius.circular(44),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Loyalty hub',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                       height: 21 / 14,
-                      color: Color(0xFF242424),
+                      color: isDark 
+                          ? const Color(0xFF242424) // dark text for dark theme
+                          : const Color(0xFFFEFEFF), // white text for light theme
                     ),
                   ),
                 ),
@@ -100,12 +113,14 @@ class LoyaltyStatsCard extends StatelessWidget {
             children: [
               Text(
                 'Need $pointsNeeded Loyalty points to upgrade to $nextTier',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
                   height: 18 / 12,
-                  color: Color(0xFFFEFEFF),
+                  color: isDark 
+                      ? const Color(0xFFFEFEFF) // white text for dark theme
+                      : const Color(0xFF1A1A1A), // dark text for light theme
                 ),
               ),
               const SizedBox(height: 8),
@@ -117,7 +132,9 @@ class LoyaltyStatsCard extends StatelessWidget {
                     width: double.infinity,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF4D4E52),
+                      color: isDark 
+                          ? const Color(0xFF4D4E52) // dark gray for dark theme
+                          : const Color(0xFFD9D9D9), // light gray for light theme
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),

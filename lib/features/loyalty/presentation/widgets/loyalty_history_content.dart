@@ -18,6 +18,7 @@ class LoyaltyHistoryContent extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildFilterChip(
                 'All',
@@ -114,17 +115,28 @@ class LoyaltyHistoryContent extends ConsumerWidget {
   }
 
   Widget _buildFilterChip(String title, bool isSelected, VoidCallback onTap) {
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFFBF1) : Colors.transparent, // indpt/sand
+          color: isSelected 
+              ? (isDark 
+                  ? const Color(0xFFFFFBF1) // Sand for dark theme
+                  : const Color(0xFF242424)) // Dark background for light theme
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(21),
           border: Border.all(
             color: isSelected 
-                ? const Color(0xFFFFFBF1) // indpt/sand
-                : const Color(0xFF9C9C9D), // indpt/text tertiary
+                ? (isDark 
+                    ? const Color(0xFFFFFBF1) // Sand border for dark theme
+                    : const Color(0xFF242424)) // Dark border for light theme
+                : const Color(0xFF9C9C9D), // Gray border for unselected
             width: 1,
           ),
         ),
@@ -136,11 +148,15 @@ class LoyaltyHistoryContent extends ConsumerWidget {
             fontSize: 12,
             height: 18 / 12, // lineHeight / fontSize
             color: isSelected
-                ? const Color(0xFF242424) // indpt/accent
-                : const Color(0xFF9C9C9D), // indpt/text tertiary
+                ? (isDark 
+                    ? const Color(0xFF242424) // Dark text on sand background for dark theme
+                    : const Color(0xFFFEFEFF)) // White text on dark background for light theme
+                : const Color(0xFF9C9C9D), // Gray text for unselected
           ),
         ),
       ),
+    );
+      },
     );
   }
 

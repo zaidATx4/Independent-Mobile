@@ -20,14 +20,14 @@ class LoyaltyRewardsSection extends ConsumerWidget {
       case 'Scan':
         return const LoyaltyScanContent();
       case 'History':
-        return _buildHistoryContent(transactions);
+        return _buildHistoryContent(context, transactions);
       case 'Discover':
       default:
-        return _buildDiscoverContent(rewards);
+        return _buildDiscoverContent(context, rewards);
     }
   }
 
-  Widget _buildDiscoverContent(List<LoyaltyReward> rewards) {
+  Widget _buildDiscoverContent(BuildContext context, List<LoyaltyReward> rewards) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -37,14 +37,14 @@ class LoyaltyRewardsSection extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             width: double.infinity,
-            child: const Text(
+            child: Text(
               'Rewards',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.w500, // Medium
                 fontSize: 18,
                 height: 27 / 18, // lineHeight / fontSize
-                color: Color(0xCCFEFEFF), // indpt/text secondary
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
           ),
@@ -60,7 +60,7 @@ class LoyaltyRewardsSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildHistoryContent(List<LoyaltyTransaction> transactions) {
+  Widget _buildHistoryContent(BuildContext context, List<LoyaltyTransaction> transactions) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -70,14 +70,14 @@ class LoyaltyRewardsSection extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             width: double.infinity,
-            child: const Text(
+            child: Text(
               'Transaction History',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.w500, // Medium
                 fontSize: 18,
                 height: 27 / 18, // lineHeight / fontSize
-                color: Color(0xCCFEFEFF), // indpt/text secondary
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
           ),
@@ -90,7 +90,7 @@ class LoyaltyRewardsSection extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(24),
               width: double.infinity,
-              child: const Text(
+              child: Text(
                 'No transaction history available',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -98,7 +98,7 @@ class LoyaltyRewardsSection extends ConsumerWidget {
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                   height: 21 / 14,
-                  color: Color(0xCCFEFEFF), // indpt/text secondary
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ),

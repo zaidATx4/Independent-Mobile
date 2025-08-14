@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/theme/theme_service.dart';
 
 class RewardDetailScreen extends StatelessWidget {
   final String title;
@@ -62,10 +63,12 @@ class RewardDetailScreen extends StatelessWidget {
                   color: const Color(0x40FFFFFF), // rgba(255, 255, 255, 0.25)
                   borderRadius: BorderRadius.circular(44),
                 ),
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Color(0xFFFEFEFF),
-                  size: 16,
+                child: const Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFFFEFEFF),
+                    size: 16,
+                  ),
                 ),
               ),
             ),
@@ -107,12 +110,13 @@ class RewardDetailScreen extends StatelessWidget {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 34),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // Reward info section
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // Brand logo
                                 Container(
@@ -221,9 +225,14 @@ class RewardDetailScreen extends StatelessWidget {
                                   horizontal: 16,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFFFFFBF1,
-                                  ), // Using cream/sand color to match Figma
+                                  color: context.getThemedColor(
+                                    lightColor: Color(
+                                      0xFF242424,
+                                    ), // Dark background for light theme
+                                    darkColor: Color(
+                                      0xFFFFFBF1,
+                                    ), // Sand background for dark theme
+                                  ),
                                   borderRadius: BorderRadius.circular(
                                     37,
                                   ), // Half-circle ends
@@ -233,15 +242,20 @@ class RewardDetailScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       '$pointsCost',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontFamily: 'Roboto',
                                         fontWeight: FontWeight.w500, // Medium
                                         fontSize: 16,
                                         height:
                                             24 / 16, // lineHeight / fontSize
-                                        color: Color(
-                                          0xFF1A1A1A,
-                                        ), // indpt/neutral
+                                        color: context.getThemedColor(
+                                          lightColor: Color(
+                                            0xFFFEFEFF,
+                                          ), // White text for light theme
+                                          darkColor: Color(
+                                            0xFF1A1A1A,
+                                          ), // Dark text for dark theme
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 4),
@@ -262,7 +276,7 @@ class RewardDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 4),
-                                    const Text(
+                                    Text(
                                       '| Redeem now',
                                       style: TextStyle(
                                         fontFamily: 'Roboto',
@@ -270,9 +284,14 @@ class RewardDetailScreen extends StatelessWidget {
                                         fontSize: 16,
                                         height:
                                             24 / 16, // lineHeight / fontSize
-                                        color: Color(
-                                          0xFF1A1A1A,
-                                        ), // indpt/neutral
+                                        color: context.getThemedColor(
+                                          lightColor: Color(
+                                            0xFFFEFEFF,
+                                          ), // White text for light theme
+                                          darkColor: Color(
+                                            0xFF1A1A1A,
+                                          ), // Dark text for dark theme
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -348,10 +367,12 @@ class RedemptionConfirmationScreen extends StatelessWidget {
                   color: const Color(0x40FFFFFF), // rgba(255, 255, 255, 0.25)
                   borderRadius: BorderRadius.circular(44),
                 ),
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Color(0xFFFEFEFF),
-                  size: 16,
+                child: const Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFFFEFEFF),
+                    size: 16,
+                  ),
                 ),
               ),
             ),
@@ -393,12 +414,13 @@ class RedemptionConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 34),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // Header with brand info
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
                                   width: 64,
@@ -480,12 +502,26 @@ class RedemptionConfirmationScreen extends StatelessWidget {
                                     width: 48,
                                     height: 48,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFFFBF1),
+                                      color: context.getThemedColor(
+                                        lightColor: Color(
+                                          0xFF000000,
+                                        ), // Dark background for light theme
+                                        darkColor: Color(
+                                          0xFFFFFBF1,
+                                        ), // Sand background for dark theme
+                                      ),
                                       borderRadius: BorderRadius.circular(44),
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.qr_code,
-                                      color: Color(0xFF000000),
+                                      color: context.getThemedColor(
+                                        lightColor: Color(
+                                          0xFFFFFFFF,
+                                        ), // White icon for light theme
+                                        darkColor: Color(
+                                          0xFF000000,
+                                        ), // Black icon for dark theme
+                                      ),
                                       size: 24,
                                     ),
                                   ),
@@ -565,10 +601,12 @@ class RedemptionQRScreen extends StatelessWidget {
                   color: const Color(0x40FFFFFF), // rgba(255, 255, 255, 0.25)
                   borderRadius: BorderRadius.circular(44),
                 ),
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Color(0xFFFEFEFF),
-                  size: 16,
+                child: const Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFFFEFEFF),
+                    size: 16,
+                  ),
                 ),
               ),
             ),
@@ -610,7 +648,7 @@ class RedemptionQRScreen extends StatelessWidget {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 34),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -633,7 +671,8 @@ class RedemptionQRScreen extends StatelessWidget {
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         title,
@@ -730,9 +769,9 @@ class RedemptionQRScreen extends StatelessWidget {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            
+
                             const SizedBox(height: 24),
-                            
+
                             // "Or" divider
                             Row(
                               children: [
@@ -743,7 +782,9 @@ class RedemptionQRScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                  ),
                                   child: Text(
                                     'Or',
                                     style: TextStyle(
@@ -763,12 +804,15 @@ class RedemptionQRScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            
+
                             const SizedBox(height: 24),
-                            
+
                             // Alternative code section
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
+                                vertical: 12.0,
+                              ),
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: const Color(0xFFF7BF10),
@@ -788,9 +832,9 @@ class RedemptionQRScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            
+
                             const SizedBox(height: 16),
-                            
+
                             // Alternative code instructions
                             const Text(
                               'Provide this code to the staff if scanning is unavailable.',
@@ -803,18 +847,10 @@ class RedemptionQRScreen extends StatelessWidget {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Home indicator
-                            Container(
-                              width: 134,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF9C9C9D), // indpt/text tertiary
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
                           ],
                         ),
                       ),

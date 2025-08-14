@@ -11,13 +11,20 @@ class LoyaltyTransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
       constraints: const BoxConstraints(minHeight: 55),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Color(0xFF4D4E52), width: 1), // indpt/stroke
-          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1), // indpt/stroke
+          bottom: BorderSide(
+            color: isDark 
+                ? const Color(0xFF4D4E52) // dark theme border
+                : const Color(0xFFD9D9D9), // light theme border
+            width: 1,
+          ), // Only bottom border to prevent overlap
         ),
       ),
       child: Row(
@@ -48,12 +55,14 @@ class LoyaltyTransactionItem extends StatelessWidget {
                   children: [
                     Text(
                       '${transaction.points > 0 ? '+' : ''}${transaction.points} Points ',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w500, // Medium
                         fontSize: 14,
                         height: 21 / 14, // lineHeight / fontSize
-                        color: Color(0xFFFEFEFF), // indpt/text primary
+                        color: isDark 
+                            ? const Color(0xFFFEFEFF) // white for dark theme
+                            : const Color(0xFF1A1A1A), // dark for light theme
                       ),
                     ),
                   ],
@@ -61,12 +70,14 @@ class LoyaltyTransactionItem extends StatelessWidget {
                 // Description
                 Text(
                   transaction.description,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400, // Regular
                     fontSize: 12,
                     height: 18 / 12, // lineHeight / fontSize
-                    color: Color(0xFF9C9C9D), // indpt/text tertiary
+                    color: isDark 
+                        ? const Color(0xFF9C9C9D) // gray for dark theme
+                        : const Color(0xFF878787), // darker gray for light theme
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -77,12 +88,14 @@ class LoyaltyTransactionItem extends StatelessWidget {
           // Date
           Text(
             transaction.date,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w400, // Regular
               fontSize: 12,
               height: 18 / 12, // lineHeight / fontSize
-              color: Color(0xFF9C9C9D), // indpt/text tertiary
+              color: isDark 
+                  ? const Color(0xFF9C9C9D) // gray for dark theme
+                  : const Color(0xFF878787), // darker gray for light theme
             ),
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/navigation_providers.dart';
 import '../../loyalty/presentation/pages/scan_screen.dart';
+import '../../food_ordering/presentation/pages/brand_selection_screen.dart';
 import 'home_screen_without_bottom_nav.dart';
 
 class MainNavigationScreen extends ConsumerWidget {
@@ -52,9 +53,11 @@ class MainNavigationScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalPadding,
+              padding: EdgeInsets.only(
+                left: horizontalPadding,
+                right: horizontalPadding,
+                top: verticalPadding,
+                bottom: verticalPadding + MediaQuery.of(context).padding.bottom,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,7 +144,7 @@ class MainNavigationScreen extends ConsumerWidget {
       case 1:
         return const ScanScreen();
       case 2:
-        return const PlaceholderScreen(title: 'Order');
+        return const BrandSelectionScreen();
       case 3:
         return const PlaceholderScreen(title: 'Reserve');
       case 4:

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/theme_service.dart';
 
 class RedeemedQrScreen extends StatelessWidget {
   final String? rewardTitle;
@@ -19,8 +20,8 @@ class RedeemedQrScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Debug: Print the received parameters
-    print('DEBUG: Received brandLogoPath: $brandLogoPath');
-    print('DEBUG: Received rewardTitle: $rewardTitle');
+    // DEBUG: Received brandLogoPath: $brandLogoPath');
+    // DEBUG: Received rewardTitle: $rewardTitle');
     
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
@@ -127,7 +128,7 @@ class RedeemedQrScreen extends StatelessWidget {
                                           height: 64,
                                           fit: BoxFit.cover,
                                           errorBuilder: (context, error, stackTrace) {
-                                            print('DEBUG: Image loading error for $brandLogoPath: $error');
+                                            // DEBUG: Image loading error for $brandLogoPath: $error');
                                             // Try to load Salt.png as fallback
                                             return Image.asset(
                                               'assets/images/logos/brands/Salt.png',
@@ -135,7 +136,7 @@ class RedeemedQrScreen extends StatelessWidget {
                                               height: 64,
                                               fit: BoxFit.cover,
                                               errorBuilder: (context, error2, stackTrace2) {
-                                                print('DEBUG: Fallback image also failed: $error2');
+                                                // DEBUG: Fallback image also failed: $error2');
                                                 return Container(
                                                   width: 64,
                                                   height: 64,
@@ -222,12 +223,18 @@ class RedeemedQrScreen extends StatelessWidget {
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFFFBF1),
+                                    color: context.getThemedColor(
+                                      lightColor: const Color(0xFF000000), // Dark background for light theme
+                                      darkColor: const Color(0xFFFFFBF1), // Sand background for dark theme
+                                    ),
                                     borderRadius: BorderRadius.circular(44),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.qr_code,
-                                    color: Color(0xFF000000),
+                                    color: context.getThemedColor(
+                                      lightColor: const Color(0xFFFFFFFF), // White icon for light theme
+                                      darkColor: const Color(0xFF000000), // Black icon for dark theme
+                                    ),
                                     size: 24,
                                   ),
                                 ),
@@ -255,7 +262,7 @@ class RedeemedQrScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.transparent,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.55, // 55% of screen
+        height: MediaQuery.of(context).size.height * 0.70, // 70% of screen
         width: double.infinity,
         child: ClipRect(
           child: BackdropFilter(
@@ -394,12 +401,18 @@ class RedeemedQrScreen extends StatelessWidget {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFFBF1), // indpt/sand
+                              color: context.getThemedColor(
+                                lightColor: const Color(0xFF000000), // Dark background for light theme
+                                darkColor: const Color(0xFFFFFBF1), // Sand background for dark theme
+                              ),
                               borderRadius: BorderRadius.circular(44),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.qr_code,
-                              color: Color(0xFF000000),
+                              color: context.getThemedColor(
+                                lightColor: const Color(0xFFFFFFFF), // White icon for light theme
+                                darkColor: const Color(0xFF000000), // Black icon for dark theme
+                              ),
                               size: 24,
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/reward_detail_screen.dart';
+import '../../../../core/theme/theme_service.dart';
 
 class LoyaltyRewardItem extends StatefulWidget {
   final String title;
@@ -38,10 +39,10 @@ class _LoyaltyRewardItemState extends State<LoyaltyRewardItem> {
       },
       child: Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Color(0xFF4D4E52), width: 1.0), // indpt/stroke
-          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1.0), // indpt/stroke
+          top: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3), width: 1.0),
+          bottom: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3), width: 1.0),
         ),
       ),
       child: Row(
@@ -66,23 +67,23 @@ class _LoyaltyRewardItemState extends State<LoyaltyRewardItem> {
               children: [
                 Text(
                   widget.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500, // Medium
                     fontSize: 14,
                     height: 21 / 14, // lineHeight / fontSize
-                    color: Color(0xFFFEFEFF), // indpt/text primary
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   widget.expiryDate,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400, // Regular
                     fontSize: 12,
                     height: 18 / 12, // lineHeight / fontSize
-                    color: Color(0xFF9C9C9D), // indpt/text tertiary
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -94,7 +95,10 @@ class _LoyaltyRewardItemState extends State<LoyaltyRewardItem> {
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white, // White background for brand logos
+              color: context.getThemedColor(
+                lightColor: Colors.white, // White background for light theme
+                darkColor: Colors.white, // Keep white for brand logo visibility
+              ),
               image: DecorationImage(
                 image: AssetImage(widget.brandLogoPath),
                 fit: BoxFit.contain,

@@ -26,8 +26,8 @@ class RewardItem extends StatelessWidget {
       onTap!();
     } else if (isRedeemed) {
       // Debug: Print what we're sending
-      print('DEBUG: Navigating with brandLogoPath: $brandLogoPath');
-      print('DEBUG: Navigating with title: $title');
+      // DEBUG: Navigating with brandLogoPath
+      // DEBUG: Navigating with title
       
       // Navigate to redeemed QR screen
       context.push('/redeemed-qr', extra: {
@@ -41,14 +41,27 @@ class RewardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return GestureDetector(
       onTap: () => _handleTap(context),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Color(0xFF4D4E52), width: 1.0),
-            bottom: BorderSide(color: Color(0xFF4D4E52), width: 1.0),
+            top: BorderSide(
+              color: isDark 
+                  ? const Color(0xFF4D4E52) // dark gray for dark theme
+                  : const Color(0xFFD9D9D9), // light gray for light theme
+              width: 1.0,
+            ),
+            bottom: BorderSide(
+              color: isDark 
+                  ? const Color(0xFF4D4E52) // dark gray for dark theme
+                  : const Color(0xFFD9D9D9), // light gray for light theme
+              width: 1.0,
+            ),
           ),
         ),
         child: Row(
@@ -73,22 +86,26 @@ class RewardItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     height: 21 / 14,
-                    color: Color(0xFFFEFEFF),
+                    color: isDark 
+                        ? const Color(0xFFFEFEFF) // white text for dark theme
+                        : const Color(0xFF1A1A1A), // dark text for light theme
                   ),
                 ),
                 Text(
                   expiryDate,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
                     height: 18 / 12,
-                    color: Color(0xFF9C9C9D),
+                    color: isDark 
+                        ? const Color(0xFF9C9C9D) // gray text for dark theme
+                        : const Color(0xFF878787), // medium gray text for light theme
                   ),
                 ),
               ],

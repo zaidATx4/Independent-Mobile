@@ -43,3 +43,32 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Claude AI related files
+
+.claude/
+claude_cache/
+claude_history/
+.claude_session
+claude_conversations/
+
+# AI/LLM configuration files
+.anthropic/
+anthropic_config.json
+claude_config.json
+ai_settings.json
+
+# API keys and credentials (if storing Claude API keys)
+.env.claude
+claude_api_key.txt
+anthropic_api_key.txt
+
+# Claude conversation exports
+claude_export_*.json
+claude_export_*.txt
+conversations_backup/
+
+# Temporary Claude files
+.claude_temp/
+temp_claude_*
+/.claude

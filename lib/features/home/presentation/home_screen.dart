@@ -46,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
     // Responsive padding and sizes
     final horizontalPadding = (screenWidth * 0.04).clamp(12.0, 20.0);
     final headerFontSize = (screenWidth * 0.06).clamp(20.0, 28.0);
-    final iconSize = (screenWidth * 0.06).clamp(20.0, 28.0);
+    // final iconSize = (screenWidth * 0.06).clamp(20.0, 28.0); // Unused
 
     // Get theme colors
     final theme = Theme.of(context);

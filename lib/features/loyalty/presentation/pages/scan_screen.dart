@@ -5,15 +5,18 @@ import 'package:go_router/go_router.dart';
 import '../widgets/loyalty_stats_card.dart';
 import '../widgets/qr_code_section.dart';
 import '../widgets/reward_item.dart';
-import '../widgets/cart_badge_widget.dart';
+import '../../../shared/cart/presentation/widgets/cart_badge_widget.dart';
 
 class ScanScreen extends ConsumerWidget {
   const ScanScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: isDark ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5),
       body: SafeArea(
         child: Column(
           children: [
@@ -23,14 +26,16 @@ class ScanScreen extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Scan & Earn',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w700,
                       fontSize: 24,
                       height: 32 / 24,
-                      color: Color(0xccfefeff), // rgba(254,254,255,0.8)
+                      color: isDark 
+                          ? const Color(0xCCFEFEFF) // rgba(254,254,255,0.8) for dark theme
+                          : const Color(0xCC1A1A1A), // rgba(26,26,26,0.8) for light theme
                     ),
                   ),
                   Row(
@@ -44,15 +49,19 @@ class ScanScreen extends ConsumerWidget {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF1),
+                            color: isDark 
+                                ? const Color(0xFFFFFBF1) // cream background for dark theme
+                                : const Color(0xFF1A1A1A), // dark background for light theme
                             borderRadius: BorderRadius.circular(44),
                           ),
                           child: SvgPicture.asset(
                             'assets/images/icons/SVGs/Loyalty/Search_icon.svg',
                             width: 16,
                             height: 16,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF242424),
+                            colorFilter: ColorFilter.mode(
+                              isDark 
+                                  ? const Color(0xFF242424) // dark icon for dark theme
+                                  : const Color(0xFFFEFEFF), // white icon for light theme
                               BlendMode.srcIn,  
                             ),
                           ),
@@ -89,14 +98,16 @@ class ScanScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             width: double.infinity,
-                            child: const Text(
+                            child: Text(
                               'Redeemed Rewards',
                               style: TextStyle(
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w500,
                                 fontSize: 18,
                                 height: 27 / 18,
-                                color: Color(0xccfefeff), // rgba(254,254,255,0.8)
+                                color: isDark 
+                                    ? const Color(0xCCFEFEFF) // rgba(254,254,255,0.8) for dark theme
+                                    : const Color(0xCC1A1A1A), // rgba(26,26,26,0.8) for light theme
                               ),
                             ),
                           ),
