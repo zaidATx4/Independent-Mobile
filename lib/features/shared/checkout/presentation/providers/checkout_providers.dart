@@ -7,11 +7,6 @@ import '../../domain/repositories/checkout_repository.dart';
 import '../../domain/usecases/checkout_usecases.dart';
 import '../../domain/entities/checkout_entities.dart';
 
-// SharedPreferences provider
-final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async {
-  return SharedPreferences.getInstance();
-});
-
 // Dio provider with configuration
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
@@ -36,17 +31,10 @@ final dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-// Repository Provider
+// Repository Provider - No SharedPreferences dependency to avoid async issues
 final checkoutRepositoryProvider = Provider<CheckoutRepository>((ref) {
-  final sharedPrefsAsync = ref.watch(sharedPreferencesProvider);
-  
-  return sharedPrefsAsync.when(
-    data: (prefs) => CheckoutRepositoryImpl(
-      dio: ref.watch(dioProvider),
-      prefs: prefs,
-    ),
-    loading: () => throw Exception('Loading preferences...'),
-    error: (error, stack) => throw Exception('Failed to initialize preferences: $error'),
+  return CheckoutRepositoryImpl(
+    dio: ref.watch(dioProvider),
   );
 });
 

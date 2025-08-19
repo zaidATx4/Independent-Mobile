@@ -116,12 +116,12 @@ class FoodItemCard extends StatelessWidget {
                                     fontFamily: 'Roboto',
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xFFFEFEFF),
+                                    color: Color(0xCC1A1A1A), // Dark text with 80% opacity on light theme
                                     shadows: [
                                       Shadow(
                                         offset: Offset(0, 1),
                                         blurRadius: 2.0,
-                                        color: Color.fromRGBO(0, 0, 0, 0.5),
+                                        color: Color.fromRGBO(0, 0, 0, 0.1), // Lighter shadow for light theme
                                       ),
                                     ],
                                   ),
@@ -137,7 +137,7 @@ class FoodItemCard extends StatelessWidget {
                                       width: 12.0,
                                       height: 12.0,
                                       colorFilter: const ColorFilter.mode(
-                                        Color(0xFFFEFEFF),
+                                        Color(0xFF1A1A1A), // Dark icon on light theme
                                         BlendMode.srcIn,
                                       ),
                                     ),
@@ -148,12 +148,12 @@ class FoodItemCard extends StatelessWidget {
                                         fontFamily: 'Roboto',
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w400,
-                                        color: Color(0xFFFEFEFF),
+                                        color: Color(0xFF1A1A1A), // Dark text on light theme
                                         shadows: [
                                           Shadow(
                                             offset: Offset(0, 1),
                                             blurRadius: 2.0,
-                                            color: Color.fromRGBO(0, 0, 0, 0.5),
+                                            color: Color.fromRGBO(0, 0, 0, 0.1), // Lighter shadow for light theme
                                           ),
                                         ],
                                       ),

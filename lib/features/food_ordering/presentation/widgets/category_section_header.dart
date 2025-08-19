@@ -23,9 +23,12 @@ class CategorySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1A1A1A), // indpt/neutral background
+      color: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // px-4 py-2
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,11 +37,11 @@ class CategorySectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               categoryName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 20.0,
                 fontWeight: FontWeight.w600, // SemiBold
-                color: Color(0xCCFEFEFF), // rgba(254,254,255,0.8)
+                color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xCC1A1A1A),
                 height: 1.5, // line-height: 30px / 20px
               ),
             ),
@@ -51,7 +54,7 @@ class CategorySectionHeader extends StatelessWidget {
               width: 32.0, // p-[8px] = 16px padding + 16px icon = 32px total
               height: 32.0,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFBF1), // indpt/sand
+                color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                 borderRadius: BorderRadius.circular(44.0), // rounded-[44px] - fully rounded
               ),
               child: Center(
@@ -59,8 +62,8 @@ class CategorySectionHeader extends StatelessWidget {
                   'assets/images/icons/SVGs/3_Dots.svg',
                   width: 14.0,
                   height: 14.0,
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFF242424), // Dark color for contrast on sand background
+                  colorFilter: ColorFilter.mode(
+                    isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
                     BlendMode.srcIn,
                   ),
                 ),
@@ -96,7 +99,7 @@ class SectionDivider extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: height,
-      color: color ?? const Color(0xFF4D4E52), // indpt/stroke
+      color: color ?? const Color(0xFFD9D9D9), // Light theme stroke
     );
   }
 }

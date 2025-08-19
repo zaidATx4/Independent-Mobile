@@ -88,7 +88,7 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
                           22.0,
                         ), // 20px
                         fontWeight: FontWeight.w600, // SemiBold
-                        color: const Color(0xFFFFFFFF), // White text
+                        color: const Color(0xFFFFFFFF), // Always white text on dark background overlay
                         height: 1.5, // 30/20 = 1.5 line height
                       ),
                     ),

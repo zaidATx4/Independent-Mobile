@@ -14,6 +14,7 @@ import 'package:independent/features/food_ordering/domain/entities/food_item_ent
 import 'package:independent/features/loyalty/presentation/pages/redeemed_qr_screen.dart';
 import 'package:independent/features/shared/checkout/presentation/pages/pickup_details_screen.dart';
 import 'package:independent/features/shared/checkout/domain/entities/checkout_entities.dart';
+import 'package:independent/features/settings/presentation/screens/theme_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -25,6 +26,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/theme',
+      builder: (context, state) => const ThemeScreen(),
     ),
     GoRoute(
       path: '/loyalty-hub',

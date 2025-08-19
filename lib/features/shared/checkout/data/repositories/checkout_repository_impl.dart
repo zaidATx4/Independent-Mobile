@@ -8,7 +8,7 @@ import '../models/checkout_models.dart';
 /// Implementation of CheckoutRepository with security measures
 class CheckoutRepositoryImpl implements CheckoutRepository {
   final Dio _dio;
-  final SharedPreferences _prefs;
+  final SharedPreferences? _prefs;
 
   // Cache keys for secure local storage
   static const String _pickupLocationsKey = 'checkout_pickup_locations';
@@ -17,8 +17,7 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
 
   CheckoutRepositoryImpl({
     required Dio dio,
-    required SharedPreferences prefs,
-  }) : _dio = dio, _prefs = prefs;
+  }) : _dio = dio, _prefs = null;
 
   @override
   Future<List<PickupLocationEntity>> getPickupLocations({
@@ -325,29 +324,37 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
 
   @override
   Future<void> cacheCheckoutLocally(CheckoutStateEntity checkout) async {
+    if (_prefs == null) return;
+    
     final checkoutJson = CheckoutModel.fromEntity(checkout).toJson();
-    await _prefs.setString('${_checkoutCacheKey}_${checkout.id}', jsonEncode(checkoutJson));
+    await _prefs!.setString('${_checkoutCacheKey}_${checkout.id}', jsonEncode(checkoutJson));
   }
 
   @override
   Future<void> clearCheckoutCache() async {
-    final keys = _prefs.getKeys().where((key) => key.startsWith(_checkoutCacheKey));
+    if (_prefs == null) return;
+    
+    final keys = _prefs!.getKeys().where((key) => key.startsWith(_checkoutCacheKey));
     for (final key in keys) {
-      await _prefs.remove(key);
+      await _prefs!.remove(key);
     }
   }
 
   // Private helper methods for caching
 
   Future<void> _cachePickupLocations(List<PickupLocationEntity> locations) async {
+    if (_prefs == null) return;
+    
     final locationsJson = locations
         .map((location) => PickupLocationModel.fromEntity(location).toJson())
         .toList();
-    await _prefs.setString(_pickupLocationsKey, jsonEncode(locationsJson));
+    await _prefs!.setString(_pickupLocationsKey, jsonEncode(locationsJson));
   }
 
   Future<List<PickupLocationEntity>> _getCachedPickupLocations() async {
-    final cachedData = _prefs.getString(_pickupLocationsKey);
+    if (_prefs == null) return [];
+    
+    final cachedData = _prefs!.getString(_pickupLocationsKey);
     if (cachedData == null) return [];
 
     final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
@@ -357,14 +364,18 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   Future<void> _cachePaymentMethods(List<PaymentMethodEntity> paymentMethods) async {
+    if (_prefs == null) return;
+    
     final paymentMethodsJson = paymentMethods
         .map((method) => PaymentMethodModel.fromEntity(method).toJson())
         .toList();
-    await _prefs.setString(_paymentMethodsKey, jsonEncode(paymentMethodsJson));
+    await _prefs!.setString(_paymentMethodsKey, jsonEncode(paymentMethodsJson));
   }
 
   Future<List<PaymentMethodEntity>> _getCachedPaymentMethods() async {
-    final cachedData = _prefs.getString(_paymentMethodsKey);
+    if (_prefs == null) return [];
+    
+    final cachedData = _prefs!.getString(_paymentMethodsKey);
     if (cachedData == null) return [];
 
     final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
@@ -387,7 +398,9 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   Future<CheckoutStateEntity?> _getCachedCheckout(String checkoutId) async {
-    final cachedData = _prefs.getString('${_checkoutCacheKey}_$checkoutId');
+    if (_prefs == null) return null;
+    
+    final cachedData = _prefs!.getString('${_checkoutCacheKey}_$checkoutId');
     if (cachedData == null) return null;
 
     final data = jsonDecode(cachedData) as Map<String, dynamic>;
@@ -395,6 +408,8 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   Future<void> _removeCachedCheckout(String checkoutId) async {
-    await _prefs.remove('${_checkoutCacheKey}_$checkoutId');
+    if (_prefs == null) return;
+    
+    await _prefs!.remove('${_checkoutCacheKey}_$checkoutId');
   }
 }

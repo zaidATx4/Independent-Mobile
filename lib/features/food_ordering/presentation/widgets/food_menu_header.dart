@@ -19,9 +19,12 @@ class FoodMenuHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1A1A1A), // indpt/neutral background
+      color: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
@@ -37,13 +40,13 @@ class FoodMenuHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(44.0), // rounded-[44px]
                 border: Border.all(
-                  color: const Color(0xFFFEFEFF), // indpt/text primary
+                  color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                   width: 1.0,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF), // indpt/text primary
+                color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                 size: 14.0,
               ),
             ),
@@ -51,14 +54,14 @@ class FoodMenuHeader extends StatelessWidget {
 
           const SizedBox(width: 16.0), // gap-4
           // Menu title
-          const Expanded(
+          Expanded(
             child: Text(
               'Menu',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24.0,
                 fontWeight: FontWeight.w700, // Bold
-                color: Color(0xCCFEFEFF), // rgba(254,254,255,0.8)
+                color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xCC1A1A1A),
                 height: 1.33, // line-height: 32px / 24px
               ),
             ),
@@ -76,7 +79,7 @@ class FoodMenuHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(44.0),
                     border: Border.all(
-                      color: const Color(0xFFFEFEFF),
+                      color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                       width: 1.0,
                     ),
                   ),
@@ -85,8 +88,8 @@ class FoodMenuHeader extends StatelessWidget {
                       'assets/images/icons/SVGs/Loyalty/Cart_icon.svg',
                       width: 16.0,
                       height: 16.0,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFFFEFEFF),
+                      colorFilter: ColorFilter.mode(
+                        isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                         BlendMode.srcIn,
                       ),
                     ),
@@ -104,7 +107,7 @@ class FoodMenuHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(44.0),
                     border: Border.all(
-                      color: const Color(0xFFFEFEFF),
+                      color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                       width: 1.0,
                     ),
                   ),
@@ -113,8 +116,8 @@ class FoodMenuHeader extends StatelessWidget {
                       'assets/images/icons/SVGs/Loyalty/Search_icon.svg',
                       width: 16.0,
                       height: 16.0,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFFFEFEFF),
+                      colorFilter: ColorFilter.mode(
+                        isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                         BlendMode.srcIn,
                       ),
                     ),
@@ -153,10 +156,10 @@ class LocationInfoWidget extends StatelessWidget {
         vertical: 8.0,
       ), // px-4 py-2
       decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A), // indpt/neutral background
+        color: Color(0xFFFFFCF5), // Light theme background
         border: Border(
-          top: BorderSide(color: Color(0xFF4D4E52), width: 1.0), // indpt/stroke
-          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1.0),
+          top: BorderSide(color: Color(0xFFD9D9D9), width: 1.0), // Light theme stroke
+          bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1.0),
         ),
       ),
       child: Row(
@@ -198,7 +201,7 @@ class LocationInfoWidget extends StatelessWidget {
                     fontFamily: 'Roboto',
                     fontSize: 14.0,
                     fontWeight: FontWeight.w500, // Medium
-                    color: Color(0xFFFEFEFF), // indpt/text primary
+                    color: Color(0xFF1A1A1A), // Dark text on light theme
                     height: 1.5, // line-height: 21px / 14px
                   ),
                   maxLines: 1,
@@ -214,7 +217,7 @@ class LocationInfoWidget extends StatelessWidget {
                       width: 12.0,
                       height: 12.0,
                       colorFilter: const ColorFilter.mode(
-                        Color(0xFF9C9C9D), // indpt/text tertiary
+                        Color(0xFF878787), // Light theme tertiary text color
                         BlendMode.srcIn,
                       ),
                     ),
@@ -228,7 +231,7 @@ class LocationInfoWidget extends StatelessWidget {
                           fontFamily: 'Roboto',
                           fontSize: 12.0,
                           fontWeight: FontWeight.w400, // Regular
-                          color: Color(0xFF9C9C9D), // indpt/text tertiary
+                          color: Color(0xFF878787), // Light theme tertiary text color
                           height: 1.5, // line-height: 18px / 12px
                         ),
                         maxLines: 1,
