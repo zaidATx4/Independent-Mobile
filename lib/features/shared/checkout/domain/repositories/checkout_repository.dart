@@ -94,4 +94,52 @@ abstract class CheckoutRepository {
 
   /// Clear local checkout cache
   Future<void> clearCheckoutCache();
+
+  // Wallet-related methods
+
+  /// Get user wallets with security validation
+  /// Returns only active and accessible wallets
+  Future<List<WalletEntity>> getUserWallets(String userId);
+
+  /// Get specific wallet by ID with security checks
+  Future<WalletEntity?> getWalletById(String walletId);
+
+  /// Validate wallet transaction before processing
+  /// Performs security checks and balance validation
+  Future<bool> validateWalletTransaction({
+    required String walletId,
+    required double amount,
+    String currency = 'SAR',
+  });
+
+  /// Process wallet payment with atomic transaction handling
+  /// Ensures rollback capability on failure
+  Future<CheckoutResultEntity> processWalletPayment({
+    required String checkoutId,
+    required String walletId,
+    required double amount,
+    String currency = 'SAR',
+    Map<String, dynamic>? metadata,
+  });
+
+  /// Rollback wallet transaction in case of failure
+  /// Critical for maintaining transaction integrity
+  Future<bool> rollbackWalletTransaction(String checkoutId, String walletId);
+
+  /// Get wallet transaction history for audit purposes
+  Future<List<Map<String, dynamic>>> getWalletTransactionHistory({
+    required String walletId,
+    int limit = 20,
+    int offset = 0,
+  });
+
+  /// Refresh wallet balance securely
+  Future<WalletEntity> refreshWalletBalance(String walletId);
+
+  /// Lock wallet for transaction processing
+  /// Prevents concurrent transactions on the same wallet
+  Future<bool> lockWallet(String walletId, String transactionId);
+
+  /// Unlock wallet after transaction completion
+  Future<bool> unlockWallet(String walletId, String transactionId);
 }

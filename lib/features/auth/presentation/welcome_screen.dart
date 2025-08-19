@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/auth_colors.dart';
 import '../../../core/utils/validation_service.dart';
+import '../../../core/auth/auth_provider.dart';
 import '../../country/presentation/country_selection_screen.dart';
 
 final phoneNumberProvider = StateProvider<String>((ref) => '');
@@ -322,7 +323,7 @@ class WelcomeScreen extends ConsumerWidget {
                                   // Google icon
                                   GestureDetector(
                                     onTap: () {
-                                      _handleSocialLogin(context, 'Google');
+                                      _handleSocialLogin(context, ref, 'Google');
                                     },
                                     child: Image.asset(
                                       'assets/images/icons/Google_Icon.png',
@@ -344,7 +345,7 @@ class WelcomeScreen extends ConsumerWidget {
                                   // Facebook icon
                                   GestureDetector(
                                     onTap: () {
-                                      _handleSocialLogin(context, 'Facebook');
+                                      _handleSocialLogin(context, ref, 'Facebook');
                                     },
                                     child: Image.asset(
                                       'assets/images/icons/Facebook_Icon.png',
@@ -423,9 +424,12 @@ class WelcomeScreen extends ConsumerWidget {
     );
   }
 
-  void _handleSocialLogin(BuildContext context, String provider) {
+  void _handleSocialLogin(BuildContext context, WidgetRef ref, String provider) {
     // Handle social login logic here
-    // For now, navigate to home screen
+    // Mark user as authenticated with provider info
+    ref.read(authProvider.notifier).login('${provider.toLowerCase()}_user_${DateTime.now().millisecondsSinceEpoch}');
+    
+    // Navigate to home screen
     context.go('/home');
   }
 

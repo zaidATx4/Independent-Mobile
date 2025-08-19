@@ -79,10 +79,10 @@ class FoodCategoriesScreen extends StatelessWidget {
               'Categories',
               style: TextStyle(
                 fontFamily: 'Roboto',
-                fontSize: 24.0,
-                fontWeight: FontWeight.w700, // Bold
-                color: Color(0xCCFEFEFF), // rgba(254,254,255,0.8)
-                height: 1.33, // line-height: 32px / 24px
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xCCFEFEFF),
+                height: 32 / 24,
               ),
             ),
           ),
@@ -175,8 +175,6 @@ class FoodCategoriesScreen extends StatelessWidget {
                           imagePath,
                           fit: BoxFit.contain, // Change to contain to prevent cropping
                         errorBuilder: (context, error, stackTrace) {
-                          print('Failed to load image: $imagePath');
-                          print('Error: $error');
                           return Container(
                             decoration: BoxDecoration(
                               color: const Color(0xFF1A1A1A),

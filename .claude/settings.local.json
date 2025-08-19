@@ -1,11 +1,39 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(flutter pub:*)",
       "Bash(flutter analyze:*)",
       "Bash(mkdir:*)",
-      "Bash(flutter run:*)"
+      "Bash(flutter run:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(env)",
+      "mcp__figma-dev-mode-mcp-server__get_code",
+      "mcp__figma-dev-mode-mcp-server__get_image",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(flutter clean:*)",
+      "Bash(rm:*)",
+      "Bash(move:*)",
+      "Bash(cp:*)",
+      "Bash(flutter:*)",
+      "mcp__figma-dev-mode-mcp-server__get_variable_defs",
+      "Bash(dart analyze:*)",
+      "Bash(find:*)",
+      "Bash(mv:*)",
+      "Bash(dart run:*)",
+      "Bash(git add:*)",
+      "Bash(grep:*)",
+      "Bash(copy ..SVGsLoyaltySAR.svg SAR.svg)",
+      "Bash(dart:*)",
+      "Bash(for:*)",
+      "Bash(do echo \"Processing $file\")",
+      "Bash(done)",
+      "Bash(sed:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "C:\\c\\Users\\Owner\\Documents\\GitHub"
+    ]
   }
 }

@@ -257,4 +257,10 @@ class CheckoutErrorHandler {
       ),
     );
   }
+
+  /// Convenience method to handle any error and show appropriate message
+  static void handleError(BuildContext context, dynamic error) {
+    final message = getErrorMessage(error);
+    showErrorSnackBar(context, message);
+  }
 }

@@ -71,6 +71,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   
+  # App icon generation
+  flutter_launcher_icons: ^0.13.1
+  
   # Testing utilities
   mockito: ^5.4.4
   build_runner: ^2.4.7
@@ -90,11 +93,15 @@ flutter:
   assets:
     - assets/videos/
     - assets/images/logos/
+    - assets/images/icons/
+    - assets/images/icons/Payment_Methods/
+    - assets/images/icons/Payment_Methods/Colored_Icons/
     - assets/images/logos/brands/
     - assets/images/icons/
     - assets/images/icons/SVGs/
     - assets/images/icons/SVGs/Settings/
     - assets/images/icons/SVGs/Loyalty/
+    - assets/images/icons/Payment_Methods/
     - assets/images/backgrounds/
     - assets/images/illustrations/
     - assets/images/Static/
@@ -128,3 +135,28 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Flutter Launcher Icons configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icons/App_icon_with_bg.png"
+  # Android adaptive icon settings: Use solid background and the logo without background for foreground
+  # This prevents cropping issues by providing proper spacing around the logo
+  adaptive_icon_background: "#000000"  # Black background
+  adaptive_icon_foreground: "assets/images/icons/English_Logo.png"  # Logo only, no background
+  remove_alpha_ios: true
+  background_color: "#000000"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/icons/App_icon_with_bg.png"
+    background_color: "#000000"
+    theme_color: "#000000"
+  windows:
+    generate: true
+    image_path: "assets/images/icons/App_icon_with_bg.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/icons/App_icon_with_bg.png"

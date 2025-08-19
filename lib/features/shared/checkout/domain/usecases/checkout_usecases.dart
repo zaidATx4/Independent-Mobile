@@ -403,6 +403,217 @@ class CancelCheckoutUseCase extends CheckoutUseCase<bool, String> {
   }
 }
 
+/// Use case for getting user wallets with security validation
+class GetUserWalletsUseCase extends CheckoutUseCase<List<WalletEntity>, GetUserWalletsParams> {
+  final CheckoutRepository _repository;
+
+  GetUserWalletsUseCase(this._repository);
+
+  @override
+  Future<List<WalletEntity>> call(GetUserWalletsParams params) async {
+    // Get all user wallets
+    final wallets = await _repository.getUserWallets(params.userId);
+
+    // Filter based on parameters
+    List<WalletEntity> filteredWallets = wallets;
+
+    // Filter by minimum balance if specified
+    if (params.minimumBalance != null) {
+      filteredWallets = filteredWallets
+          .where((wallet) => wallet.hasSufficientBalance(params.minimumBalance!))
+          .toList();
+    }
+
+    // Filter by wallet types if specified
+    if (params.allowedTypes != null && params.allowedTypes!.isNotEmpty) {
+      filteredWallets = filteredWallets
+          .where((wallet) => params.allowedTypes!.contains(wallet.type))
+          .toList();
+    }
+
+    // Only return active and usable wallets
+    return filteredWallets
+        .where((wallet) => wallet.canBeUsed)
+        .toList();
+  }
+}
+
+class GetUserWalletsParams {
+  final String userId;
+  final double? minimumBalance;
+  final List<WalletType>? allowedTypes;
+  final bool includeExpired;
+
+  const GetUserWalletsParams({
+    required this.userId,
+    this.minimumBalance,
+    this.allowedTypes,
+    this.includeExpired = false,
+  });
+}
+
+/// Use case for validating wallet transaction with security checks
+class ValidateWalletTransactionUseCase extends CheckoutUseCase<bool, ValidateWalletTransactionParams> {
+  final CheckoutRepository _repository;
+
+  ValidateWalletTransactionUseCase(this._repository);
+
+  @override
+  Future<bool> call(ValidateWalletTransactionParams params) async {
+    // Validate wallet exists and is accessible
+    final wallet = await _repository.getWalletById(params.walletId);
+    if (wallet == null) {
+      throw Exception('Wallet not found');
+    }
+
+    // Security validations
+    if (!wallet.canBeUsed) {
+      throw SecurityException('Wallet is not available for transactions');
+    }
+
+    if (wallet.isExpired) {
+      throw SecurityException('Wallet has expired');
+    }
+
+    if (!wallet.hasSufficientBalance(params.amount)) {
+      throw PaymentException('Insufficient wallet balance');
+    }
+
+    if (params.amount <= 0) {
+      throw ArgumentError('Transaction amount must be positive');
+    }
+
+    // Additional fraud prevention checks
+    if (params.amount > 10000) { // Example: large transaction limit
+      throw SecurityException('Transaction amount exceeds wallet limit');
+    }
+
+    // Validate currency match
+    if (wallet.currency != params.currency) {
+      throw PaymentException('Currency mismatch between wallet and transaction');
+    }
+
+    // Check for wallet-specific biometric requirements
+    if (wallet.requiresBiometric && !params.biometricVerified) {
+      throw SecurityException('Biometric verification required for this wallet');
+    }
+
+    return true;
+  }
+}
+
+class ValidateWalletTransactionParams {
+  final String walletId;
+  final double amount;
+  final String currency;
+  final bool biometricVerified;
+  final Map<String, dynamic>? metadata;
+
+  const ValidateWalletTransactionParams({
+    required this.walletId,
+    required this.amount,
+    this.currency = 'SAR',
+    this.biometricVerified = false,
+    this.metadata,
+  });
+}
+
+/// Use case for processing wallet payment with atomic transaction handling
+class ProcessWalletPaymentUseCase extends CheckoutUseCase<CheckoutResultEntity, ProcessWalletPaymentParams> {
+  final CheckoutRepository _repository;
+
+  ProcessWalletPaymentUseCase(this._repository);
+
+  @override
+  Future<CheckoutResultEntity> call(ProcessWalletPaymentParams params) async {
+    // Validate wallet transaction first
+    final validateUseCase = ValidateWalletTransactionUseCase(_repository);
+    await validateUseCase(ValidateWalletTransactionParams(
+      walletId: params.walletId,
+      amount: params.amount,
+      currency: params.currency,
+      biometricVerified: params.biometricVerified,
+      metadata: params.metadata,
+    ));
+
+    // Get checkout to ensure it's valid
+    final checkout = await _repository.getCheckout(params.checkoutId);
+    if (checkout == null) {
+      throw Exception('Checkout not found');
+    }
+
+    if (!checkout.canCompletePayment) {
+      throw Exception('Checkout is not ready for payment');
+    }
+
+    if (checkout.isInProgress) {
+      throw Exception('Payment is already being processed');
+    }
+
+    try {
+      // Process atomic wallet payment transaction
+      final result = await _repository.processWalletPayment(
+        checkoutId: params.checkoutId,
+        walletId: params.walletId,
+        amount: params.amount,
+        currency: params.currency,
+        metadata: params.metadata,
+      );
+
+      if (!result.success) {
+        throw PaymentException(result.message ?? 'Wallet payment failed');
+      }
+
+      return result;
+    } catch (e) {
+      // Ensure any partial transactions are rolled back
+      await _repository.rollbackWalletTransaction(params.checkoutId, params.walletId);
+      rethrow;
+    }
+  }
+}
+
+class ProcessWalletPaymentParams {
+  final String checkoutId;
+  final String walletId;
+  final double amount;
+  final String currency;
+  final bool biometricVerified;
+  final Map<String, dynamic>? metadata;
+
+  const ProcessWalletPaymentParams({
+    required this.checkoutId,
+    required this.walletId,
+    required this.amount,
+    this.currency = 'SAR',
+    this.biometricVerified = false,
+    this.metadata,
+  });
+}
+
+/// Use case for getting wallet by ID with security validation
+class GetWalletByIdUseCase extends CheckoutUseCase<WalletEntity?, String> {
+  final CheckoutRepository _repository;
+
+  GetWalletByIdUseCase(this._repository);
+
+  @override
+  Future<WalletEntity?> call(String walletId) async {
+    if (walletId.trim().isEmpty) {
+      throw ArgumentError('Wallet ID cannot be empty');
+    }
+
+    final wallet = await _repository.getWalletById(walletId);
+    
+    // Security check: don't return expired or inactive wallets unless explicitly requested
+    if (wallet != null && !wallet.canBeUsed) {
+      return null;
+    }
+
+    return wallet;
+  }
+}
+
 /// No parameters class for use cases that don't need parameters
 class NoParams {
   const NoParams();

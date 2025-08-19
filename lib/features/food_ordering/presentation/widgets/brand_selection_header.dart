@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../shared/cart/presentation/widgets/cart_count_badge.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Header widget for brand selection screen matching Figma design
-class BrandSelectionHeader extends StatelessWidget {
+/// Header widget for brand selection screen matching Figma light theme design
+class BrandSelectionHeader extends ConsumerWidget {
   const BrandSelectionHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
@@ -23,47 +26,36 @@ class BrandSelectionHeader extends StatelessWidget {
               'Place an Order',
               style: TextStyle(
                 fontFamily: 'Roboto',
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.bold,
                 fontSize: 24,
                 height: 32 / 24,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? const Color(0xCCFEFEFF)
-                    : const Color(0xCC1A1A1A),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xCC1A1A1A), // Dark text for light theme
+                  darkColor: const Color(0xCCFEFEFF), // Light text for dark theme
+                ),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
 
-          // Cart/Shopping button
-          Container(
-            padding: const EdgeInsets.all(8.0), // p-[8px]
-            decoration: const BoxDecoration(
-              color: Color(0xFFFFFBF1), // bg-[#fffbf1] - sand color
-              borderRadius: BorderRadius.all(
-                Radius.circular(44.0),
-              ), // rounded-[44px]
+          // Cart/Shopping button with count badge
+          CartCountBadge(
+            onTap: () => context.push('/cart'),
+            iconColor: context.getThemedColor(
+              lightColor: const Color(0xFFFEFEFF), // Light icon for dark background in light theme
+              darkColor: const Color(0xFF242424), // Dark icon for light background in dark theme
             ),
-            child: _buildCartIcon(),
+            backgroundColor: context.getThemedColor(
+              lightColor: const Color(0xFF1A1A1A), // --dark-sand background for light theme
+              darkColor: const Color(0xFFFFFBF1), // Sand background for dark theme
+            ),
+            badgeColor: const Color(0xFFFF4444),
+            badgeTextColor: Colors.white,
+            size: 32.0,
+            iconSize: 16.0,
           ),
         ],
-      ),
-    );
-  }
-
-  /// Build cart icon based on Figma design
-  Widget _buildCartIcon() {
-    return SizedBox(
-      width: 16.0,
-      height: 16.0,
-      child: SvgPicture.asset(
-        'assets/images/icons/SVGs/Loyalty/Cart_icon.svg',
-        width: 16.0,
-        height: 16.0,
-        colorFilter: const ColorFilter.mode(
-          Color(0xFF242424), // Dark color for visibility on light background
-          BlendMode.srcIn,
-        ),
       ),
     );
   }

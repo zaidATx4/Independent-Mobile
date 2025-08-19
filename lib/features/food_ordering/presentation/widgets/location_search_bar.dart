@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Location search bar widget matching Figma design
+/// Location search bar widget matching Figma design with theme support
 /// Search input with search icon and placeholder text
 class LocationSearchBar extends StatefulWidget {
   final String hintText;
@@ -33,13 +34,19 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Background matching Figma design
-      color: const Color(0xFF1A1A1A), // indpt/neutral background
+      // Theme-aware background matching Figma design
+      color: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0), // px-4 py-2.5
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: const Color(0xFFFEFEFF).withOpacity(0.64), // Use #FEFEFF with 64% opacity
+            color: context.getThemedColor(
+              lightColor: const Color(0xFF1A1A1A).withValues(alpha: 0.64), // Light theme: dark border with opacity
+              darkColor: const Color(0xFFFEFEFF).withValues(alpha: 0.64), // Dark theme: light border with opacity
+            ),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(34.0),
@@ -53,20 +60,26 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                 onChanged: (value) {
                   widget.onSearchChanged(value);
                 },
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 16.0,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFFFEFEFF),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF1A1A1A), // Light theme: dark text
+                    darkColor: const Color(0xFFFEFEFF), // Dark theme: light text
+                  ),
                   height: 1.5,
                 ),
                 decoration: InputDecoration(
                   hintText: widget.hintText,
-                  hintStyle: const TextStyle(
+                  hintStyle: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 16.0,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xFF9C9C9D),
+                    color: context.getThemedColor(
+                      lightColor: const Color(0xFF878787), // Light theme: gray hint text
+                      darkColor: const Color(0xFF9C9C9D), // Dark theme: light gray hint text
+                    ),
                     height: 1.5,
                   ),
                   border: InputBorder.none,
@@ -96,10 +109,13 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                           widget.onSearchChanged('');
                           widget.onSearchClear?.call();
                         },
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
                           size: 20.0,
-                          color: Color(0xFFFEFEFF), // Use #FEFEFF
+                          color: context.getThemedColor(
+                            lightColor: const Color(0xFF1A1A1A), // Light theme: dark icon
+                            darkColor: const Color(0xFFFEFEFF), // Dark theme: light icon
+                          ),
                         ),
                       )
                     : _buildSearchIconSvg(),
@@ -118,8 +134,11 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       'assets/images/icons/SVGs/Loyalty/Search_icon.svg',
       width: 24.0,
       height: 24.0,
-      colorFilter: const ColorFilter.mode(
-        Color(0xFFFEFEFF), // Use #FEFEFF color
+      colorFilter: ColorFilter.mode(
+        context.getThemedColor(
+          lightColor: const Color(0xFF1A1A1A), // Light theme: dark icon
+          darkColor: const Color(0xFFFEFEFF), // Dark theme: light icon
+        ),
         BlendMode.srcIn,
       ),
     );

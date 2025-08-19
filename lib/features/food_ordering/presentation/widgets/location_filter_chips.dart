@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../providers/location_selection_provider.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Location filter chips widget matching Figma design
+/// Location filter chips widget matching Figma design with theme support
 /// Displays horizontal scrollable filter chips for location filtering
 class LocationFilterChips extends StatelessWidget {
   final LocationFilter selectedFilter;
@@ -19,13 +20,13 @@ class LocationFilterChips extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        children: _buildFilterChips(),
+        children: _buildFilterChips(context),
       ),
     );
   }
 
   /// Build list of filter chips
-  List<Widget> _buildFilterChips() {
+  List<Widget> _buildFilterChips(BuildContext context) {
     final filters = [
       LocationFilter.all, // Add "All" filter first
       LocationFilter.offers,
@@ -39,12 +40,12 @@ class LocationFilterChips extends StatelessWidget {
       padding: EdgeInsets.only(
         right: filter != filters.last ? 6 : 0, // Reduced from 10px to 6px
       ),
-      child: _buildFilterChip(filter),
+      child: _buildFilterChip(context, filter),
     )).toList();
   }
 
   /// Build individual filter chip matching food search design
-  Widget _buildFilterChip(LocationFilter filter) {
+  Widget _buildFilterChip(BuildContext context, LocationFilter filter) {
     final isSelected = selectedFilter == filter;
     
     return GestureDetector(
@@ -58,13 +59,22 @@ class LocationFilterChips extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected 
-              ? const Color(0xFFFFFBF1) // Dark theme: sand when selected
+              ? context.getThemedColor(
+                  lightColor: const Color(0xFF1A1A1A), // Light theme: dark background when selected
+                  darkColor: const Color(0xFFFFFBF1), // Dark theme: sand background when selected
+                )
               : Colors.transparent,
           borderRadius: BorderRadius.circular(21), // border-radius: 21px
           border: Border.all(
             color: isSelected 
-                ? const Color(0xFFFFFBF1) // Dark theme: sand when selected
-                : const Color(0xFFFEFEFF), // Use #FEFEFF for unselected borders
+                ? context.getThemedColor(
+                    lightColor: const Color(0xFF1A1A1A), // Light theme: dark border when selected
+                    darkColor: const Color(0xFFFFFBF1), // Dark theme: sand border when selected
+                  )
+                : context.getThemedColor(
+                    lightColor: const Color(0xFF878787), // Light theme: gray border when unselected
+                    darkColor: const Color(0xFFFEFEFF), // Dark theme: light border when unselected
+                  ),
             width: 1, // border-width: 1px (exact specification)
             style: BorderStyle.solid,
           ),
@@ -78,8 +88,14 @@ class LocationFilterChips extends StatelessWidget {
               fontSize: 12,
               height: 1.0, // Adjusted to fit within 18px height constraint
               color: isSelected 
-                  ? const Color(0xFF242424) // Dark theme: accent when selected
-                  : const Color(0xFFFEFEFF), // Use #FEFEFF for unselected text
+                  ? context.getThemedColor(
+                      lightColor: const Color(0xFFFEFEFF), // Light theme: light text when selected
+                      darkColor: const Color(0xFF242424), // Dark theme: dark text when selected
+                    )
+                  : context.getThemedColor(
+                      lightColor: const Color(0xFF878787), // Light theme: gray text when unselected
+                      darkColor: const Color(0xFFFEFEFF), // Dark theme: light text when unselected
+                    ),
             ),
             textAlign: TextAlign.center,
             maxLines: 1, // Single line to fit within 18px height

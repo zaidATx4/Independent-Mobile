@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/brand_entity.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Brand card widget matching Figma design specifications
+/// Brand card widget matching Figma light theme design specifications
 class BrandCard extends StatelessWidget {
   final BrandEntity brand;
   final VoidCallback onTap;
@@ -24,18 +25,22 @@ class BrandCard extends StatelessWidget {
         width: double.infinity,
         height: cardHeight,
         decoration: BoxDecoration(
-          // Backdrop blur effect with glassmorphism
-          color: Colors.white.withOpacity(0.25), // bg-[rgba(255,255,255,0.25)]
+          // Theme-aware card background
+          color: context.getThemedColor(
+            lightColor: const Color(0xFFFEFEFF), // Light theme solid background
+            darkColor: Colors.white.withValues(alpha: 0.25), // Dark theme glassmorphism
+          ),
           borderRadius: BorderRadius.circular(cardRadius),
           border: Border.all(
-            color: Colors.white.withOpacity(
-              0.45,
-            ), // border-[rgba(255,255,255,0.45)]
+            color: context.getThemedColor(
+              lightColor: const Color(0xFFD9D9D9), // Light theme border
+              darkColor: Colors.white.withValues(alpha: 0.45), // Dark theme border
+            ),
             width: 1.0,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 15.0,
               offset: const Offset(0, 4),
             ),
@@ -67,11 +72,14 @@ class BrandCard extends StatelessWidget {
                     // Brand name
                     Text(
                       brand.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 20.0, // text-[20px]
                         fontWeight: FontWeight.w600, // font-semibold
-                        color: Color(0xFFFFFFFF), // text-[#ffffff]
+                        color: context.getThemedColor(
+                          lightColor: const Color(0x99242424), // Dark text for light theme
+                          darkColor: const Color(0xFFFFFFFF), // White text for dark theme
+                        ),
                         height: 1.5, // leading-[30px] / 20px = 1.5
                       ),
                       maxLines: 1,
@@ -87,9 +95,10 @@ class BrandCard extends StatelessWidget {
                         fontFamily: 'Roboto',
                         fontSize: 12.0, // text-[12px]
                         fontWeight: FontWeight.w400, // font-normal
-                        color: Colors.white.withOpacity(
-                          0.75,
-                        ), // text-[rgba(255,255,255,0.75)]
+                        color: context.getThemedColor(
+                          lightColor: const Color(0x99242424), // Dark text for light theme
+                          darkColor: Colors.white.withValues(alpha: 0.75), // Light text with opacity for dark theme
+                        ),
                         height: 1.5, // leading-[18px] / 12px = 1.5
                       ),
                     ),

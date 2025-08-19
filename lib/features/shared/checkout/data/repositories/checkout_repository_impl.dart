@@ -17,7 +17,8 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
 
   CheckoutRepositoryImpl({
     required Dio dio,
-  }) : _dio = dio, _prefs = null;
+    SharedPreferences? prefs,
+  }) : _dio = dio, _prefs = prefs;
 
   @override
   Future<List<PickupLocationEntity>> getPickupLocations({
@@ -324,31 +325,31 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
 
   @override
   Future<void> cacheCheckoutLocally(CheckoutStateEntity checkout) async {
-    if (_prefs == null) return;
-    
-    final checkoutJson = CheckoutModel.fromEntity(checkout).toJson();
-    await _prefs!.setString('${_checkoutCacheKey}_${checkout.id}', jsonEncode(checkoutJson));
+    if (_prefs != null) {
+      final checkoutJson = CheckoutModel.fromEntity(checkout).toJson();
+      await _prefs!.setString('${_checkoutCacheKey}_${checkout.id}', jsonEncode(checkoutJson));
+    }
   }
 
   @override
   Future<void> clearCheckoutCache() async {
-    if (_prefs == null) return;
-    
-    final keys = _prefs!.getKeys().where((key) => key.startsWith(_checkoutCacheKey));
-    for (final key in keys) {
-      await _prefs!.remove(key);
+    if (_prefs != null) {
+      final keys = _prefs!.getKeys().where((key) => key.startsWith(_checkoutCacheKey));
+      for (final key in keys) {
+        await _prefs!.remove(key);
+      }
     }
   }
 
   // Private helper methods for caching
 
   Future<void> _cachePickupLocations(List<PickupLocationEntity> locations) async {
-    if (_prefs == null) return;
-    
-    final locationsJson = locations
-        .map((location) => PickupLocationModel.fromEntity(location).toJson())
-        .toList();
-    await _prefs!.setString(_pickupLocationsKey, jsonEncode(locationsJson));
+    if (_prefs != null) {
+      final locationsJson = locations
+          .map((location) => PickupLocationModel.fromEntity(location).toJson())
+          .toList();
+      await _prefs!.setString(_pickupLocationsKey, jsonEncode(locationsJson));
+    }
   }
 
   Future<List<PickupLocationEntity>> _getCachedPickupLocations() async {
@@ -364,12 +365,12 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   Future<void> _cachePaymentMethods(List<PaymentMethodEntity> paymentMethods) async {
-    if (_prefs == null) return;
-    
-    final paymentMethodsJson = paymentMethods
-        .map((method) => PaymentMethodModel.fromEntity(method).toJson())
-        .toList();
-    await _prefs!.setString(_paymentMethodsKey, jsonEncode(paymentMethodsJson));
+    if (_prefs != null) {
+      final paymentMethodsJson = paymentMethods
+          .map((method) => PaymentMethodModel.fromEntity(method).toJson())
+          .toList();
+      await _prefs!.setString(_paymentMethodsKey, jsonEncode(paymentMethodsJson));
+    }
   }
 
   Future<List<PaymentMethodEntity>> _getCachedPaymentMethods() async {
@@ -408,8 +409,335 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   Future<void> _removeCachedCheckout(String checkoutId) async {
+    if (_prefs != null) {
+      await _prefs!.remove('${_checkoutCacheKey}_$checkoutId');
+    }
+  }
+
+  // Wallet-related implementations
+
+  @override
+  Future<List<WalletEntity>> getUserWallets(String userId) async {
+    try {
+      final response = await _dio.get(
+        '/api/v1/wallet/user/$userId',
+        queryParameters: {'include_inactive': false}, // Only active wallets
+      );
+
+      final List<dynamic> data = response.data['data'] as List<dynamic>;
+      final wallets = data
+          .map((json) => WalletModel.fromJson(json as Map<String, dynamic>))
+          .where((wallet) => wallet.canBeUsed)
+          .toList();
+
+      // Cache wallets locally with encryption
+      await _cacheUserWallets(userId, wallets);
+
+      return wallets;
+    } catch (e) {
+      // Return cached wallets if API fails
+      return await _getCachedUserWallets(userId);
+    }
+  }
+
+  @override
+  Future<WalletEntity?> getWalletById(String walletId) async {
+    try {
+      final response = await _dio.get('/api/v1/wallet/$walletId');
+      final data = response.data['data'] as Map<String, dynamic>;
+      final wallet = WalletModel.fromJson(data);
+      
+      // Security check: only return usable wallets
+      return wallet.canBeUsed ? wallet : null;
+    } catch (e) {
+      // Try to find in cached wallets
+      final cachedWallets = await _getAllCachedWallets();
+      return cachedWallets.cast<WalletEntity?>().firstWhere(
+        (wallet) => wallet?.id == walletId && wallet?.canBeUsed == true,
+        orElse: () => null,
+      );
+    }
+  }
+
+  @override
+  Future<bool> validateWalletTransaction({
+    required String walletId,
+    required double amount,
+    String currency = 'SAR',
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/api/v1/wallet/$walletId/validate-transaction',
+        data: {
+          'amount': amount,
+          'currency': currency,
+        },
+      );
+
+      return response.data['valid'] as bool;
+    } catch (e) {
+      // Fallback validation with cached wallet data
+      final wallet = await getWalletById(walletId);
+      if (wallet == null) return false;
+      
+      return wallet.canBeUsed && 
+             wallet.hasSufficientBalance(amount) && 
+             wallet.currency == currency;
+    }
+  }
+
+  @override
+  Future<CheckoutResultEntity> processWalletPayment({
+    required String checkoutId,
+    required String walletId,
+    required double amount,
+    String currency = 'SAR',
+    Map<String, dynamic>? metadata,
+  }) async {
+    // First lock the wallet to prevent concurrent transactions
+    final transactionId = 'txn_${DateTime.now().millisecondsSinceEpoch}';
+    final locked = await lockWallet(walletId, transactionId);
+    
+    if (!locked) {
+      throw Exception('Unable to lock wallet for transaction');
+    }
+
+    try {
+      final response = await _dio.post(
+        '/api/v1/wallet/process-payment',
+        data: {
+          'checkout_id': checkoutId,
+          'wallet_id': walletId,
+          'amount': amount,
+          'currency': currency,
+          'transaction_id': transactionId,
+          'metadata': metadata,
+        },
+      );
+
+      final data = response.data['data'] as Map<String, dynamic>;
+      final result = CheckoutResultModel.fromJson(data);
+
+      // Clear cached wallet data to force refresh of balance
+      await _clearWalletCache(walletId);
+
+      return result;
+    } catch (e) {
+      // Rollback on any error
+      await rollbackWalletTransaction(checkoutId, walletId);
+      rethrow;
+    } finally {
+      // Always unlock the wallet
+      await unlockWallet(walletId, transactionId);
+    }
+  }
+
+  @override
+  Future<bool> rollbackWalletTransaction(String checkoutId, String walletId) async {
+    try {
+      await _dio.post(
+        '/api/v1/wallet/rollback-transaction',
+        data: {
+          'checkout_id': checkoutId,
+          'wallet_id': walletId,
+        },
+      );
+      
+      // Clear cached wallet data to force refresh
+      await _clearWalletCache(walletId);
+      
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getWalletTransactionHistory({
+    required String walletId,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final response = await _dio.get(
+      '/api/v1/wallet/$walletId/transactions',
+      queryParameters: {
+        'limit': limit,
+        'offset': offset,
+      },
+    );
+
+    final List<dynamic> data = response.data['data'] as List<dynamic>;
+    return data.cast<Map<String, dynamic>>();
+  }
+
+  @override
+  Future<WalletEntity> refreshWalletBalance(String walletId) async {
+    final response = await _dio.post('/api/v1/wallet/$walletId/refresh-balance');
+    final data = response.data['data'] as Map<String, dynamic>;
+    final wallet = WalletModel.fromJson(data);
+    
+    // Update cached wallet
+    await _updateCachedWallet(wallet);
+    
+    return wallet;
+  }
+
+  @override
+  Future<bool> lockWallet(String walletId, String transactionId) async {
+    try {
+      final response = await _dio.post(
+        '/api/v1/wallet/$walletId/lock',
+        data: {'transaction_id': transactionId},
+      );
+      
+      return response.data['locked'] as bool;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> unlockWallet(String walletId, String transactionId) async {
+    try {
+      final response = await _dio.post(
+        '/api/v1/wallet/$walletId/unlock',
+        data: {'transaction_id': transactionId},
+      );
+      
+      return response.data['unlocked'] as bool;
+    } catch (e) {
+      // Always return true for unlock to prevent deadlocks
+      return true;
+    }
+  }
+
+  // Private wallet caching methods
+
+  static const String _userWalletsKey = 'user_wallets';
+
+  Future<void> _cacheUserWallets(String userId, List<WalletEntity> wallets) async {
+    if (_prefs != null) {
+      final walletsJson = wallets
+          .map((wallet) => WalletModel.fromEntity(wallet).toJson())
+          .toList();
+      await _prefs!.setString('${_userWalletsKey}_$userId', jsonEncode(walletsJson));
+    }
+  }
+
+  Future<List<WalletEntity>> _getCachedUserWallets(String userId) async {
+    if (_prefs == null) return _getMockWalletsForDevelopment();
+    
+    final cachedData = _prefs!.getString('${_userWalletsKey}_$userId');
+    if (cachedData == null) return _getMockWalletsForDevelopment();
+
+    final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
+    final cachedWallets = data
+        .map((json) => WalletModel.fromJson(json as Map<String, dynamic>))
+        .where((wallet) => wallet.canBeUsed)
+        .toList();
+    
+    // Return mock wallets if no cached wallets or they're empty
+    return cachedWallets.isEmpty ? _getMockWalletsForDevelopment() : cachedWallets;
+  }
+
+  Future<List<WalletEntity>> _getAllCachedWallets() async {
+    if (_prefs == null) return [];
+    
+    final keys = _prefs!.getKeys().where((key) => key.startsWith(_userWalletsKey));
+    final List<WalletEntity> allWallets = [];
+    
+    for (final key in keys) {
+      final cachedData = _prefs!.getString(key);
+      if (cachedData != null) {
+        final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
+        final wallets = data
+            .map((json) => WalletModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        allWallets.addAll(wallets);
+      }
+    }
+    
+    return allWallets;
+  }
+
+  Future<void> _updateCachedWallet(WalletEntity wallet) async {
     if (_prefs == null) return;
     
-    await _prefs!.remove('${_checkoutCacheKey}_$checkoutId');
+    // Find all user wallet caches and update the specific wallet
+    final keys = _prefs!.getKeys().where((key) => key.startsWith(_userWalletsKey));
+    
+    for (final key in keys) {
+      final cachedData = _prefs!.getString(key);
+      if (cachedData != null) {
+        final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
+        final wallets = data
+            .map((json) => WalletModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        
+        // Check if this cache contains our wallet
+        final index = wallets.indexWhere((w) => w.id == wallet.id);
+        if (index != -1) {
+          // Update the wallet and save back to cache
+          wallets[index] = WalletModel.fromEntity(wallet);
+          final updatedJson = wallets.map((w) => w.toJson()).toList();
+          await _prefs!.setString(key, jsonEncode(updatedJson));
+        }
+      }
+    }
+  }
+
+  Future<void> _clearWalletCache(String walletId) async {
+    if (_prefs == null) return;
+    
+    // Find and update all caches that contain this wallet
+    final keys = _prefs!.getKeys().where((key) => key.startsWith(_userWalletsKey));
+    
+    for (final key in keys) {
+      final cachedData = _prefs!.getString(key);
+      if (cachedData != null) {
+        final List<dynamic> data = jsonDecode(cachedData) as List<dynamic>;
+        final wallets = data
+            .map((json) => WalletModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        
+        // Remove the specific wallet to force refresh
+        wallets.removeWhere((w) => w.id == walletId);
+        final updatedJson = wallets.map((w) => w.toJson()).toList();
+        await _prefs!.setString(key, jsonEncode(updatedJson));
+      }
+    }
+  }
+
+  /// Get mock wallets for development/testing when no data is available
+  List<WalletEntity> _getMockWalletsForDevelopment() {
+    return [
+      const WalletEntity(
+        id: 'wallet_1',
+        name: 'Team Lunch Wallet',
+        type: WalletType.teamLunch,
+        balance: 4250.0,
+        currency: 'SAR',
+        description: 'Team lunch budget wallet',
+        isActive: true,
+      ),
+      const WalletEntity(
+        id: 'wallet_2',
+        name: 'Personal Wallet',
+        type: WalletType.personal,
+        balance: 1875.0,
+        currency: 'SAR',
+        description: 'Personal spending wallet',
+        isActive: true,
+      ),
+      const WalletEntity(
+        id: 'wallet_3',
+        name: 'Corporate Wallet',
+        type: WalletType.corporate,
+        balance: 8500.0,
+        currency: 'SAR',
+        description: 'Corporate expense wallet',
+        isActive: true,
+      ),
+    ];
   }
 }

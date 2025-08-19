@@ -7,8 +7,9 @@ import '../widgets/location_search_bar.dart';
 import '../widgets/location_filter_chips.dart';
 import '../widgets/location_card.dart';
 import '../../domain/entities/location_entity.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Location selection screen matching Figma design with dark theme
+/// Location selection screen matching Figma design with theme support
 /// Displays locations for a selected brand with search and filter functionality
 class LocationSelectionScreen extends ConsumerStatefulWidget {
   final String brandId;
@@ -33,20 +34,18 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
     final state = ref.watch(locationSelectionProvider(widget.brandId));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral background
+      backgroundColor: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       body: Stack(
         children: [
           // Main content container
-          Column(
-            children: [
-              // Status bar spacer
-              Container(
-                height: MediaQuery.of(context).padding.top,
-                color: const Color(0xFF1A1A1A),
-              ),
-              
-              // Header with back button and title
-              const LocationSelectionHeader(),
+          SafeArea(
+            child: Column(
+              children: [
+                // Header with back button and title
+                const LocationSelectionHeader(),
               
               // Search bar
               LocationSearchBar(
@@ -78,14 +77,7 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
                 child: _buildLocationsList(state),
               ),
             ],
-          ),
-          
-          // Bottom navigation indicator (home indicator)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildBottomIndicator(),
+            ),
           ),
         ],
       ),
@@ -112,7 +104,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
   /// Build loading state with shimmer effect
   Widget _buildLoadingState() {
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: List.generate(
@@ -123,7 +118,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
               width: double.infinity,
               height: 80.0, // Height matching location card
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: context.getThemedColor(
+                  lightColor: Colors.black.withValues(alpha: 0.05), // Light theme: subtle dark overlay
+                  darkColor: Colors.white.withValues(alpha: 0.05), // Dark theme: subtle white overlay
+                ),
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: Row(
@@ -134,7 +132,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
                     width: 64.0,
                     height: 64.0,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: context.getThemedColor(
+                        lightColor: Colors.black.withValues(alpha: 0.1), // Light theme: subtle dark overlay
+                        darkColor: Colors.white.withValues(alpha: 0.1), // Dark theme: subtle white overlay
+                      ),
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                   ),
@@ -149,7 +150,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
                           width: double.infinity,
                           height: 16.0,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
+                            color: context.getThemedColor(
+                              lightColor: Colors.black.withValues(alpha: 0.1), // Light theme: subtle dark overlay
+                              darkColor: Colors.white.withValues(alpha: 0.1), // Dark theme: subtle white overlay
+                            ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
@@ -158,7 +162,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
                           width: 200.0,
                           height: 12.0,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
+                            color: context.getThemedColor(
+                              lightColor: Colors.black.withValues(alpha: 0.05), // Light theme: subtle dark overlay
+                              darkColor: Colors.white.withValues(alpha: 0.05), // Dark theme: subtle white overlay
+                            ),
                             borderRadius: BorderRadius.circular(6.0),
                           ),
                         ),
@@ -178,36 +185,48 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
   /// Build error state
   Widget _buildErrorState(String error) {
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline,
                 size: 48.0,
-                color: Color(0xFFFEFEFF),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xFF1A1A1A), // Light theme: dark icon
+                  darkColor: const Color(0xFFFEFEFF), // Dark theme: light icon
+                ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
+              Text(
                 'Something went wrong',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFFEFEFF),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF1A1A1A), // Light theme: dark text
+                    darkColor: const Color(0xFFFEFEFF), // Dark theme: light text
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
               Text(
                 error,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 14.0,
-                  color: Color(0xFF9C9C9D),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF878787), // Light theme: gray text
+                    darkColor: const Color(0xFF9C9C9D), // Dark theme: light gray text
+                  ),
                 ),
               ),
               const SizedBox(height: 24.0),
@@ -216,8 +235,14 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
                     .read(locationSelectionProvider(widget.brandId).notifier)
                     .refresh(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFFBF1),
-                  foregroundColor: const Color(0xFF242424),
+                  backgroundColor: context.getThemedColor(
+                    lightColor: const Color(0xFF1A1A1A), // Light theme: dark button
+                    darkColor: const Color(0xFFFFFBF1), // Dark theme: sand button
+                  ),
+                  foregroundColor: context.getThemedColor(
+                    lightColor: const Color(0xFFFEFEFF), // Light theme: light text
+                    darkColor: const Color(0xFF242424), // Dark theme: dark text
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
                     vertical: 12.0,
@@ -244,7 +269,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
   /// Build empty state when no locations found
   Widget _buildEmptyState() {
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -254,25 +282,34 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
               Icon(
                 Icons.location_off_outlined,
                 size: 48.0,
-                color: const Color(0xFFFEFEFF).withOpacity(0.5),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xFF1A1A1A).withValues(alpha: 0.5), // Light theme: semi-dark icon
+                  darkColor: const Color(0xFFFEFEFF).withValues(alpha: 0.5), // Dark theme: semi-light icon
+                ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
+              Text(
                 'No locations found',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFFEFEFF),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF1A1A1A), // Light theme: dark text
+                    darkColor: const Color(0xFFFEFEFF), // Dark theme: light text
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              const Text(
+              Text(
                 'Try adjusting your search or filters',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 14.0,
-                  color: Color(0xFF9C9C9D),
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF878787), // Light theme: gray text
+                    darkColor: const Color(0xFF9C9C9D), // Dark theme: light gray text
+                  ),
                 ),
               ),
             ],
@@ -285,7 +322,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
   /// Build location cards list
   Widget _buildLocationCards(List<LocationEntity> locations) {
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: context.getThemedColor(
+        lightColor: const Color(0xFFFFFCF5), // Light theme: cream background
+        darkColor: const Color(0xFF1A1A1A), // Dark theme: neutral background
+      ),
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -303,27 +343,10 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
     );
   }
 
-  /// Build bottom indicator matching Figma design
-  Widget _buildBottomIndicator() {
-    return Container(
-      width: double.infinity,
-      color: const Color(0xFF242424), // indpt/accent background
-      padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 8.0), // px-[120px] py-2
-      child: Center(
-        child: Container(
-          width: 134.0, // Fixed width from Figma
-          height: 5.0, // Fixed height from Figma
-          decoration: BoxDecoration(
-            color: const Color(0xFF9C9C9D), // indpt/text tertiary
-            borderRadius: BorderRadius.circular(100.0), // rounded-[100px] - fully rounded
-          ),
-        ),
-      ),
-    );
-  }
 
   /// Handle location tap - select location and navigate to food menu
   void _handleLocationTap(LocationEntity location) {
+    
     // Store selected location globally
     ref.read(selectedLocationProvider.notifier).state = location;
     
@@ -338,6 +361,7 @@ class _LocationSelectionScreenState extends ConsumerState<LocationSelectionScree
       'brandLogoPath': widget.brandLogoPath,
       'selectedLocation': location,
     });
+    
   }
 
   /// Get default brand logo path based on brand name

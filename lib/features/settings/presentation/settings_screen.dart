@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../core/auth/auth_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -105,7 +106,7 @@ class SettingsScreen extends ConsumerWidget {
                         svgPath: 'assets/images/icons/SVGs/Settings/Theme_Icon_dark.svg',
                         title: 'Theme',
                         subtitle: 'Select theme',
-                        onTap: () => _handleNavigation(context, '/theme'),
+                        onTap: () => _handleNavigation(context, '/settings/theme'),
                       ),
                       _buildSettingsItem(
                         svgPath: 'assets/images/icons/SVGs/Settings/Language_Icon_dark.svg',
@@ -140,7 +141,7 @@ class SettingsScreen extends ConsumerWidget {
                       _buildSettingsItem(
                         svgPath: 'assets/images/icons/SVGs/Settings/Log_Out_dark.svg',
                         title: 'Log out',
-                        onTap: () => _handleLogout(context),
+                        onTap: () => _handleLogout(context, ref),
                       ),
                       // Extra padding at bottom to ensure no overlap
                       SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
@@ -293,8 +294,10 @@ class SettingsScreen extends ConsumerWidget {
     context.push(route);
   }
 
-  void _handleLogout(BuildContext context) {
-    // TODO: Implement logout logic
+  void _handleLogout(BuildContext context, WidgetRef ref) {
+    // Clear authentication state
+    ref.read(authProvider.notifier).logout();
+    // Navigate to welcome screen
     context.go('/welcome');
   }
 }

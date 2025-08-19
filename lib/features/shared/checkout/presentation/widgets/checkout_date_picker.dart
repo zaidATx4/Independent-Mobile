@@ -27,16 +27,18 @@ class CheckoutDatePicker extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFFFEFEFF).withValues(alpha: 0.64), // rgba(254,254,255,0.64)
+          color: const Color(0xFF4D4E52), // Match the radio option border
           width: 1,
         ),
         borderRadius: BorderRadius.circular(34),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(34),
+      child: GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(34),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
@@ -216,16 +218,18 @@ class CheckoutTimePicker extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+          color: const Color(0xFF4D4E52), // Match the radio option border
           width: 1,
         ),
         borderRadius: BorderRadius.circular(34),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(34),
+      child: GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(34),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(

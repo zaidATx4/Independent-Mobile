@@ -10,6 +10,8 @@ class CartItem {
   final String brandLogoUrl;
   final int quantity;
   final Map<String, dynamic>? customizations;
+  final String locationId;
+  final String locationName;
 
   const CartItem({
     required this.id,
@@ -22,6 +24,8 @@ class CartItem {
     required this.brandLogoUrl,
     this.quantity = 1,
     this.customizations,
+    required this.locationId,
+    required this.locationName,
   });
 
   CartItem copyWith({
@@ -35,6 +39,8 @@ class CartItem {
     String? brandLogoUrl,
     int? quantity,
     Map<String, dynamic>? customizations,
+    String? locationId,
+    String? locationName,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -47,6 +53,8 @@ class CartItem {
       brandLogoUrl: brandLogoUrl ?? this.brandLogoUrl,
       quantity: quantity ?? this.quantity,
       customizations: customizations ?? this.customizations,
+      locationId: locationId ?? this.locationId,
+      locationName: locationName ?? this.locationName,
     );
   }
 
@@ -64,6 +72,8 @@ class CartItem {
       brandLogoUrl: json['brandLogoUrl'] as String,
       quantity: json['quantity'] as int? ?? 1,
       customizations: json['customizations'] as Map<String, dynamic>?,
+      locationId: json['locationId'] as String,
+      locationName: json['locationName'] as String,
     );
   }
 
@@ -79,6 +89,8 @@ class CartItem {
       'brandLogoUrl': brandLogoUrl,
       'quantity': quantity,
       'customizations': customizations,
+      'locationId': locationId,
+      'locationName': locationName,
     };
   }
 
@@ -145,7 +157,38 @@ class Cart {
 
   bool containsItem(String itemId) => findItem(itemId) != null;
 
+  // Location validation helpers
+  String? get currentLocationId {
+    if (items.isEmpty) return null;
+    return items.first.locationId;
+  }
+
+  String? get currentLocationName {
+    if (items.isEmpty) return null;
+    return items.first.locationName;
+  }
+
+  bool hasItemsFromLocation(String locationId) {
+    return items.any((item) => item.locationId == locationId);
+  }
+
+  bool hasItemsFromDifferentLocation(String locationId) {
+    if (items.isEmpty) return false;
+    return items.any((item) => item.locationId != locationId);
+  }
+
   Cart addItem(CartItem item) {
+    // Check for location conflicts
+    if (items.isNotEmpty && hasItemsFromDifferentLocation(item.locationId)) {
+      throw LocationConflictException(
+        'Cannot add items from different locations. Current location: ${currentLocationName}, Attempted location: ${item.locationName}',
+        currentLocationId: currentLocationId!,
+        currentLocationName: currentLocationName!,
+        conflictingLocationId: item.locationId,
+        conflictingLocationName: item.locationName,
+      );
+    }
+
     final existingItemIndex = items.indexWhere((i) => i.id == item.id);
     List<CartItem> updatedItems;
 
@@ -257,4 +300,24 @@ class CartState {
   double get total => cart?.total ?? 0.0;
   double get subtotal => cart?.subtotal ?? 0.0;
   double get tax => cart?.tax ?? 0.0;
+}
+
+// Exception for location conflicts in cart
+class LocationConflictException implements Exception {
+  final String message;
+  final String currentLocationId;
+  final String currentLocationName;
+  final String conflictingLocationId;
+  final String conflictingLocationName;
+
+  const LocationConflictException(
+    this.message, {
+    required this.currentLocationId,
+    required this.currentLocationName,
+    required this.conflictingLocationId,
+    required this.conflictingLocationName,
+  });
+
+  @override
+  String toString() => 'LocationConflictException: $message';
 }

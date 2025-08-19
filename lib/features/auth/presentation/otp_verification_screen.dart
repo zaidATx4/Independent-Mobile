@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/auth_colors.dart';
 import '../../../core/utils/validation_service.dart';
+import '../../../core/auth/auth_provider.dart';
 
 final otpProvider = StateProvider<String>((ref) => '');
 final phoneNumberDisplayProvider = StateProvider<String>((ref) => '');
@@ -367,6 +368,10 @@ class OtpVerificationScreen extends ConsumerWidget {
     
     // Clear any existing error
     ref.read(otpErrorProvider.notifier).state = null;
+    
+    // Mark user as authenticated
+    final phoneNumber = ref.read(phoneNumberDisplayProvider);
+    ref.read(authProvider.notifier).login(phoneNumber.isNotEmpty ? phoneNumber : 'user_${DateTime.now().millisecondsSinceEpoch}');
     
     // Navigate to home screen
     context.go('/home');

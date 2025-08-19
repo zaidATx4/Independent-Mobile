@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../domain/entities/location_entity.dart';
+import '../../../../core/theme/theme_service.dart';
 
 /// Location card widget matching Figma design specifications
 /// Displays individual location with brand icon, name, and address
@@ -28,11 +29,11 @@ class LocationCard extends StatelessWidget {
           // Border configuration - top border for first item, bottom border for all
           border: Border(
             top: isFirstItem ? BorderSide(
-              color: const Color(0xFFFEFEFF).withOpacity(0.45), // Use #FEFEFF color
+              color: _getBorderColor(context),
               width: 1.0,
             ) : BorderSide.none,
             bottom: BorderSide(
-              color: const Color(0xFFFEFEFF).withOpacity(0.45), // Use #FEFEFF color
+              color: _getBorderColor(context),
               width: 1.0,
             ),
           ),
@@ -46,7 +47,7 @@ class LocationCard extends StatelessWidget {
 
               const SizedBox(width: 16.0), // gap-4 = 16px
               // Location details
-              Expanded(child: _buildLocationDetails()),
+              Expanded(child: _buildLocationDetails(context)),
             ],
           ),
         ),
@@ -105,18 +106,21 @@ class LocationCard extends StatelessWidget {
   }
 
   /// Build location details section
-  Widget _buildLocationDetails() {
+  Widget _buildLocationDetails(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Location name
         Text(
           location.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Roboto',
             fontSize: 14.0, // text-[14px]
             fontWeight: FontWeight.w500, // font-medium
-            color: Color(0xFFFEFEFF), // indpt/text primary
+            color: context.getThemedColor(
+              lightColor: const Color(0xFF1A1A1A), // Light theme: dark text
+              darkColor: const Color(0xFFFEFEFF), // Dark theme: light text
+            ),
             height: 1.5, // line-height: 21px / 14px = 1.5
           ),
           maxLines: 1,
@@ -133,8 +137,11 @@ class LocationCard extends StatelessWidget {
               'assets/images/icons/SVGs/Select_Location_Icon.svg',
               width: 12.0,
               height: 12.0,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFF9C9C9D), // indpt/text tertiary
+              colorFilter: ColorFilter.mode(
+                context.getThemedColor(
+                  lightColor: const Color(0xFF878787), // Light theme: gray icon
+                  darkColor: const Color(0xFF9C9C9D), // Dark theme: light gray icon
+                ),
                 BlendMode.srcIn,
               ),
             ),
@@ -144,11 +151,14 @@ class LocationCard extends StatelessWidget {
             Expanded(
               child: Text(
                 location.address,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 12.0, // text-[12px]
                   fontWeight: FontWeight.w400, // font-normal
-                  color: Color(0xFF9C9C9D), // indpt/text tertiary
+                  color: context.getThemedColor(
+                    lightColor: const Color(0xFF878787), // Light theme: gray text
+                    darkColor: const Color(0xFF9C9C9D), // Dark theme: light gray text
+                  ),
                   height: 1.5, // line-height: 18px / 12px = 1.5
                 ),
                 maxLines: 1,
@@ -163,4 +173,11 @@ class LocationCard extends StatelessWidget {
     );
   }
 
+  /// Helper method to get border color based on theme
+  Color _getBorderColor(BuildContext context) {
+    return context.getThemedColor(
+      lightColor: const Color(0xFFD9D9D9), // Light theme: gray border
+      darkColor: const Color(0xFFFEFEFF).withValues(alpha: 0.45), // Dark theme: light border
+    );
+  }
 }

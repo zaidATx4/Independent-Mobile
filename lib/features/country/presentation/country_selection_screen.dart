@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/auth_colors.dart';
+import '../../../core/auth/auth_provider.dart';
 
 enum Country {
   uae('United Arab Emirates', 'assets/images/icons/UAE_Flag_Icon.png', 'ae', '+971'),
@@ -187,6 +188,8 @@ class CountrySelectionScreen extends ConsumerWidget {
                       // Continue button
                       ElevatedButton(
                         onPressed: () {
+                          // Mark onboarding as completed
+                          ref.read(authProvider.notifier).completeOnboarding();
                           // Navigate to welcome screen
                           context.go('/welcome');
                         },

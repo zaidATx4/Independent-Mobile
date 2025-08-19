@@ -26,11 +26,14 @@ class CheckoutRadioOption extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF4D4E52).withValues(alpha: 0.3) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(

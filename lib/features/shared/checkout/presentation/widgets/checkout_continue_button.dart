@@ -2,22 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CheckoutContinueButton extends StatelessWidget {
-  final String price;
+  final String? price;
   final String currency;
-  final String buttonText;
+  final String? buttonText;
+  final String? text; // Alternative: single text for the button
   final VoidCallback? onPressed;
   final bool isLoading;
   final bool enabled;
 
   const CheckoutContinueButton({
     super.key,
-    required this.price,
+    this.price,
     this.currency = 'SAR',
-    this.buttonText = 'Continue to Payment',
+    this.buttonText,
+    this.text, // For simple text-only buttons
     this.onPressed,
     this.isLoading = false,
     this.enabled = true,
-  });
+  }) : assert(
+         (price != null && buttonText != null) || text != null,
+         'Either provide price+buttonText or text parameter',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,9 @@ class CheckoutContinueButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF1), // indpt/sand
+        color: enabled && !isLoading 
+            ? const Color(0xFFFFFBF1) // indpt/sand - enabled
+            : const Color(0xFFFFFBF1).withValues(alpha: 0.5), // disabled/loading
         borderRadius: BorderRadius.circular(44),
       ),
       child: Material(
@@ -49,35 +56,54 @@ class CheckoutContinueButton extends StatelessWidget {
                       ),
                     ),
                   )
+                else if (text != null) ...[
+                  // Simple text-only button
+                  Flexible(
+                    child: Text(
+                      text!,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF242424), // indpt/accent
+                        height: 24 / 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ]
                 else ...[
                   // Price Section
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        price,
-                        style: const TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF242424), // indpt/accent
-                          height: 24 / 16,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      // SAR Currency Icon
-                      SizedBox(
-                        width: 11,
-                        height: 12,
-                        child: SvgPicture.asset(
-                          'assets/images/icons/SVGs/Loyalty/SAR.svg',
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFF242424), // indpt/accent
-                            BlendMode.srcIn,
+                  Flexible(
+                    flex: 0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          price!,
+                          style: const TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF242424), // indpt/accent
+                            height: 24 / 16,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        // SAR Currency Icon
+                        SizedBox(
+                          width: 11,
+                          height: 12,
+                          child: SvgPicture.asset(
+                            'assets/images/icons/SVGs/Loyalty/SAR.svg',
+                            colorFilter: const ColorFilter.mode(
+                              Color(0xFF242424), // indpt/accent
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   // Separator
                   const SizedBox(width: 8),
@@ -93,14 +119,17 @@ class CheckoutContinueButton extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   // Button Text
-                  Text(
-                    buttonText,
-                    style: const TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF242424), // indpt/accent
-                      height: 24 / 16,
+                  Flexible(
+                    child: Text(
+                      buttonText!,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF242424), // indpt/accent
+                        height: 24 / 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

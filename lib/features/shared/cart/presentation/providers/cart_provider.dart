@@ -87,7 +87,7 @@ class CartNotifier extends StateNotifier<CartState> {
     await _initializeCart();
   }
 
-  // Add item to cart
+  // Add item to cart with location validation
   Future<void> addItem(CartItem item) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     
@@ -95,11 +95,39 @@ class CartNotifier extends StateNotifier<CartState> {
       final updatedCart = await _addItemToCartUseCase.call(AddItemParams(item));
       state = state.copyWith(cart: updatedCart, isLoading: false);
     } catch (e) {
+      String errorMessage;
+      if (e is LocationConflictException) {
+        errorMessage = 'Cannot mix items from different locations.\nCurrent: ${e.currentLocationName}\nNew item: ${e.conflictingLocationName}';
+      } else {
+        errorMessage = 'Failed to add item: ${e.toString()}';
+      }
+      
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to add item: ${e.toString()}',
+        errorMessage: errorMessage,
       );
     }
+  }
+
+  // Add item with location check and option to clear cart
+  Future<bool> addItemWithLocationCheck(CartItem item, {bool clearCartOnConflict = false}) async {
+    final currentCart = state.cart;
+    
+    // If cart is empty or has items from same location, proceed normally
+    if (currentCart == null || currentCart.isEmpty || !currentCart.hasItemsFromDifferentLocation(item.locationId)) {
+      await addItem(item);
+      return true;
+    }
+    
+    // If clearCartOnConflict is true, clear cart first
+    if (clearCartOnConflict) {
+      await clearCart();
+      await addItem(item);
+      return true;
+    }
+    
+    // Otherwise, return false to indicate conflict
+    return false;
   }
 
   // Remove item from cart
@@ -337,4 +365,17 @@ final cartLoyaltyPointsProvider = Provider<int>((ref) {
   final total = ref.watch(cartTotalProvider);
   // 1 point per $1 spent (rounded down)
   return total.floor();
+});
+
+// Location-specific providers
+final cartLocationProvider = Provider<String?>((ref) {
+  return ref.watch(cartProvider).cart?.currentLocationId;
+});
+
+final cartLocationNameProvider = Provider<String?>((ref) {
+  return ref.watch(cartProvider).cart?.currentLocationName;
+});
+
+final cartHasLocationProvider = Provider<bool>((ref) {
+  return ref.watch(cartLocationProvider) != null;
 });

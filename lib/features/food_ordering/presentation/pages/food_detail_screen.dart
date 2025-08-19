@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui' as ui;
 import '../../domain/entities/food_item_entity.dart';
+import '../../domain/entities/location_entity.dart';
 import '../../../shared/cart/presentation/pages/cart_screen.dart';
+import '../../../shared/cart/presentation/providers/cart_provider.dart';
+import '../../../shared/cart/data/models/cart_models.dart';
+import '../providers/location_selection_provider.dart';
 
 /// Food detail screen matching Figma design with full-screen food image
-/// Displays detailed food information with overlay content and add to cart functionality
-class FoodDetailScreen extends StatefulWidget {
+/// Displays detailed food information with overlay content and location-aware add to cart functionality
+class FoodDetailScreen extends ConsumerStatefulWidget {
   final FoodItemEntity foodItem;
   final String? brandLogoPath;
+  final LocationEntity? selectedLocation;
 
   const FoodDetailScreen({
     super.key,
     required this.foodItem,
     this.brandLogoPath,
+    this.selectedLocation,
   });
 
   @override
-  State<FoodDetailScreen> createState() => _FoodDetailScreenState();
+  ConsumerState<FoodDetailScreen> createState() => _FoodDetailScreenState();
 }
 
-class _FoodDetailScreenState extends State<FoodDetailScreen> {
+class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
   bool _isAddedToCart = false;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -124,43 +132,24 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Back button with rounded blurred background
+            // Back button
             GestureDetector(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(44.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x33000000), // Reduced shadow - 20% opacity
-                      blurRadius: 8.0,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  border: Border.all(color: const Color(0xFFFEFEFF)),
+                  borderRadius: BorderRadius.circular(44),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(44.0),
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                    child: Container(
-                      width: 48.0,
-                      height: 48.0,
-                      decoration: BoxDecoration(
-                        color: const Color(0x40FFFFFF), // rgba(255,255,255,0.25)
-                        borderRadius: BorderRadius.circular(44.0),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Color(0xFFFEFEFF),
-                        size: 16.0,
-                      ),
-                    ),
-                  ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Color(0xFFFEFEFF),
+                  size: 16,
                 ),
               ),
             ),
             
-            // Cart button with rounded blurred background
+            // Cart button with rounded blurred background and badge
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
@@ -169,42 +158,79 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   ),
                 );
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(44.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x33000000), // Reduced shadow - 20% opacity
-                      blurRadius: 8.0,
-                      offset: const Offset(0, 4),
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(44.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x33000000), // Reduced shadow - 20% opacity
+                          blurRadius: 8.0,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(44.0),
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                    child: Container(
-                      width: 48.0,
-                      height: 48.0,
-                      decoration: BoxDecoration(
-                        color: const Color(0x40FFFFFF), // rgba(255,255,255,0.25)
-                        borderRadius: BorderRadius.circular(44.0),
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/images/icons/SVGs/Loyalty/Cart_icon.svg',
-                          width: 18.0,
-                          height: 18.0,
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFFFEFEFF), // Full white for better visibility
-                            BlendMode.srcIn,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(44.0),
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                        child: Container(
+                          width: 48.0,
+                          height: 48.0,
+                          decoration: BoxDecoration(
+                            color: const Color(0x40FFFFFF), // rgba(255,255,255,0.25)
+                            borderRadius: BorderRadius.circular(44.0),
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/images/icons/SVGs/Loyalty/Cart_icon.svg',
+                              width: 18.0,
+                              height: 18.0,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xFFFEFEFF), // Full white for better visibility
+                                BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  // Cart item count badge
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final cartItemCount = ref.watch(cartItemCountProvider);
+                      if (cartItemCount == 0) return const SizedBox.shrink();
+                      
+                      return Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4.0),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFFF3B30), // iOS red color
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16.0,
+                            minHeight: 16.0,
+                          ),
+                          child: Text(
+                            cartItemCount > 99 ? '99+' : cartItemCount.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'SF Pro Text',
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFFFEFEFF),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -414,85 +440,396 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
     
-    return Positioned(
-      bottom: MediaQuery.of(context).padding.bottom + 16.0,
-      left: 16.0,
-      right: 16.0,
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: isTablet ? 400.0 : double.infinity,
-        ),
-        child: _isAddedToCart
-            ? Container(
-                padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(44.0),
-                  border: Border.all(color: const Color(0xFFFEFEFF), width: 1.0),
-                ),
-                child: Text(
-                  'Added to cart',
-                  style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                    height: 24.0 / 16.0,
-                    letterSpacing: 0.0,
-                    color: Color(0xFFFEFEFF),
+    return Consumer(
+      builder: (context, ref, child) {
+        final cartState = ref.watch(cartProvider);
+        final isInCart = cartState.cart?.containsItem(widget.foodItem.id) ?? false;
+        
+        return Positioned(
+          bottom: MediaQuery.of(context).padding.bottom + 16.0,
+          left: 16.0,
+          right: 16.0,
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: isTablet ? 400.0 : double.infinity,
+            ),
+            child: _isLoading
+                ? Container(
+                    padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFBF1).withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(44.0),
+                    ),
+                    child: const Center(
+                      child: SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF242424)),
+                        ),
+                      ),
+                    ),
+                  )
+                : (isInCart || _isAddedToCart)
+                ? Container(
+                    padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(44.0),
+                      border: Border.all(color: const Color(0xFFFEFEFF), width: 1.0),
+                    ),
+                    child: Text(
+                      'Added to cart',
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        height: 24.0 / 16.0,
+                        letterSpacing: 0.0,
+                        color: Color(0xFFFEFEFF),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () => _handleAddToCart(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFFBF1),
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(44.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Add to cart',
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        height: 24.0 / 16.0,
+                        letterSpacing: 0.0,
+                        color: Color(0xFF242424),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            : ElevatedButton(
-                onPressed: () => _handleAddToCart(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFFBF1),
-                  elevation: 0,
-                  shadowColor: Colors.transparent,
-                  surfaceTintColor: Colors.transparent,
-                  padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(44.0),
-                  ),
-                ),
-                child: const Text(
-                  'Add to cart',
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                    height: 24.0 / 16.0,
-                    letterSpacing: 0.0,
-                    color: Color(0xFF242424),
-                  ),
-                  textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
+
+  /// Handle add to cart action with location validation
+  Future<void> _handleAddToCart(BuildContext context) async {
+    
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get the location for this food item
+      LocationEntity? itemLocation = widget.selectedLocation;
+      
+      // If no location provided, try to get it from the selected location provider
+      itemLocation ??= ref.read(selectedLocationProvider);
+      
+      // If still no location, show error
+      if (itemLocation == null) {
+        if (mounted) {
+          _showLocationRequiredDialog(context);
+        }
+        return;
+      }
+
+      final brandName = _getBrandNameFromId(widget.foodItem.brandId);
+      final brandLogoUrl = _getBrandLogoFromId(widget.foodItem.brandId);
+      
+
+      // Create cart item with location information
+      final cartItem = CartItem(
+        id: widget.foodItem.id,
+        name: widget.foodItem.name,
+        description: widget.foodItem.description,
+        price: widget.foodItem.price,
+        currency: widget.foodItem.currency,
+        imageUrl: widget.foodItem.imagePath,
+        brandName: brandName,
+        brandLogoUrl: brandLogoUrl,
+        quantity: 1,
+        locationId: itemLocation.id,
+        locationName: itemLocation.name,
+      );
+      
+
+      // Try to add with location check
+      final cartNotifier = ref.read(cartProvider.notifier);
+      final success = await cartNotifier.addItemWithLocationCheck(cartItem);
+      
+      if (success) {
+        setState(() {
+          _isAddedToCart = true;
+        });
+        if (mounted) {
+          _showSuccessMessage(context);
+        }
+      } else {
+        // Location conflict - show dialog
+        final currentCart = ref.read(cartProvider).cart;
+        if (currentCart != null && currentCart.isNotEmpty && mounted) {
+          _showLocationConflictDialog(
+            context, 
+            currentCart.currentLocationName ?? 'Unknown',
+            itemLocation.name,
+            cartItem,
+          );
+        }
+      }
+    } catch (e) {
+      if (e is LocationConflictException && mounted) {
+        _showLocationConflictDialog(
+          context,
+          e.currentLocationName,
+          e.conflictingLocationName,
+          CartItem(
+            id: widget.foodItem.id,
+            name: widget.foodItem.name,
+            description: widget.foodItem.description,
+            price: widget.foodItem.price,
+            currency: widget.foodItem.currency,
+            imageUrl: widget.foodItem.imagePath,
+            brandName: _getBrandNameFromId(widget.foodItem.brandId),
+            brandLogoUrl: _getBrandLogoFromId(widget.foodItem.brandId),
+            quantity: 1,
+            locationId: widget.selectedLocation?.id ?? '',
+            locationName: widget.selectedLocation?.name ?? '',
+          ),
+        );
+      } else if (mounted) {
+        _showErrorDialog(context, e.toString());
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  /// Show location required dialog
+  void _showLocationRequiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1C1C1E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: const Text(
+            'Location Required',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFFEFEFF),
+            ),
+          ),
+          content: const Text(
+            'Please select a location to add items to your cart.',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              color: Color(0xCCFEFEFF),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFFFFFBF1),
                 ),
               ),
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  /// Build home indicator
-  Widget _buildHomeIndicator() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 120.0, vertical: 8.0),
-      child: Container(
-        width: 134.0,
-        height: 5.0,
-        decoration: BoxDecoration(
-          color: const Color(0xFF9C9C9D), // indpt/text tertiary
-          borderRadius: BorderRadius.circular(100.0),
+  /// Show location conflict dialog with options
+  void _showLocationConflictDialog(
+    BuildContext context,
+    String currentLocationName,
+    String newLocationName,
+    CartItem newItem,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1C1C1E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: const Text(
+            'Different Location',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFFEFEFF),
+            ),
+          ),
+          content: Text(
+            'Your cart contains items from $currentLocationName. You can\'t mix items from different locations.\n\nWould you like to clear your cart and add this item from $newLocationName?',
+            style: const TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              color: Color(0xCCFEFEFF),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF9C9C9D),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _clearCartAndAddItem(newItem);
+              },
+              child: const Text(
+                'Clear Cart & Add',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFFFFFBF1),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Clear cart and add new item
+  Future<void> _clearCartAndAddItem(CartItem newItem) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final cartNotifier = ref.read(cartProvider.notifier);
+      await cartNotifier.addItemWithLocationCheck(newItem, clearCartOnConflict: true);
+      
+      setState(() {
+        _isAddedToCart = true;
+      });
+      if (mounted) {
+        _showSuccessMessage(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorDialog(context, e.toString());
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  /// Show success message
+  void _showSuccessMessage(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${widget.foodItem.name} added to cart',
+          style: const TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFFFEFEFF),
+          ),
+        ),
+        backgroundColor: const Color(0xFF34C759),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
     );
   }
 
-  /// Handle add to cart action
-  void _handleAddToCart(BuildContext context) {
-    setState(() {
-      _isAddedToCart = true;
-    });
-    // Removed snackbar notification as requested
+  /// Show error dialog
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1C1C1E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: const Text(
+            'Error',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFFEFEFF),
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              color: Color(0xCCFEFEFF),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFFFFFBF1),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Example: Navigate to checkout with food's location data
@@ -517,4 +854,57 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
   */
+
+  /// Get brand name from brand ID
+  String _getBrandNameFromId(String brandId) {
+    
+    // First try to use the passed brandLogoPath to infer brand name
+    if (widget.brandLogoPath != null && widget.brandLogoPath!.isNotEmpty) {
+      final logoPath = widget.brandLogoPath!.toLowerCase();
+      if (logoPath.contains('salt')) {
+        return 'Salt';
+      } else if (logoPath.contains('switch')) {
+        return 'Switch';
+      } else if (logoPath.contains('somewhere')) {
+        return 'Somewhere';
+      } else if (logoPath.contains('joe') || logoPath.contains('juice')) {
+        return 'Joe & Juice';
+      } else if (logoPath.contains('parkers')) {
+        return 'Parkers';
+      }
+    }
+    
+    // Fallback to ID-based mapping with corrected brand names
+    final brandName = switch (brandId) {
+      '1' => 'Salt',
+      '2' => 'Switch',
+      '3' => 'Somewhere',
+      '4' => 'Joe & Juice',
+      '5' => 'Parkers',
+      _ => 'Salt', // Default fallback
+    };
+    
+    return brandName;
+  }
+
+  /// Get brand logo URL from brand ID
+  String _getBrandLogoFromId(String brandId) {
+    
+    // First prefer the passed brandLogoPath if available
+    if (widget.brandLogoPath != null && widget.brandLogoPath!.isNotEmpty) {
+      return widget.brandLogoPath!;
+    }
+    
+    // Fallback to ID-based mapping with corrected logo paths
+    final logoPath = switch (brandId) {
+      '1' => 'assets/images/logos/brands/Salt.png',
+      '2' => 'assets/images/logos/brands/Switch.png',
+      '3' => 'assets/images/logos/brands/Somewhere.png',
+      '4' => 'assets/images/logos/brands/Joe_and _juice.png',
+      '5' => 'assets/images/logos/brands/Parkers.png',
+      _ => 'assets/images/logos/brands/Salt.png', // Default fallback
+    };
+    
+    return logoPath;
+  }
 }

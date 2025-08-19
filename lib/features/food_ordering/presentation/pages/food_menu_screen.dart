@@ -53,11 +53,9 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
       brandId: widget.brandId,
     );
     final state = ref.watch(foodMenuProvider(menuParams));
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5),
+      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral background
       body: Stack(
         children: [
           // Main content
@@ -66,7 +64,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
               // Status bar spacer
               Container(
                 height: MediaQuery.of(context).padding.top,
-                color: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5),
+                color: const Color(0xFF1A1A1A),
               ),
 
               // Header with back button, title, and action buttons
@@ -140,7 +138,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
   /// Build food items grid matching Figma layout
   Widget _buildFoodItemsGrid(List<FoodItemEntity> foodItems) {
     return Container(
-      color: const Color(0xFFFFFCF5),
+      color: const Color(0xFF1A1A1A),
       child: GridView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16.0),
@@ -166,10 +164,12 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
 
   /// Handle food item tap - navigate to food detail screen
   void _handleFoodItemTap(FoodItemEntity foodItem) {
+    
     context.push('/food-detail', extra: {
       'foodItem': foodItem,
       'brandLogoPath': widget.brandLogoPath,
     });
+    
   }
 
   /// Handle add to cart action
@@ -178,7 +178,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Added ${foodItem.name} to cart'),
-        backgroundColor: const Color(0xFF1A1A1A), // Dark snackbar on light theme
+        backgroundColor: const Color(0xFF242424),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -186,7 +186,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
         margin: const EdgeInsets.all(16.0),
         action: SnackBarAction(
           label: 'View Cart',
-          textColor: const Color(0xFFFEFEFF), // Light text on dark snackbar
+          textColor: const Color(0xFFFFFBF1),
           onPressed: () {
             // TODO: Navigate to cart screen
           },

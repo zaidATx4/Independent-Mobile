@@ -7,6 +7,8 @@ import '../providers/cart_provider.dart';
 import '../widgets/cart_item_widget.dart';
 import '../widgets/cart_summary_widget.dart';
 import '../widgets/cart_error_widget.dart';
+import '../../../../food_ordering/domain/entities/location_entity.dart';
+import '../../../../food_ordering/presentation/providers/location_selection_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -26,7 +28,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     });
   }
 
-  void _handleCheckout() {
+  void _handleCheckout() async {
     final cartState = ref.read(cartProvider);
     final cart = cartState.cart;
     
@@ -44,47 +46,74 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     // Extract brandId and locationId from cart items
-    // For now, we'll use the brand and location from the first item
-    // In a real implementation, all items should be from the same brand/location
+    // All items should be from the same brand/location due to cart validation
     final firstItem = cart.items.first;
     final brandId = _extractBrandIdFromItem(firstItem);
-    final locationId = _extractLocationIdFromItem(firstItem);
+    final locationId = firstItem.locationId;
+    final locationName = firstItem.locationName;
 
-    // Navigate to pickup details screen with cart data
-    context.push(
-      '/checkout/pickup-details',
-      extra: {
-        'subtotal': cart.subtotal,
-        'tax': cart.tax,
-        'total': cart.total,
-        'brandId': brandId,
-        'locationId': locationId,
-      },
-    );
-  }
+    // Try to get the full location entity from the location repository
+    final locationRepository = ref.read(locationRepositoryProvider);
+    LocationEntity? orderingLocation;
+    
+    try {
+      orderingLocation = await locationRepository.getLocationById(locationId);
+    } catch (e) {
+      // If we can't fetch the location, create a minimal one from cart data
+      orderingLocation = LocationEntity(
+        id: locationId,
+        brandId: brandId ?? '1',
+        name: locationName,
+        address: 'Location address', // Placeholder
+        latitude: 0.0,
+        longitude: 0.0,
+        phoneNumber: '',
+        operatingHours: const {},
+        isOpen: true,
+        acceptsDelivery: true,
+        acceptsPickup: true,
+        distanceKm: 0.0,
+        estimatedDeliveryMinutes: 30,
+      );
+    }
 
-  String? _extractBrandIdFromItem(CartItem item) {
-    // This would normally come from the item data or be stored during cart creation
-    // For now, return a mock brandId based on brand name
-    switch (item.brandName.toLowerCase()) {
-      case 'salt':
-        return 'brand_1';
-      case 'sweet spot':
-        return 'brand_2';
-      case 'drink house':
-        return 'brand_3';
-      case 'healthy bites':
-        return 'brand_4';
-      default:
-        return 'brand_1';
+    
+    // Navigate to pickup details screen with cart data and location
+    if (mounted) {
+      context.push(
+        '/checkout/pickup-details',
+        extra: {
+          'subtotal': cart.subtotal,
+          'tax': cart.tax,
+          'total': cart.total,
+          'brandId': brandId,
+          'locationId': locationId,
+          'orderingLocation': orderingLocation,
+          'brandLogoUrl': firstItem.brandLogoUrl, // Pass the actual brand logo
+        },
+      );
+      
     }
   }
 
-  String? _extractLocationIdFromItem(CartItem item) {
-    // This would normally come from the item data or be stored during cart creation
-    // For now, return a mock locationId
-    return 'location_1';
+  String? _extractBrandIdFromItem(CartItem item) {
+    // Extract brandId from cart item - use proper mapping based on brand name
+    switch (item.brandName.toLowerCase()) {
+      case 'salt':
+        return '1'; // Salt brand ID
+      case 'switch':
+        return '2'; // Switch brand ID
+      case 'sweet spot':
+        return '3';
+      case 'drink house':
+        return '4';
+      case 'healthy bites':
+        return '5';
+      default:
+        return '1'; // Default to Salt
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,25 +126,24 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         lightColor: const Color(0xFFFFFCF5), // light theme background
         darkColor: const Color(0xFF1A1A1A), // dark theme background
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            _buildHeader(context),
-            
-            
-            // Error handling
-            const CartErrorWidget(),
-            
-            // Content
-            Expanded(
-              child: _buildContent(cartItems, isEmpty, isLoading),
-            ),
-            
-            // Bottom section with checkout button
-            if (!isEmpty) _buildBottomSection(),
-          ],
-        ),
+      body: Column(
+        children: [
+          // Header with SafeArea
+          SafeArea(
+            child: _buildHeader(context),
+          ),
+          
+          // Error handling
+          const CartErrorWidget(),
+          
+          // Content
+          Expanded(
+            child: _buildContent(cartItems, isEmpty, isLoading),
+          ),
+          
+          // Bottom section with checkout button
+          if (!isEmpty) _buildBottomSection(),
+        ],
       ),
     );
   }
@@ -220,7 +248,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildBottomSection() {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 24, 16, MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 8),
       decoration: BoxDecoration(
         color: context.getThemedColor(
           lightColor: const Color(0xFFFFFCF5), // light theme background

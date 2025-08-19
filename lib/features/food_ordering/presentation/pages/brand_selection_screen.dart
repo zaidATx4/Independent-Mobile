@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../providers/brand_selection_provider.dart';
 import '../widgets/brand_card.dart';
 import '../widgets/brand_selection_header.dart';
+import '../../../../core/theme/theme_service.dart';
 
-/// Brand selection screen matching Figma design with dark theme
+/// Brand selection screen matching Figma design with light theme
 class BrandSelectionScreen extends ConsumerStatefulWidget {
   const BrandSelectionScreen({super.key});
 
@@ -47,9 +48,14 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
               height: double.infinity,
             ),
           ),
-          // Dark overlay - extends to full screen including status bar
+          // Theme-aware overlay
           Positioned.fill(
-            child: Container(color: Colors.black.withOpacity(0.7)),
+            child: Container(
+              color: context.getThemedColor(
+                lightColor: Colors.white.withValues(alpha: 0.3),
+                darkColor: Colors.black.withValues(alpha: 0.7),
+              ),
+            ),
           ),
           // Main content container
           Container(
@@ -88,7 +94,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
                           22.0,
                         ), // 20px
                         fontWeight: FontWeight.w600, // SemiBold
-                        color: const Color(0xFFFFFFFF), // Always white text on dark background overlay
+                        color: context.getThemedColor(
+                          lightColor: const Color(0x99242424), // Dark text for light theme
+                          darkColor: const Color(0xCCFEFEFF), // Light text for dark theme
+                        ),
                         height: 1.5, // 30/20 = 1.5 line height
                       ),
                     ),
@@ -126,16 +135,25 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
             width: double.infinity,
             height: 80, // Height matching brand card
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: context.getThemedColor(
+                lightColor: const Color(0xFFFEFEFF), // Light theme background
+                darkColor: Colors.white.withValues(alpha: 0.25), // Dark theme glassmorphism
+              ),
               borderRadius: BorderRadius.circular(106),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xFFD9D9D9), // Light theme border
+                  darkColor: Colors.white.withValues(alpha: 0.45), // Dark theme border
+                ),
                 width: 1,
               ),
             ),
             child: Center(
               child: CircularProgressIndicator(
-                color: const Color(0xFFFFFBF1),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xFF1A1A1A), // Dark indicator for light theme
+                  darkColor: const Color(0xFFFEFEFF), // Light indicator for dark theme
+                ),
                 strokeWidth: 2,
               ),
             ),
@@ -151,7 +169,14 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 48, color: const Color(0xFFFFFBF1)),
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: context.getThemedColor(
+              lightColor: const Color(0xFF1A1A1A),
+              darkColor: const Color(0xFFFEFEFF),
+            ),
+          ),
           const SizedBox(height: 16),
           Text(
             'Something went wrong',
@@ -159,7 +184,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
               fontFamily: 'Roboto',
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFFFFBF1),
+              color: context.getThemedColor(
+                lightColor: const Color(0xFF1A1A1A),
+                darkColor: const Color(0xFFFEFEFF),
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -169,7 +197,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
             style: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 14,
-              color: const Color(0xFFFFFBF1).withOpacity(0.75),
+              color: context.getThemedColor(
+                lightColor: const Color(0x99242424),
+                darkColor: Colors.white.withValues(alpha: 0.75),
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -177,8 +208,14 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
             onPressed: () =>
                 ref.read(brandSelectionProvider.notifier).refresh(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFFBF1),
-              foregroundColor: const Color(0xFF242424),
+              backgroundColor: context.getThemedColor(
+                lightColor: const Color(0xFF1A1A1A),
+                darkColor: const Color(0xFFFEFEFF),
+              ),
+              foregroundColor: context.getThemedColor(
+                lightColor: const Color(0xFFFEFEFF),
+                darkColor: const Color(0xFF1A1A1A),
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
@@ -207,7 +244,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
             Icon(
               Icons.restaurant_menu,
               size: 48,
-              color: const Color(0xFFFFFBF1).withOpacity(0.5),
+              color: context.getThemedColor(
+                lightColor: const Color(0x80242424),
+                darkColor: Colors.white.withValues(alpha: 0.5),
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -216,7 +256,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
                 fontFamily: 'Roboto',
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFFFFFBF1),
+                color: context.getThemedColor(
+                  lightColor: const Color(0xFF1A1A1A),
+                  darkColor: const Color(0xFFFEFEFF),
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -225,7 +268,10 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 14,
-                color: const Color(0xFFFFFBF1).withOpacity(0.75),
+                color: context.getThemedColor(
+                  lightColor: const Color(0x99242424),
+                  darkColor: Colors.white.withValues(alpha: 0.75),
+                ),
               ),
             ),
           ],
@@ -248,6 +294,7 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
 
   /// Handle brand tap - navigate to location selection
   void _handleBrandTap(dynamic brand) {
+    
     // Select brand in provider
     ref.read(brandSelectionProvider.notifier).selectBrand(brand.id);
 
@@ -260,5 +307,6 @@ class _BrandSelectionScreenState extends ConsumerState<BrandSelectionScreen> {
         'brandLogoPath': brand.logoUrl,
       },
     );
+    
   }
 }

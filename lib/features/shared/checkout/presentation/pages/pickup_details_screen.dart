@@ -42,6 +42,7 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
   final double total;
   final PickupLocationEntity? foodLocation; // Location from food ordering flow
   final LocationEntity? orderingLocation; // Alternative: pass LocationEntity from food ordering
+  final String? brandLogoUrl; // Brand logo URL from cart data
 
   const PickupDetailsScreen({
     super.key,
@@ -52,6 +53,7 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
     required this.total,
     this.foodLocation, // Added food location parameter
     this.orderingLocation, // Alternative parameter for LocationEntity
+    this.brandLogoUrl, // Brand logo URL parameter
   });
 
   /// Convert LocationEntity from food ordering to PickupLocationEntity
@@ -84,34 +86,79 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
 
 class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
   TimeOfDay? selectedTime; // Changed to TimeOfDay for time-only picker
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize checkout when screen loads
+    
+    // Clear any previous pickup selections when entering the screen
+    // This ensures clean state for re-selection after navigation back
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Convert ordering location to pickup location if provided
-      PickupLocationEntity? convertedFoodLocation = widget.foodLocation;
-      if (convertedFoodLocation == null && widget.orderingLocation != null) {
-        convertedFoodLocation = PickupDetailsScreen.convertLocationToPickupLocation(
-          widget.orderingLocation!,
-          brandLogoPath: 'assets/images/logos/brands/default.png', // You can pass brand logo here
-        );
-      }
+      ref.read(checkoutProvider.notifier).refreshForReentry();
+    });
+  }
+  
+  void _initializeCheckoutIfNeeded() {
+    if (_isInitialized) return;
+    _isInitialized = true;
+    
+    
+    // Convert ordering location to pickup location if provided
+    PickupLocationEntity? convertedFoodLocation = widget.foodLocation;
+    if (convertedFoodLocation == null && widget.orderingLocation != null) {
+      final brandLogo = widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png';
       
-      ref.read(checkoutProvider.notifier).initializeCheckout(
-        subtotal: widget.subtotal,
-        tax: widget.tax,
-        total: widget.total,
-        brandId: widget.brandId,
-        locationId: widget.locationId,
-        foodLocation: convertedFoodLocation, // Pass converted food location to provider
+      convertedFoodLocation = PickupDetailsScreen.convertLocationToPickupLocation(
+        widget.orderingLocation!,
+        brandLogoPath: brandLogo,
       );
+    }
+    
+    // TEMP FIX: If no location is provided, create a default location for testing
+    if (convertedFoodLocation == null) {
+      convertedFoodLocation = const PickupLocationEntity(
+        id: 'temp-1',
+        name: 'Default Test Location',
+        address: 'Test Address, City, Country',
+        brandLogoPath: 'assets/images/logos/brands/Salt.png',
+        latitude: 25.2048,
+        longitude: 55.2708,
+        isActive: true,
+      );
+    }
+    
+    
+    ref.read(checkoutProvider.notifier).initializeCheckout(
+      subtotal: widget.subtotal,
+      tax: widget.tax,
+      total: widget.total,
+      brandId: widget.brandId,
+      locationId: widget.locationId,
+      foodLocation: convertedFoodLocation, // Pass converted food location to provider
+    );
+    
+    // Auto-select "Pick Up Now" only if no pickup time is already selected
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        final currentState = ref.read(checkoutProvider);
+        if (currentState.selectedPickupTime == null) {
+          ref.read(checkoutProvider.notifier).selectPickupTime(
+            PickupTimeEntity.now(),
+          );
+        } else {
+        }
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Initialize checkout after build cycle completes
+    if (!_isInitialized) {
+      Future(() => _initializeCheckoutIfNeeded());
+    }
+    
     final checkoutState = ref.watch(checkoutProvider);
     final selectedPickupTime = ref.watch(selectedPickupTimeProvider);
     final canProceed = ref.watch(canProceedToPaymentProvider);
@@ -231,7 +278,7 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     if (location == null && widget.orderingLocation != null) {
       location = PickupDetailsScreen.convertLocationToPickupLocation(
         widget.orderingLocation!,
-        brandLogoPath: 'assets/images/logos/brands/default.png',
+        brandLogoPath: widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png',
       );
     }
     
@@ -274,9 +321,17 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
           title: 'Pick Up Later',
           description: 'Choose a time that suits you.',
           onTap: () {
-            // Auto-show time picker when selecting this option
+            // First select the "later" option, then show time picker
             if (selectedPickupTime?.type != PickupTimeType.later) {
-              _showTimePicker();
+              // Create a temporary "later" pickup time entity without scheduled time
+              // This will be updated when user picks a time
+              final tempLaterEntity = PickupTimeEntity.later(DateTime.now().add(const Duration(hours: 1)));
+              ref.read(checkoutProvider.notifier).selectPickupTime(tempLaterEntity);
+              
+              // Then show time picker for user to select actual time
+              Future.delayed(const Duration(milliseconds: 100), () {
+                _showTimePicker();
+              });
             }
           },
           additionalContent: selectedPickupTime?.type == PickupTimeType.later
@@ -292,6 +347,11 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
   }
 
   Widget _buildBottomSection(bool canProceed) {
+    final checkoutState = ref.watch(checkoutProvider);
+    final isLoading = ref.watch(isCheckoutLoadingProvider);
+    
+    // Debug: Print state for troubleshooting
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -304,19 +364,9 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
             price: widget.total.toStringAsFixed(0),
             currency: 'SAR',
             buttonText: 'Continue to Payment',
-            enabled: canProceed,
-            isLoading: ref.watch(isCheckoutLoadingProvider),
-            onPressed: canProceed ? _onContinuePressed : null,
-          ),
-          // Home Indicator
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            width: 134,
-            height: 5,
-            decoration: BoxDecoration(
-              color: const Color(0xFF9C9C9D),
-              borderRadius: BorderRadius.circular(100),
-            ),
+            enabled: canProceed && !isLoading,
+            isLoading: isLoading,
+            onPressed: (canProceed && !isLoading) ? _onContinuePressed : null,
           ),
         ],
       ),
@@ -494,15 +544,12 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     try {
       await checkoutNotifier.confirmPickupDetails();
       
-      // Navigate back for now since payment screen is not implemented yet
+      // Navigate to payment method selection screen
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pickup details confirmed! Payment screen coming soon.'),
-            backgroundColor: Color(0xFF4CAF50),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        context.push('/checkout/payment-method', extra: {
+          'total': widget.total,
+          'currency': 'SAR',
+        });
       }
     } catch (e) {
       if (mounted) {

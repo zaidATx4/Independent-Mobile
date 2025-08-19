@@ -226,8 +226,12 @@ class PickupDetailsModel extends PickupDetailsEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'location': (location as PickupLocationModel).toJson(),
-      'pickup_time': (pickupTime as PickupTimeModel).toJson(),
+      'location': location is PickupLocationModel 
+          ? (location as PickupLocationModel).toJson()
+          : PickupLocationModel.fromEntity(location).toJson(),
+      'pickup_time': pickupTime is PickupTimeModel 
+          ? (pickupTime as PickupTimeModel).toJson()
+          : PickupTimeModel.fromEntity(pickupTime).toJson(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -356,6 +360,190 @@ class CheckoutModel extends CheckoutStateEntity {
       completedAt: completedAt,
       errorMessage: errorMessage,
       metadata: metadata,
+    );
+  }
+}
+
+/// Data model for wallet with JSON serialization and security considerations
+/// SECURITY NOTE: Wallet data must be encrypted at rest and in transit
+@immutable
+class WalletModel extends WalletEntity {
+  const WalletModel({
+    required super.id,
+    required super.name,
+    required super.type,
+    required super.balance,
+    super.currency,
+    super.description,
+    super.iconPath,
+    super.isActive,
+    super.requiresBiometric,
+    super.expiryDate,
+    super.metadata,
+  });
+
+  factory WalletModel.fromJson(Map<String, dynamic> json) {
+    final typeString = json['type'] as String;
+    final type = WalletType.values.firstWhere(
+      (e) => e.toString().split('.').last == typeString,
+      orElse: () => WalletType.personal,
+    );
+
+    DateTime? expiryDate;
+    if (json['expiry_date'] != null) {
+      expiryDate = DateTime.parse(json['expiry_date'] as String);
+    }
+
+    return WalletModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      type: type,
+      balance: (json['balance'] as num).toDouble(),
+      currency: json['currency'] as String? ?? 'SAR',
+      description: json['description'] as String?,
+      iconPath: json['icon_path'] as String?,
+      isActive: json['is_active'] as bool? ?? true,
+      requiresBiometric: json['requires_biometric'] as bool? ?? false,
+      expiryDate: expiryDate,
+      metadata: json['metadata'] as Map<String, dynamic>?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type.toString().split('.').last,
+      'balance': balance,
+      'currency': currency,
+      'description': description,
+      'icon_path': iconPath,
+      'is_active': isActive,
+      'requires_biometric': requiresBiometric,
+      'expiry_date': expiryDate?.toIso8601String(),
+      'metadata': metadata,
+    };
+  }
+
+  factory WalletModel.fromEntity(WalletEntity entity) {
+    return WalletModel(
+      id: entity.id,
+      name: entity.name,
+      type: entity.type,
+      balance: entity.balance,
+      currency: entity.currency,
+      description: entity.description,
+      iconPath: entity.iconPath,
+      isActive: entity.isActive,
+      requiresBiometric: entity.requiresBiometric,
+      expiryDate: entity.expiryDate,
+      metadata: entity.metadata,
+    );
+  }
+
+  WalletEntity toEntity() {
+    return WalletEntity(
+      id: id,
+      name: name,
+      type: type,
+      balance: balance,
+      currency: currency,
+      description: description,
+      iconPath: iconPath,
+      isActive: isActive,
+      requiresBiometric: requiresBiometric,
+      expiryDate: expiryDate,
+      metadata: metadata,
+    );
+  }
+}
+
+/// Data model for wallet selection state
+@immutable
+class WalletSelectionModel extends WalletSelectionEntity {
+  const WalletSelectionModel({
+    super.availableWallets,
+    super.selectedWallet,
+    required super.transactionAmount,
+    super.currency,
+    super.isLoading,
+    super.error,
+  });
+
+  factory WalletSelectionModel.fromJson(Map<String, dynamic> json) {
+    final walletsJson = json['available_wallets'] as List<dynamic>? ?? [];
+    final availableWallets = walletsJson
+        .map((walletJson) => WalletModel.fromJson(walletJson as Map<String, dynamic>))
+        .toList();
+
+    WalletModel? selectedWallet;
+    if (json['selected_wallet'] != null) {
+      selectedWallet = WalletModel.fromJson(json['selected_wallet'] as Map<String, dynamic>);
+    }
+
+    return WalletSelectionModel(
+      availableWallets: availableWallets,
+      selectedWallet: selectedWallet,
+      transactionAmount: (json['transaction_amount'] as num).toDouble(),
+      currency: json['currency'] as String? ?? 'SAR',
+      isLoading: json['is_loading'] as bool? ?? false,
+      error: json['error'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'available_wallets': availableWallets
+          .map((wallet) => (wallet as WalletModel).toJson())
+          .toList(),
+      'selected_wallet': selectedWallet != null 
+          ? WalletModel.fromEntity(selectedWallet!).toJson() 
+          : null,
+      'transaction_amount': transactionAmount,
+      'currency': currency,
+      'is_loading': isLoading,
+      'error': error,
+    };
+  }
+
+  factory WalletSelectionModel.fromEntity(WalletSelectionEntity entity) {
+    return WalletSelectionModel(
+      availableWallets: entity.availableWallets,
+      selectedWallet: entity.selectedWallet,
+      transactionAmount: entity.transactionAmount,
+      currency: entity.currency,
+      isLoading: entity.isLoading,
+      error: entity.error,
+    );
+  }
+
+  WalletSelectionEntity toEntity() {
+    return WalletSelectionEntity(
+      availableWallets: availableWallets,
+      selectedWallet: selectedWallet,
+      transactionAmount: transactionAmount,
+      currency: currency,
+      isLoading: isLoading,
+      error: error,
+    );
+  }
+
+  @override
+  WalletSelectionModel copyWith({
+    List<WalletEntity>? availableWallets,
+    WalletEntity? selectedWallet,
+    double? transactionAmount,
+    String? currency,
+    bool? isLoading,
+    String? error,
+  }) {
+    return WalletSelectionModel(
+      availableWallets: availableWallets ?? this.availableWallets,
+      selectedWallet: selectedWallet ?? this.selectedWallet,
+      transactionAmount: transactionAmount ?? this.transactionAmount,
+      currency: currency ?? this.currency,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
     );
   }
 }

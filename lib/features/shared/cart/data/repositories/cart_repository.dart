@@ -222,53 +222,10 @@ class CartRepositoryImpl implements CartRepository {
     return null; // For now, always return null
   }
 
-  // Mock data for demonstration
+  // Mock data for demonstration - removed default items as requested
   List<CartItem> _getMockCartItems() {
     return [
-      const CartItem(
-        id: '1',
-        name: 'Cheeseburger',
-        description: 'Delicious beef cheeseburger with fresh lettuce and tomato',
-        price: 3.1,
-        currency: 'SAR',
-        imageUrl: 'assets/images/Static/burger.png',
-        brandName: 'Salt',
-        brandLogoUrl: 'assets/images/logos/brands/Salt.png',
-        quantity: 1,
-      ),
-      const CartItem(
-        id: '2',
-        name: 'Strawberry ice cream',
-        description: 'Fresh strawberry ice cream with real fruit chunks',
-        price: 3.1,
-        currency: 'SAR',
-        imageUrl: 'assets/images/Static/ice_cream.jpg',
-        brandName: 'Sweet Spot',
-        brandLogoUrl: 'assets/images/logos/brands/Sweet_spot.png',
-        quantity: 1,
-      ),
-      const CartItem(
-        id: '3',
-        name: 'Classic mojito',
-        description: 'Refreshing mojito with fresh mint and lime',
-        price: 3.1,
-        currency: 'SAR',
-        imageUrl: 'assets/images/Static/mojito.jpg',
-        brandName: 'Drink House',
-        brandLogoUrl: 'assets/images/logos/brands/Drink_house.png',
-        quantity: 1,
-      ),
-      const CartItem(
-        id: '4',
-        name: 'Greek Salad',
-        description: 'Fresh Greek salad with feta cheese and olives',
-        price: 3.1,
-        currency: 'SAR',
-        imageUrl: 'assets/images/Static/greek_salad.png',
-        brandName: 'Healthy Bites',
-        brandLogoUrl: 'assets/images/logos/brands/Healthy_bites.png',
-        quantity: 1,
-      ),
+      // No default items - cart starts empty for location-based ordering
     ];
   }
 }

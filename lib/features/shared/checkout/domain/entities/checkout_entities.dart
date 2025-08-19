@@ -190,6 +190,7 @@ class PickupDetailsEntity extends CheckoutEntity {
 enum CheckoutStatus {
   initial,
   pickupDetailsSet,
+  awaitingPayment,
   paymentMethodSelected,
   processing,
   completed,
@@ -235,6 +236,37 @@ class CheckoutStateEntity extends CheckoutEntity {
   bool get isFailed => status == CheckoutStatus.failed;
   bool get isCancelled => status == CheckoutStatus.cancelled;
 
+  /// Create a copy of this entity with updated fields
+  CheckoutStateEntity copyWith({
+    String? id,
+    CheckoutStatus? status,
+    PickupDetailsEntity? pickupDetails,
+    PaymentMethodEntity? paymentMethod,
+    double? subtotal,
+    double? tax,
+    double? total,
+    String? currency,
+    DateTime? createdAt,
+    DateTime? completedAt,
+    String? errorMessage,
+    Map<String, dynamic>? metadata,
+  }) {
+    return CheckoutStateEntity(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      pickupDetails: pickupDetails ?? this.pickupDetails,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      subtotal: subtotal ?? this.subtotal,
+      tax: tax ?? this.tax,
+      total: total ?? this.total,
+      currency: currency ?? this.currency,
+      createdAt: createdAt ?? this.createdAt,
+      completedAt: completedAt ?? this.completedAt,
+      errorMessage: errorMessage ?? this.errorMessage,
+      metadata: metadata ?? this.metadata,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -246,6 +278,117 @@ class CheckoutStateEntity extends CheckoutEntity {
 
   @override
   String toString() => 'CheckoutStateEntity(id: $id, status: $status, total: $total $currency)';
+}
+
+/// Enum for wallet types
+enum WalletType {
+  teamLunch,
+  personal,
+  corporate,
+  giftCard,
+}
+
+/// Entity representing a user wallet for payment
+@immutable
+class WalletEntity extends CheckoutEntity {
+  final String id;
+  final String name;
+  final WalletType type;
+  final double balance;
+  final String currency;
+  final String? description;
+  final String? iconPath;
+  final bool isActive;
+  final bool requiresBiometric;
+  final DateTime? expiryDate;
+  final Map<String, dynamic>? metadata;
+
+  const WalletEntity({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.balance,
+    this.currency = 'SAR',
+    this.description,
+    this.iconPath,
+    this.isActive = true,
+    this.requiresBiometric = false,
+    this.expiryDate,
+    this.metadata,
+  });
+
+  bool get isExpired => expiryDate != null && DateTime.now().isAfter(expiryDate!);
+  bool get hasInsufficientBalance => balance <= 0;
+  bool get canBeUsed => isActive && !isExpired && !hasInsufficientBalance;
+  
+  /// Check if wallet has sufficient balance for a given amount
+  bool hasSufficientBalance(double amount) => balance >= amount;
+
+  /// Get formatted balance string
+  String get formattedBalance => '${balance.toInt()} $currency';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is WalletEntity && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() => 'WalletEntity(id: $id, name: $name, type: $type, balance: $balance $currency)';
+}
+
+/// Entity representing wallet selection state
+@immutable
+class WalletSelectionEntity extends CheckoutEntity {
+  final List<WalletEntity> availableWallets;
+  final WalletEntity? selectedWallet;
+  final double transactionAmount;
+  final String currency;
+  final bool isLoading;
+  final String? error;
+
+  const WalletSelectionEntity({
+    this.availableWallets = const [],
+    this.selectedWallet,
+    required this.transactionAmount,
+    this.currency = 'SAR',
+    this.isLoading = false,
+    this.error,
+  });
+
+  bool get hasWallets => availableWallets.isNotEmpty;
+  bool get hasSelectedWallet => selectedWallet != null;
+  bool get canProceed => hasSelectedWallet && 
+                        selectedWallet!.canBeUsed && 
+                        selectedWallet!.hasSufficientBalance(transactionAmount);
+
+  List<WalletEntity> get usableWallets => availableWallets
+      .where((wallet) => wallet.canBeUsed && wallet.hasSufficientBalance(transactionAmount))
+      .toList();
+
+  WalletSelectionEntity copyWith({
+    List<WalletEntity>? availableWallets,
+    WalletEntity? selectedWallet,
+    double? transactionAmount,
+    String? currency,
+    bool? isLoading,
+    String? error,
+  }) {
+    return WalletSelectionEntity(
+      availableWallets: availableWallets ?? this.availableWallets,
+      selectedWallet: selectedWallet ?? this.selectedWallet,
+      transactionAmount: transactionAmount ?? this.transactionAmount,
+      currency: currency ?? this.currency,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+    );
+  }
+
+  @override
+  String toString() => 'WalletSelectionEntity(wallets: ${availableWallets.length}, selected: ${selectedWallet?.name})';
 }
 
 /// Entity representing the result of checkout completion
