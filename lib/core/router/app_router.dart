@@ -27,6 +27,14 @@ import 'package:independent/features/country/presentation/country_selection_scre
 import 'package:independent/features/auth/presentation/welcome_screen.dart';
 import 'package:independent/features/auth/presentation/sign_up_screen.dart';
 import 'package:independent/features/auth/presentation/otp_verification_screen.dart';
+// Wallet imports
+import 'package:independent/features/wallet/presentation/pages/my_wallets_list_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/my_wallet_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/wallet_transactions_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/transaction_detail_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/add_money_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/add_money_confirmation_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/manage_wallet_screen.dart';
 
 // TESTING FLAG: Set to true to skip authorization flow during development
 const bool BYPASS_AUTH_FOR_TESTING = true;
@@ -536,6 +544,50 @@ final GoRouter appRouter = GoRouter(
           estimatedTime: extra?['estimatedTime'] as String?,
         );
       },
+    ),
+    // Wallet Routes
+    GoRoute(
+      path: '/wallet',
+      builder: (context, state) => const MyWalletsListScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/details/:walletId',
+      builder: (context, state) {
+        final walletId = state.pathParameters['walletId'] ?? 'unknown';
+        return MyWalletScreen(walletId: walletId);
+      },
+    ),
+    GoRoute(
+      path: '/wallet/transactions',
+      builder: (context, state) => const WalletTransactionsScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/transaction-details',
+      builder: (context, state) {
+        final transactionId = state.extra as String? ?? 'unknown';
+        return TransactionDetailScreen(transactionId: transactionId);
+      },
+    ),
+    GoRoute(
+      path: '/wallet/add-money',
+      builder: (context, state) => const AddMoneyScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/add-money/confirm',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final amount = extra?['amount'] as String? ?? '0';
+        final paymentMethod = extra?['paymentMethod'] as String? ?? 'visa';
+        
+        return AddMoneyConfirmationScreen(
+          amount: amount,
+          paymentMethod: paymentMethod,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/wallet/manage',
+      builder: (context, state) => const ManageWalletScreen(),
     ),
     // Add other routes here
   ],

@@ -144,16 +144,13 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
         );
 
     // Auto-select "Pick Up Now" only if no pickup time is already selected
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        final currentState = ref.read(checkoutProvider);
-        if (currentState.selectedPickupTime == null) {
-          ref
-              .read(checkoutProvider.notifier)
-              .selectPickupTime(PickupTimeEntity.now());
-        } else {}
-      }
-    });
+    // Removed delay to prevent loading state issues
+    final currentState = ref.read(checkoutProvider);
+    if (currentState.selectedPickupTime == null) {
+      ref
+          .read(checkoutProvider.notifier)
+          .selectPickupTime(PickupTimeEntity.now());
+    }
   }
 
   @override
