@@ -10,6 +10,7 @@ class WalletSelectionCard extends StatelessWidget {
   final bool isSelected;
   final double transactionAmount;
   final VoidCallback onTap;
+  final bool isFirstItem;
 
   const WalletSelectionCard({
     super.key,
@@ -17,32 +18,40 @@ class WalletSelectionCard extends StatelessWidget {
     required this.isSelected,
     required this.transactionAmount,
     required this.onTap,
+    this.isFirstItem = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool canUseWallet = wallet.canBeUsed && 
                              wallet.hasSufficientBalance(transactionAmount);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return GestureDetector(
       onTap: canUseWallet ? onTap : null,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Color(0xFF4D4E52), width: 1),
-            bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+            top: isFirstItem ? BorderSide(
+              color: isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9), 
+              width: 1
+            ) : BorderSide.none,
+            bottom: BorderSide(
+              color: isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9), 
+              width: 1
+            ),
           ),
         ),
         child: Row(
           children: [
             // Wallet details (name and balance)
             Expanded(
-              child: _buildWalletDetails(canUseWallet),
+              child: _buildWalletDetails(canUseWallet, isDarkMode),
             ),
             
             // Radio button
-            _buildRadioButton(canUseWallet),
+            _buildRadioButton(canUseWallet, isDarkMode),
           ],
         ),
       ),
@@ -51,11 +60,11 @@ class WalletSelectionCard extends StatelessWidget {
 
 
   /// Build wallet details section with name and balance
-  Widget _buildWalletDetails(bool canUseWallet) {
+  Widget _buildWalletDetails(bool canUseWallet, bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Wallet name - exact Figma typography
+        // Wallet name - theme-aware typography
         Text(
           wallet.name,
           style: TextStyle(
@@ -63,15 +72,15 @@ class WalletSelectionCard extends StatelessWidget {
             fontSize: 14,
             fontWeight: FontWeight.normal,
             color: canUseWallet 
-                ? const Color(0xCCFEFEFF) // 80% opacity white for enabled
-                : const Color(0xFF6B6B6B), // Dimmed for disabled
+                ? (isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A)) // Theme-aware enabled color
+                : const Color(0xFF6B6B6B), // Dimmed for disabled (same for both themes)
             height: 21 / 14, // Line height from Figma
           ),
         ),
         
         const SizedBox(height: 2),
         
-        // Balance display - exact Figma styling
+        // Balance display - theme-aware styling
         Text(
           'Balance: ${wallet.formattedBalance}',
           style: TextStyle(
@@ -79,8 +88,8 @@ class WalletSelectionCard extends StatelessWidget {
             fontSize: 12,
             fontWeight: FontWeight.normal,
             color: canUseWallet
-                ? const Color(0xFF9C9C9D) // Secondary text color for enabled
-                : const Color(0xFF6B6B6B), // Dimmed for disabled
+                ? (isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787)) // Theme-aware secondary color
+                : const Color(0xFF6B6B6B), // Dimmed for disabled (same for both themes)
             height: 18 / 12, // Line height from Figma
           ),
         ),
@@ -137,7 +146,7 @@ class WalletSelectionCard extends StatelessWidget {
   }
 
   /// Build radio button for wallet selection
-  Widget _buildRadioButton(bool canUseWallet) {
+  Widget _buildRadioButton(bool canUseWallet, bool isDarkMode) {
     return Container(
       width: 24,
       height: 24,
@@ -146,9 +155,9 @@ class WalletSelectionCard extends StatelessWidget {
         border: Border.all(
           color: canUseWallet
               ? (isSelected 
-                  ? const Color(0xFFFEFEFF) // White border when selected and enabled
-                  : const Color(0xFF4D4E52)) // Gray border when not selected but enabled
-              : const Color(0xFF6B6B6B), // Dimmed border when disabled
+                  ? (isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A)) // Theme-aware selected border
+                  : (isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9))) // Theme-aware unselected border
+              : const Color(0xFF6B6B6B), // Dimmed border when disabled (same for both themes)
           width: 2,
         ),
       ),
@@ -157,9 +166,9 @@ class WalletSelectionCard extends StatelessWidget {
               child: Container(
                 width: 8,
                 height: 8,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFFFEFEFF), // White dot when selected
+                  color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A), // Theme-aware selected dot
                 ),
               ),
             )

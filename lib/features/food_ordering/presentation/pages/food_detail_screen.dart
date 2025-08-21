@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:ui' as ui;
 import '../../domain/entities/food_item_entity.dart';
 import '../../domain/entities/location_entity.dart';
 import '../../../shared/cart/presentation/pages/cart_screen.dart';
 import '../../../shared/cart/presentation/providers/cart_provider.dart';
 import '../../../shared/cart/data/models/cart_models.dart';
+import '../../../shared/checkout/presentation/providers/checkout_providers.dart';
+import '../../../shared/checkout/domain/entities/checkout_entities.dart';
 import '../providers/location_selection_provider.dart';
+import '../../../shared/widgets/location_conflict_banner.dart';
 
 /// Food detail screen matching Figma design with full-screen food image
 /// Displays detailed food information with overlay content and location-aware add to cart functionality
@@ -38,16 +42,16 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         children: [
           // Full-screen food image background
           _buildFoodImageBackground(),
-          
+
           // Status bar overlay
           _buildStatusBar(context),
-          
+
           // Top navigation with back and cart buttons
           _buildTopNavigation(context),
-          
+
           // Bottom content overlay with food details
           _buildBottomContentOverlay(context),
-          
+
           // Add to cart button (outside blur effect)
           _buildFloatingAddToCartButton(context),
         ],
@@ -63,9 +67,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF242424),
-            ),
+            decoration: const BoxDecoration(color: Color(0xFF242424)),
             child: const Center(
               child: Icon(
                 Icons.restaurant,
@@ -91,10 +93,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(0, 0, 0, 0.3),
-              Colors.transparent,
-            ],
+            colors: [Color.fromRGBO(0, 0, 0, 0.3), Colors.transparent],
           ),
         ),
         child: SafeArea(
@@ -132,32 +131,53 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Back button
+            // Back button with rounded blurred background (matching cart button style)
             GestureDetector(
               onTap: () => Navigator.of(context).pop(),
               child: Container(
-                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFFEFEFF)),
-                  borderRadius: BorderRadius.circular(44),
+                  borderRadius: BorderRadius.circular(44.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(
+                        0x33000000,
+                      ), // Reduced shadow - 20% opacity
+                      blurRadius: 8.0,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Color(0xFFFEFEFF),
-                  size: 16,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(44.0),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                    child: Container(
+                      width: 48.0,
+                      height: 48.0,
+                      decoration: BoxDecoration(
+                        color: const Color(
+                          0x40FFFFFF,
+                        ), // rgba(255,255,255,0.25)
+                        borderRadius: BorderRadius.circular(44.0),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Color(
+                            0xFFFEFEFF,
+                          ), // Full white for better visibility
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-            
+
             // Cart button with rounded blurred background and badge
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CartScreen(),
-                  ),
-                );
-              },
+              onTap: () => _navigateToCartOrCheckout(context, ref),
               child: Stack(
                 children: [
                   Container(
@@ -165,7 +185,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                       borderRadius: BorderRadius.circular(44.0),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0x33000000), // Reduced shadow - 20% opacity
+                          color: const Color(
+                            0x33000000,
+                          ), // Reduced shadow - 20% opacity
                           blurRadius: 8.0,
                           offset: const Offset(0, 4),
                         ),
@@ -179,7 +201,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                           width: 48.0,
                           height: 48.0,
                           decoration: BoxDecoration(
-                            color: const Color(0x40FFFFFF), // rgba(255,255,255,0.25)
+                            color: const Color(
+                              0x40FFFFFF,
+                            ), // rgba(255,255,255,0.25)
                             borderRadius: BorderRadius.circular(44.0),
                           ),
                           child: Center(
@@ -188,7 +212,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                               width: 18.0,
                               height: 18.0,
                               colorFilter: const ColorFilter.mode(
-                                Color(0xFFFEFEFF), // Full white for better visibility
+                                Color(
+                                  0xFFFEFEFF,
+                                ), // Full white for better visibility
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -202,7 +228,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                     builder: (context, ref, child) {
                       final cartItemCount = ref.watch(cartItemCountProvider);
                       if (cartItemCount == 0) return const SizedBox.shrink();
-                      
+
                       return Positioned(
                         right: 0,
                         top: 0,
@@ -217,7 +243,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                             minHeight: 16.0,
                           ),
                           child: Text(
-                            cartItemCount > 99 ? '99+' : cartItemCount.toString(),
+                            cartItemCount > 99
+                                ? '99+'
+                                : cartItemCount.toString(),
                             style: const TextStyle(
                               fontFamily: 'SF Pro Text',
                               fontSize: 10.0,
@@ -244,7 +272,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final isTablet = screenWidth > 600;
-    
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -252,7 +280,10 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.zero,
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0), // 30% blur effect
+          filter: ui.ImageFilter.blur(
+            sigmaX: 30.0,
+            sigmaY: 30.0,
+          ), // 30% blur effect
           child: Container(
             constraints: BoxConstraints(
               maxWidth: isTablet ? 500.0 : screenWidth,
@@ -282,7 +313,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                 children: [
                   // Food details section
                   _buildFoodDetailsSection(context),
-                  
+
                   // Bottom safe area padding (no home indicator overlay)
                   SizedBox(height: MediaQuery.of(context).padding.bottom),
                 ],
@@ -298,7 +329,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
   Widget _buildFoodDetailsSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
-    
+
     return Container(
       padding: EdgeInsets.all(isTablet ? 24.0 : 16.0),
       child: Row(
@@ -306,9 +337,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         children: [
           // Brand icon
           _buildBrandIcon(context),
-          
+
           SizedBox(width: isTablet ? 12.0 : 8.0),
-          
+
           // Food name and description
           Expanded(
             child: Column(
@@ -342,9 +373,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
               ],
             ),
           ),
-          
+
           SizedBox(width: isTablet ? 12.0 : 8.0),
-          
+
           // Price section
           _buildPriceSection(context),
         ],
@@ -357,7 +388,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
     final iconSize = isTablet ? 80.0 : 64.0;
-    
+
     return Container(
       width: iconSize,
       height: iconSize,
@@ -387,7 +418,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
     final iconSize = isTablet ? 80.0 : 64.0;
-    
+
     return Container(
       width: iconSize,
       height: iconSize,
@@ -407,7 +438,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
   Widget _buildPriceSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
-    
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -439,14 +470,36 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
   Widget _buildFloatingAddToCartButton(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth > 600;
-    
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Theme-aware colors for button
+    final buttonBackgroundColor = isDarkMode
+        ? const Color(0xFFFFFBF1)
+        : const Color(0xFF1A1A1A);
+    final buttonTextColor = isDarkMode
+        ? const Color(0xFF242424)
+        : const Color(0xFFFEFEFF);
+    final addedStateBorderColor = isDarkMode
+        ? const Color(0xFFFEFEFF)
+        : const Color(0xFF1A1A1A);
+    final addedStateTextColor = isDarkMode
+        ? const Color(0xFFFEFEFF)
+        : const Color(0xFF1A1A1A);
+    final loadingBackgroundColor = isDarkMode
+        ? const Color(0xFFFFFBF1).withValues(alpha: 0.7)
+        : const Color(0xFF1A1A1A).withValues(alpha: 0.7);
+    final loadingIndicatorColor = isDarkMode
+        ? const Color(0xFF242424)
+        : const Color(0xFFFEFEFF);
+
     return Consumer(
       builder: (context, ref, child) {
         final cartState = ref.watch(cartProvider);
-        final isInCart = cartState.cart?.containsItem(widget.foodItem.id) ?? false;
-        
+        final isInCart =
+            cartState.cart?.containsItem(widget.foodItem.id) ?? false;
+
         return Positioned(
-          bottom: MediaQuery.of(context).padding.bottom + 16.0,
+          bottom: MediaQuery.of(context).padding.bottom,
           left: 16.0,
           right: 16.0,
           child: Container(
@@ -455,39 +508,48 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
             ),
             child: _isLoading
                 ? Container(
-                    padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: isTablet ? 16.0 : 12.0,
+                    ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFFBF1).withValues(alpha: 0.7),
+                      color: loadingBackgroundColor,
                       borderRadius: BorderRadius.circular(44.0),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: SizedBox(
                         width: 20.0,
                         height: 20.0,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.0,
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF242424)),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            loadingIndicatorColor,
+                          ),
                         ),
                       ),
                     ),
                   )
                 : (isInCart || _isAddedToCart)
                 ? Container(
-                    padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: isTablet ? 16.0 : 12.0,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(44.0),
-                      border: Border.all(color: const Color(0xFFFEFEFF), width: 1.0),
+                      border: Border.all(
+                        color: addedStateBorderColor,
+                        width: 1.0,
+                      ),
                     ),
                     child: Text(
                       'Added to cart',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 16.0,
                         fontWeight: FontWeight.w500,
                         height: 24.0 / 16.0,
                         letterSpacing: 0.0,
-                        color: Color(0xFFFEFEFF),
+                        color: addedStateTextColor,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -495,16 +557,18 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                 : ElevatedButton(
                     onPressed: () => _handleAddToCart(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFFBF1),
+                      backgroundColor: buttonBackgroundColor,
                       elevation: 0,
                       shadowColor: Colors.transparent,
                       surfaceTintColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(vertical: isTablet ? 16.0 : 12.0),
+                      padding: EdgeInsets.symmetric(
+                        vertical: isTablet ? 16.0 : 12.0,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(44.0),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Add to cart',
                       style: TextStyle(
                         fontFamily: 'Roboto',
@@ -512,7 +576,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
                         fontWeight: FontWeight.w500,
                         height: 24.0 / 16.0,
                         letterSpacing: 0.0,
-                        color: Color(0xFF242424),
+                        color: buttonTextColor,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -523,10 +587,8 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     );
   }
 
-
   /// Handle add to cart action with location validation
   Future<void> _handleAddToCart(BuildContext context) async {
-    
     if (_isLoading) return;
 
     setState(() {
@@ -536,10 +598,10 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     try {
       // Get the location for this food item
       LocationEntity? itemLocation = widget.selectedLocation;
-      
+
       // If no location provided, try to get it from the selected location provider
       itemLocation ??= ref.read(selectedLocationProvider);
-      
+
       // If still no location, show error
       if (itemLocation == null) {
         if (mounted) {
@@ -550,7 +612,6 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
 
       final brandName = _getBrandNameFromId(widget.foodItem.brandId);
       final brandLogoUrl = _getBrandLogoFromId(widget.foodItem.brandId);
-      
 
       // Create cart item with location information
       final cartItem = CartItem(
@@ -566,12 +627,11 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         locationId: itemLocation.id,
         locationName: itemLocation.name,
       );
-      
 
       // Try to add with location check
       final cartNotifier = ref.read(cartProvider.notifier);
       final success = await cartNotifier.addItemWithLocationCheck(cartItem);
-      
+
       if (success) {
         setState(() {
           _isAddedToCart = true;
@@ -582,9 +642,9 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
       } else {
         // Location conflict - show dialog
         final currentCart = ref.read(cartProvider).cart;
-        if (currentCart != null && currentCart.isNotEmpty && mounted) {
-          _showLocationConflictDialog(
-            context, 
+        if (mounted && currentCart != null && currentCart.isNotEmpty) {
+          _showLocationConflictBanner(
+            context,
             currentCart.currentLocationName ?? 'Unknown',
             itemLocation.name,
             cartItem,
@@ -592,8 +652,8 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         }
       }
     } catch (e) {
-      if (e is LocationConflictException && mounted) {
-        _showLocationConflictDialog(
+      if (mounted && e is LocationConflictException) {
+        _showLocationConflictBanner(
           context,
           e.currentLocationName,
           e.conflictingLocationName,
@@ -668,69 +728,23 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     );
   }
 
-  /// Show location conflict dialog with options
-  void _showLocationConflictDialog(
+  /// Show location conflict banner from bottom
+  void _showLocationConflictBanner(
     BuildContext context,
     String currentLocationName,
     String newLocationName,
     CartItem newItem,
   ) {
-    showDialog(
+    LocationConflictBanner.show(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF1C1C1E),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          title: const Text(
-            'Different Location',
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 18.0,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFFEFEFF),
-            ),
-          ),
-          content: Text(
-            'Your cart contains items from $currentLocationName. You can\'t mix items from different locations.\n\nWould you like to clear your cart and add this item from $newLocationName?',
-            style: const TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-              color: Color(0xCCFEFEFF),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF9C9C9D),
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await _clearCartAndAddItem(newItem);
-              },
-              child: const Text(
-                'Clear Cart & Add',
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFFFFFBF1),
-                ),
-              ),
-            ),
-          ],
-        );
+      currentLocationName: currentLocationName,
+      newLocationName: newLocationName,
+      onClearCart: () async {
+        Navigator.of(context).pop(); // Close the banner
+        await _clearCartAndAddItem(newItem);
+      },
+      onCancel: () {
+        Navigator.of(context).pop(); // Close the banner
       },
     );
   }
@@ -743,8 +757,11 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
 
     try {
       final cartNotifier = ref.read(cartProvider.notifier);
-      await cartNotifier.addItemWithLocationCheck(newItem, clearCartOnConflict: true);
-      
+      await cartNotifier.addItemWithLocationCheck(
+        newItem,
+        clearCartOnConflict: true,
+      );
+
       setState(() {
         _isAddedToCart = true;
       });
@@ -778,9 +795,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         backgroundColor: const Color(0xFF34C759),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
     );
   }
@@ -832,6 +847,30 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
     );
   }
 
+  /// Show error snackbar
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 14.0,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFFFEFEFF),
+          ),
+        ),
+        backgroundColor: const Color(0xFFDC2626),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        margin: const EdgeInsets.all(16.0),
+      ),
+    );
+  }
+
   /// Example: Navigate to checkout with food's location data
   /// This shows how to pass location from food ordering to checkout
   /*
@@ -857,7 +896,6 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
 
   /// Get brand name from brand ID
   String _getBrandNameFromId(String brandId) {
-    
     // First try to use the passed brandLogoPath to infer brand name
     if (widget.brandLogoPath != null && widget.brandLogoPath!.isNotEmpty) {
       final logoPath = widget.brandLogoPath!.toLowerCase();
@@ -873,7 +911,7 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
         return 'Parkers';
       }
     }
-    
+
     // Fallback to ID-based mapping with corrected brand names
     final brandName = switch (brandId) {
       '1' => 'Salt',
@@ -883,18 +921,17 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
       '5' => 'Parkers',
       _ => 'Salt', // Default fallback
     };
-    
+
     return brandName;
   }
 
   /// Get brand logo URL from brand ID
   String _getBrandLogoFromId(String brandId) {
-    
     // First prefer the passed brandLogoPath if available
     if (widget.brandLogoPath != null && widget.brandLogoPath!.isNotEmpty) {
       return widget.brandLogoPath!;
     }
-    
+
     // Fallback to ID-based mapping with corrected logo paths
     final logoPath = switch (brandId) {
       '1' => 'assets/images/logos/brands/Salt.png',
@@ -904,7 +941,69 @@ class _FoodDetailScreenState extends ConsumerState<FoodDetailScreen> {
       '5' => 'assets/images/logos/brands/Parkers.png',
       _ => 'assets/images/logos/brands/Salt.png', // Default fallback
     };
-    
+
     return logoPath;
+  }
+  
+  /// Navigate to cart or directly to checkout based on cart state
+  void _navigateToCartOrCheckout(BuildContext context, WidgetRef ref) {
+    // Always navigate directly to cart screen
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const CartScreen()),
+    );
+  }
+  
+  /// Initiate secure checkout flow
+  Future<void> _initiateSecureCheckout(BuildContext context, WidgetRef ref) async {
+    try {
+      final cartState = ref.read(cartProvider);
+      final cart = cartState.cart;
+      
+      if (cart == null || cart.isEmpty) {
+        _showError(context, 'Your cart is empty');
+        return;
+      }
+      
+      // Get or create user ID (in production, from auth service)
+      // const userId = 'user_demo_123'; // Placeholder - unused for now
+      
+      // Initialize secure checkout flow
+      final checkoutNotifier = ref.read(checkoutProvider.notifier);
+      
+      // Convert LocationEntity to PickupLocationEntity if available
+      PickupLocationEntity? foodLocation;
+      if (widget.selectedLocation != null) {
+        foodLocation = PickupLocationEntity(
+          id: widget.selectedLocation!.id,
+          name: widget.selectedLocation!.name,
+          address: widget.selectedLocation!.address,
+          brandLogoPath: widget.brandLogoPath ?? '',
+          latitude: widget.selectedLocation!.latitude,
+          longitude: widget.selectedLocation!.longitude,
+          isActive: widget.selectedLocation!.isOpen && widget.selectedLocation!.acceptsPickup,
+        );
+      }
+      
+      await checkoutNotifier.initializeCheckout(
+        subtotal: cart.subtotal,
+        tax: cart.tax, 
+        total: cart.total,
+        foodLocation: foodLocation,
+      );
+      
+      // Navigate to pickup details screen
+      if (context.mounted) {
+        context.push('/checkout/pickup-details', extra: {
+          'total': cart.total,
+          'currency': 'SAR',
+          'fromSecureFlow': true,
+        });
+      }
+      
+    } catch (e) {
+      if (context.mounted) {
+        _showError(context, 'Failed to start checkout: ${e.toString()}');
+      }
+    }
   }
 }

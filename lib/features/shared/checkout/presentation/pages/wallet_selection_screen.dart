@@ -20,7 +20,8 @@ class WalletSelectionScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<WalletSelectionScreen> createState() => _WalletSelectionScreenState();
+  ConsumerState<WalletSelectionScreen> createState() =>
+      _WalletSelectionScreenState();
 }
 
 class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
@@ -36,7 +37,9 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
   void _initializeWallets() {
     // Mock user ID for development - in production this would come from auth
     const userId = 'user_123';
-    ref.read(walletSelectionProvider(widget.total).notifier).initializeWallets(userId);
+    ref
+        .read(walletSelectionProvider(widget.total).notifier)
+        .initializeWallets(userId);
   }
 
   @override
@@ -46,19 +49,20 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
     final isLoading = ref.watch(walletSelectionLoadingProvider(widget.total));
     final error = ref.watch(walletSelectionErrorProvider(widget.total));
     final canProceed = ref.watch(canProceedWithWalletProvider(widget.total));
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // Dark theme background
+      backgroundColor: isDarkMode
+          ? const Color(0xFF1A1A1A)
+          : const Color(0xFFFFFCF5), // Theme-aware background
       body: Column(
         children: [
           // Header with back button and title
-          SafeArea(
-            child: _buildHeader(context),
-          ),
-          
+          SafeArea(child: _buildHeader(context, isDarkMode)),
+
           // "To Pay" amount display
-          _buildPaymentAmount(),
-          
+          _buildPaymentAmount(isDarkMode),
+
           // Wallet list or loading/error state
           Expanded(
             child: _buildWalletContent(
@@ -66,14 +70,16 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
               selectedWallet: selectedWallet,
               isLoading: isLoading,
               error: error,
+              isDarkMode: isDarkMode,
             ),
           ),
-          
+
           // Bottom continue button
           _buildContinueButton(
             context: context,
             canProceed: canProceed,
             selectedWallet: selectedWallet,
+            isDarkMode: isDarkMode,
           ),
         ],
       ),
@@ -81,7 +87,7 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
   }
 
   /// Build header with back arrow and "Choose Your Wallet" title
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -92,26 +98,34 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFFEFEFF)),
+                border: Border.all(
+                  color: isDarkMode
+                      ? const Color(0xFFFEFEFF)
+                      : const Color(0xFF1A1A1A),
+                ),
                 borderRadius: BorderRadius.circular(44),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF),
+                color: isDarkMode
+                    ? const Color(0xFFFEFEFF)
+                    : const Color(0xFF1A1A1A),
                 size: 16,
               ),
             ),
           ),
           const SizedBox(width: 16),
           // Title - exact Figma typography
-          const Expanded(
+          Expanded(
             child: Text(
               'Choose Your Wallet',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xCCFEFEFF), // 80% opacity white
+                color: isDarkMode
+                    ? const Color(0xCCFEFEFF)
+                    : const Color(0xFF1A1A1A), // Theme-aware color
                 height: 32 / 24, // Line height from Figma
               ),
             ),
@@ -122,30 +136,34 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
   }
 
   /// Build "To Pay: 10 ﷼" amount display
-  Widget _buildPaymentAmount() {
+  Widget _buildPaymentAmount(bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             'To Pay: ',
             style: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFFEFEFF), // Full opacity white
+              color: isDarkMode
+                  ? const Color(0xFFFEFEFF)
+                  : const Color(0xFF1A1A1A), // Theme-aware color
               height: 32 / 24,
             ),
           ),
           const SizedBox(width: 4),
           Text(
             widget.total.toInt().toString(),
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Color(0xFFFEFEFF),
+              color: isDarkMode
+                  ? const Color(0xFFFEFEFF)
+                  : const Color(0xFF1A1A1A),
               height: 32 / 24,
             ),
           ),
@@ -155,8 +173,8 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
             'assets/images/icons/Payment_Methods/SAR.svg',
             width: 14,
             height: 16,
-            colorFilter: const ColorFilter.mode(
-              Color(0xFFFEFEFF),
+            colorFilter: ColorFilter.mode(
+              isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
               BlendMode.srcIn,
             ),
           ),
@@ -171,11 +189,12 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
     required WalletEntity? selectedWallet,
     required bool isLoading,
     required String? error,
+    required bool isDarkMode,
   }) {
     if (isLoading && wallets.isEmpty) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
-          color: Color(0xFFFEFEFF),
+          color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
         ),
       );
     }
@@ -185,16 +204,20 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
-              color: Color(0xFFFEFEFF),
+              color: isDarkMode
+                  ? const Color(0xFFFEFEFF)
+                  : const Color(0xFF1A1A1A),
               size: 48,
             ),
             const SizedBox(height: 16),
             Text(
               error,
-              style: const TextStyle(
-                color: Color(0xFFFEFEFF),
+              style: TextStyle(
+                color: isDarkMode
+                    ? const Color(0xFFFEFEFF)
+                    : const Color(0xFF1A1A1A),
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,
@@ -203,8 +226,12 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
             ElevatedButton(
               onPressed: _initializeWallets,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFFBF1),
-                foregroundColor: const Color(0xFF242424),
+                backgroundColor: isDarkMode
+                    ? const Color(0xFFFFFBF1)
+                    : const Color(0xFF1A1A1A),
+                foregroundColor: isDarkMode
+                    ? const Color(0xFF242424)
+                    : const Color(0xFFFEFEFF),
               ),
               child: const Text('Retry'),
             ),
@@ -214,20 +241,24 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
     }
 
     if (wallets.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.account_balance_wallet_outlined,
-              color: Color(0xFFFEFEFF),
+              color: isDarkMode
+                  ? const Color(0xFFFEFEFF)
+                  : const Color(0xFF1A1A1A),
               size: 48,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'No wallets available',
               style: TextStyle(
-                color: Color(0xFFFEFEFF),
+                color: isDarkMode
+                    ? const Color(0xFFFEFEFF)
+                    : const Color(0xFF1A1A1A),
                 fontSize: 16,
               ),
             ),
@@ -243,12 +274,13 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
         itemBuilder: (context, index) {
           final wallet = wallets[index];
           final isSelected = selectedWallet?.id == wallet.id;
-          
+
           return WalletSelectionCard(
             wallet: wallet,
             isSelected: isSelected,
             transactionAmount: widget.total,
             onTap: () => _onWalletTap(wallet),
+            isFirstItem: index == 0,
           );
         },
       ),
@@ -260,20 +292,34 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
     required BuildContext context,
     required bool canProceed,
     required WalletEntity? selectedWallet,
+    required bool isDarkMode,
   }) {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 8),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        MediaQuery.of(context).padding.bottom,
+      ),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
           onPressed: canProceed ? () => _onContinuePressed(context) : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: canProceed 
-                ? const Color(0xFFFFFBF1) // Active button color
-                : const Color(0xFF4D4E52), // Disabled button color
-            foregroundColor: canProceed 
-                ? const Color(0xFF242424) // Active text color
-                : const Color(0xFF9C9C9D), // Disabled text color
+            backgroundColor: canProceed
+                ? (isDarkMode
+                      ? const Color(0xFFFFFBF1)
+                      : const Color(0xFF1A1A1A)) // Theme-aware active button
+                : const Color(
+                    0xFF4D4E52,
+                  ), // Disabled button color (same for both themes)
+            foregroundColor: canProceed
+                ? (isDarkMode
+                      ? const Color(0xFF242424)
+                      : const Color(0xFFFEFEFF)) // Theme-aware active text
+                : const Color(
+                    0xFF9C9C9D,
+                  ), // Disabled text color (same for both themes)
             padding: const EdgeInsets.symmetric(vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(44),
@@ -300,8 +346,10 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
                 width: 11,
                 height: 12,
                 colorFilter: ColorFilter.mode(
-                  canProceed 
-                      ? const Color(0xFF242424) 
+                  canProceed
+                      ? (isDarkMode
+                            ? const Color(0xFF242424)
+                            : const Color(0xFFFEFEFF))
                       : const Color(0xFF9C9C9D),
                   BlendMode.srcIn,
                 ),
@@ -339,7 +387,10 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
   void _onWalletTap(WalletEntity wallet) {
     // Security validation before allowing selection
     if (!wallet.canBeUsed) {
-      _showErrorMessage(context, 'This wallet is not available for transactions');
+      _showErrorMessage(
+        context,
+        'This wallet is not available for transactions',
+      );
       return;
     }
 
@@ -359,7 +410,9 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
     }
 
     // Proceed with wallet selection
-    ref.read(walletSelectionProvider(widget.total).notifier).selectWallet(wallet);
+    ref
+        .read(walletSelectionProvider(widget.total).notifier)
+        .selectWallet(wallet);
   }
 
   /// Show error message to user
@@ -376,7 +429,7 @@ class _WalletSelectionScreenState extends ConsumerState<WalletSelectionScreen> {
   /// Handle continue button press
   void _onContinuePressed(BuildContext context) {
     final selectedWallet = ref.read(selectedWalletProvider(widget.total));
-    
+
     if (selectedWallet == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

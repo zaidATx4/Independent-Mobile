@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Food categories screen matching Figma design
 /// Shows all available food categories with images and glass morphism effects
+/// Supports both light and dark themes based on current theme
 class FoodCategoriesScreen extends StatelessWidget {
   final String? locationId;
   final String? brandId;
@@ -17,14 +18,22 @@ class FoodCategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // Colors based on theme - matching Figma specifications
+    final backgroundColor = isDark 
+        ? const Color(0xFF1A1A1A)  // Dark theme background
+        : const Color(0xFFFFFCF5); // Light theme background (#fffcf5 from Figma)
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral background
+      backgroundColor: backgroundColor,
       body: Column(
         children: [
           // Status bar spacer
           Container(
             height: MediaQuery.of(context).padding.top,
-            color: const Color(0xFF1A1A1A),
+            color: backgroundColor,
           ),
 
           // Header with back button and title
@@ -44,9 +53,29 @@ class FoodCategoriesScreen extends StatelessWidget {
 
   /// Build header with back button and title matching Figma design
   Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // Colors based on theme - matching Figma specifications
+    final backgroundColor = isDark 
+        ? const Color(0xFF1A1A1A)  // Dark theme background
+        : const Color(0xFFFFFCF5); // Light theme background (#fffcf5 from Figma)
+    
+    final borderColor = isDark
+        ? const Color(0xFFFEFEFF)  // Light border in dark theme
+        : const Color(0xFF1A1A1A); // Dark border in light theme (#1a1a1a from Figma)
+    
+    final iconColor = isDark
+        ? const Color(0xFFFEFEFF)  // Light icon in dark theme
+        : const Color(0xFF1A1A1A); // Dark icon in light theme (#1a1a1a from Figma)
+    
+    final titleColor = isDark
+        ? const Color(0xCCFEFEFF)  // Light title with opacity in dark theme
+        : const Color(0xCC1A1A1A); // Dark title with opacity in light theme (rgba(26,26,26,0.8) from Figma)
+    
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1A1A1A),
+      color: backgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
         children: [
@@ -59,13 +88,13 @@ class FoodCategoriesScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(44.0),
                 border: Border.all(
-                  color: const Color(0xFFFEFEFF), // indpt/text primary
+                  color: borderColor,
                   width: 1.0,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF), // indpt/text primary
+                color: iconColor,
                 size: 14.0,
               ),
             ),
@@ -74,14 +103,14 @@ class FoodCategoriesScreen extends StatelessWidget {
           const SizedBox(width: 16.0), // gap-4
 
           // Categories title
-          const Expanded(
+          Expanded(
             child: Text(
               'Categories',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xCCFEFEFF),
+                color: titleColor,
                 height: 32 / 24,
               ),
             ),
@@ -99,7 +128,7 @@ class FoodCategoriesScreen extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 16.0, // gap-4
         mainAxisSpacing: 16.0, // gap-4
-        childAspectRatio: 171 / 144, // Width / Height from Figma analysis
+        childAspectRatio: 171 / 154, // Adjusted height to prevent overflow (72 + 16 + 24 + 24 + 18 text height = 154)
         children: [
           _buildCategoryCard(
             context,
@@ -143,82 +172,102 @@ class FoodCategoriesScreen extends StatelessWidget {
     String imagePath,
     String categoryFilter,
   ) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // Colors based on theme - matching Figma specifications
+    final cardColor = isDark
+        ? const Color(0x40FFFFFF)  // Glass morphism in dark theme
+        : const Color(0xFFFEFEFF); // Solid white background in light theme (#fefeff from Figma)
+    
+    final borderColor = isDark
+        ? const Color(0x1AFFFFFF)  // Subtle white border in dark theme
+        : const Color(0x1A1A1A1A); // Subtle dark border in light theme
+    
+    final textColor = isDark
+        ? const Color(0xFFFEFEFF)  // Light text in dark theme
+        : const Color(0xFF1A1A1A); // Dark text in light theme (#1a1a1a from Figma)
+    
+    final errorBgColor = isDark
+        ? const Color(0xFF1A1A1A)  // Dark background for error state in dark theme
+        : const Color(0xFFF5F5F5); // Light gray background for error state in light theme
+    
+    final errorTextColor = isDark
+        ? const Color(0xFFFEFEFF)  // Light text for error in dark theme
+        : const Color(0xFF1A1A1A); // Dark text for error in light theme
+        
     return GestureDetector(
       onTap: () => _handleCategorySelection(context, categoryFilter),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20.0),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0), // 30px blur
+          filter: ImageFilter.blur(sigmaX: isDark ? 15.0 : 0.0, sigmaY: isDark ? 15.0 : 0.0), // Blur only in dark theme
           child: Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0), // Increased padding to match Figma (24px)
             decoration: BoxDecoration(
-              color: const Color(0x40FFFFFF), // #FFFFFF40 glass-fill
+              color: cardColor,
               borderRadius: BorderRadius.circular(20.0),
               border: Border.all(
-                color: const Color(0x1AFFFFFF), // Subtle white border
+                color: borderColor,
                 width: 1.0,
               ),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min, // Use minimum space needed
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Category image
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12.0), // Add padding to make images smaller
-                    child: Align(
-                      alignment: Alignment.centerLeft, // Left align the image
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: Image.asset(
-                          imagePath,
-                          fit: BoxFit.contain, // Change to contain to prevent cropping
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1A1A1A),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.restaurant_menu,
-                                    color: Color(0xFFFEFEFF),
-                                    size: 32.0,
+                SizedBox(
+                  width: 68.0, // Fixed width from Figma
+                  height: 72.0, // Fixed height from Figma
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: errorBgColor,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.restaurant_menu,
+                                  color: errorTextColor,
+                                  size: 32.0,
+                                ),
+                                const SizedBox(height: 4.0),
+                                Text(
+                                  'Image not found',
+                                  style: TextStyle(
+                                    color: errorTextColor,
+                                    fontSize: 10.0,
                                   ),
-                                  const SizedBox(height: 4.0),
-                                  Text(
-                                    'Image not found',
-                                    style: const TextStyle(
-                                      color: Color(0xFFFEFEFF),
-                                      fontSize: 10.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 12.0),
+                const SizedBox(height: 16.0), // Gap from Figma (gap-4)
 
                 // Category title
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFFFEFEFF), // indpt/text-primary
-                    height: 1.5,
+                    color: textColor, // Theme-aware text color
+                    height: 24 / 16, // Line height 24px for 16px font (from Figma)
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

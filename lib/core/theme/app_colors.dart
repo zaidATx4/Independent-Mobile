@@ -25,18 +25,18 @@ class AppColors {
   static const Color secondaryLightContainer = Color(0xFFE0F7FA);   // Light container
   static const Color onSecondaryLightContainer = Color(0xFF0B2E32); // Dark on light container
 
-  // ===== LIGHT THEME COLORS =====
-  // Light Background & Surface
-  static const Color lightBackground = Color(0xFFFFFBFF);      // Pure white with warm tint
-  static const Color lightOnBackground = Color(0xFF1F1A16);    // Very dark brown
-  static const Color lightSurface = Color(0xFFFFFBFF);        // Same as background
-  static const Color lightOnSurface = Color(0xFF1F1A16);      // Dark brown
-  static const Color lightSurfaceVariant = Color(0xFFF5EFEB); // Light warm grey
-  static const Color lightOnSurfaceVariant = Color(0xFF524640); // Medium brown
+  // ===== LIGHT THEME COLORS ===== (Updated to match Figma FM 1.2 Menu design)
+  // Light Background & Surface - matching Figma colors exactly
+  static const Color lightBackground = Color(0xFFFFFCF5);      // #fffcf5 from Figma main background
+  static const Color lightOnBackground = Color(0xFF1A1A1A);    // #1a1a1a from Figma text
+  static const Color lightSurface = Color(0xFFFEFEFF);        // #fefeff from Figma sections
+  static const Color lightOnSurface = Color(0xFF1A1A1A);      // #1a1a1a from Figma text
+  static const Color lightSurfaceVariant = Color(0xFFFEFEFF); // Same as surface for consistency
+  static const Color lightOnSurfaceVariant = Color(0xFF878787); // #878787 from Figma tertiary text
   
-  // Light Outline colors
-  static const Color lightOutline = Color(0xFF837770);        // Medium outline
-  static const Color lightOutlineVariant = Color(0xFFD7C8BC); // Light outline
+  // Light Outline colors - matching Figma stroke colors
+  static const Color lightOutline = Color(0xFFD9D9D9);        // #d9d9d9 from Figma stroke
+  static const Color lightOutlineVariant = Color(0xFFD9D9D9); // Same as outline
   
   // Light Shadow
   static const Color lightShadow = Color(0xFF000000);         // Black shadow

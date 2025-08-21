@@ -152,7 +152,9 @@ class _SecureCardNumberFieldState extends State<SecureCardNumberField> {
             border: Border.all(
               color: widget.errorText != null 
                   ? const Color(0xFFE53E3E)
-                  : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+                  : isDark 
+                      ? const Color(0xFFFEFEFF).withValues(alpha: 0.64)
+                      : const Color(0xFF1A1A1A).withValues(alpha: 0.64),
             ),
             color: Colors.transparent,
           ),
@@ -266,7 +268,9 @@ class SecureCardholderNameField extends StatelessWidget {
             border: Border.all(
               color: errorText != null 
                   ? const Color(0xFFE53E3E)
-                  : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+                  : isDark 
+                      ? const Color(0xFFFEFEFF).withValues(alpha: 0.64)
+                      : const Color(0xFF1A1A1A).withValues(alpha: 0.64),
             ),
             color: Colors.transparent,
           ),
@@ -351,7 +355,9 @@ class SecureExpiryDateField extends StatelessWidget {
         border: Border.all(
           color: errorText != null 
               ? const Color(0xFFE53E3E)
-              : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+              : isDark 
+                  ? const Color(0xFFFEFEFF).withValues(alpha: 0.64)
+                  : const Color(0xFF1A1A1A).withValues(alpha: 0.64),
         ),
         color: Colors.transparent,
       ),
@@ -434,7 +440,9 @@ class _SecureCvvFieldState extends State<SecureCvvField> {
         border: Border.all(
           color: widget.errorText != null 
               ? const Color(0xFFE53E3E)
-              : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+              : isDark 
+                  ? const Color(0xFFFEFEFF).withValues(alpha: 0.64)
+                  : const Color(0xFF1A1A1A).withValues(alpha: 0.64),
         ),
         color: Colors.transparent,
       ),

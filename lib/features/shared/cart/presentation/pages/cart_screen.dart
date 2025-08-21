@@ -18,7 +18,6 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -31,7 +30,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   void _handleCheckout() async {
     final cartState = ref.read(cartProvider);
     final cart = cartState.cart;
-    
+
     if (cart == null || cart.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -55,7 +54,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     // Try to get the full location entity from the location repository
     final locationRepository = ref.read(locationRepositoryProvider);
     LocationEntity? orderingLocation;
-    
+
     try {
       orderingLocation = await locationRepository.getLocationById(locationId);
     } catch (e) {
@@ -77,7 +76,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       );
     }
 
-    
     // Navigate to pickup details screen with cart data and location
     if (mounted) {
       context.push(
@@ -92,7 +90,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           'brandLogoUrl': firstItem.brandLogoUrl, // Pass the actual brand logo
         },
       );
-      
     }
   }
 
@@ -114,7 +111,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final cartItems = ref.watch(cartItemsProvider);
@@ -129,18 +125,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       body: Column(
         children: [
           // Header with SafeArea
-          SafeArea(
-            child: _buildHeader(context),
-          ),
-          
+          SafeArea(child: _buildHeader(context)),
+
           // Error handling
           const CartErrorWidget(),
-          
+
           // Content
-          Expanded(
-            child: _buildContent(cartItems, isEmpty, isLoading),
-          ),
-          
+          Expanded(child: _buildContent(cartItems, isEmpty, isLoading)),
+
           // Bottom section with checkout button
           if (!isEmpty) _buildBottomSection(),
         ],
@@ -179,7 +171,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ),
           ),
           const SizedBox(width: 16),
-          
+
           // Title
           Expanded(
             child: Text(
@@ -203,9 +195,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildContent(List<dynamic> cartItems, bool isEmpty, bool isLoading) {
     if (isLoading && isEmpty) {
-      return const CartLoadingWidget(
-        message: 'Loading your cart...',
-      );
+      return const CartLoadingWidget(message: 'Loading your cart...');
     }
 
     if (isEmpty) {
@@ -217,29 +207,31 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          
+
           // Cart summary (item count)
           const CartSummaryWidget(),
-          
+
           // Cart items list
-          ...cartItems.map((item) => CartItemWidget(
-            key: ValueKey(item.id),
-            item: item,
-            onRemove: () {
-              // Optional: Show removal feedback
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${item.name} removed from cart'),
-                  duration: const Duration(seconds: 2),
-                  backgroundColor: context.getThemedColor(
-                    lightColor: const Color(0xFFD9D9D9),
-                    darkColor: const Color(0xFF4D4E52),
+          ...cartItems.map(
+            (item) => CartItemWidget(
+              key: ValueKey(item.id),
+              item: item,
+              onRemove: () {
+                // Optional: Show removal feedback
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${item.name} removed from cart'),
+                    duration: const Duration(seconds: 2),
+                    backgroundColor: context.getThemedColor(
+                      lightColor: const Color(0xFFD9D9D9),
+                      darkColor: const Color(0xFF4D4E52),
+                    ),
                   ),
-                ),
-              );
-            },
-          )),
-          
+                );
+              },
+            ),
+          ),
+
           const SizedBox(height: 24),
         ],
       ),
@@ -248,7 +240,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildBottomSection() {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 8),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         color: context.getThemedColor(
           lightColor: const Color(0xFFFFFCF5), // light theme background
@@ -317,7 +314,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildCheckoutButton() {
     final isLoading = ref.watch(cartIsLoadingProvider);
-    
+
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -338,28 +335,30 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           ),
         ),
         child: isLoading
-          ? SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  context.getThemedColor(
-                    lightColor: const Color(0xFFFEFEFF), // light theme progress
-                    darkColor: const Color(0xFF1A1A1A), // dark theme progress
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    context.getThemedColor(
+                      lightColor: const Color(
+                        0xFFFEFEFF,
+                      ), // light theme progress
+                      darkColor: const Color(0xFF1A1A1A), // dark theme progress
+                    ),
                   ),
                 ),
+              )
+            : const Text(
+                'Checkout',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  height: 24 / 16,
+                ),
               ),
-            )
-          : const Text(
-              'Checkout',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                height: 24 / 16,
-              ),
-            ),
       ),
     );
   }
@@ -376,10 +375,7 @@ class CartScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       leading: IconButton(
         onPressed: () => context.pop(),
-        icon: const Icon(
-          Icons.arrow_back,
-          color: Color(0xFFFEFEFF),
-        ),
+        icon: const Icon(Icons.arrow_back, color: Color(0xFFFEFEFF)),
       ),
       title: const Text(
         'Cart',
@@ -420,5 +416,4 @@ extension CartScreenMixin on ConsumerState<CartScreen> {
       ),
     );
   }
-
 }

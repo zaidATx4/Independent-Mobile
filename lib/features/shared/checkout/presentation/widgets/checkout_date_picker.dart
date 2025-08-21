@@ -23,11 +23,19 @@ class CheckoutDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors based on Figma design
+    final borderColor = isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFF1A1A1A).withValues(alpha: 0.64); // #1a1a1acc from Figma
+    final primaryTextColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    final tertiaryTextColor = isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787);
+    final iconColor = isDarkMode ? const Color(0xFFFEFEFF).withValues(alpha: 0.8) : const Color(0xFF1A1A1A).withValues(alpha: 0.8);
+    
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFF4D4E52), // Match the radio option border
+          color: borderColor, // Theme-aware border from Figma
           width: 1,
         ),
         borderRadius: BorderRadius.circular(34),
@@ -52,8 +60,8 @@ class CheckoutDatePicker extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: selectedDate != null 
-                          ? const Color(0xFFFEFEFF) 
-                          : const Color(0xFF9C9C9D), // indpt/text tertiary for placeholder
+                          ? primaryTextColor 
+                          : tertiaryTextColor, // Theme-aware text colors
                       height: 24 / 16, // lineHeight / fontSize
                     ),
                   ),
@@ -73,7 +81,7 @@ class CheckoutDatePicker extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                              color: iconColor,
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(2),
@@ -88,7 +96,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 2,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(1),
                           ),
                         ),
@@ -100,7 +108,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 2,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(1),
                           ),
                         ),
@@ -123,7 +131,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(0.5),
                           ),
                         ),
@@ -135,7 +143,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(0.5),
                           ),
                         ),
@@ -147,7 +155,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(0.5),
                           ),
                         ),
@@ -159,7 +167,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(0.5),
                           ),
                         ),
@@ -171,7 +179,7 @@ class CheckoutDatePicker extends StatelessWidget {
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                            color: iconColor,
                             borderRadius: BorderRadius.circular(0.5),
                           ),
                         ),
@@ -214,11 +222,19 @@ class CheckoutTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors based on Figma design
+    final borderColor = isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFF1A1A1A).withValues(alpha: 0.64);
+    final primaryTextColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    final tertiaryTextColor = isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787);
+    final iconColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A).withValues(alpha: 0.8);
+    
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFF4D4E52), // Match the radio option border
+          color: borderColor,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(34),
@@ -242,15 +258,15 @@ class CheckoutTimePicker extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: selectedTime != null 
-                          ? const Color(0xFFFEFEFF) 
-                          : const Color(0xFF9C9C9D),
+                          ? primaryTextColor 
+                          : tertiaryTextColor,
                       height: 24 / 16,
                     ),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.access_time,
-                  color: Color(0xFFFEFEFF),
+                  color: iconColor,
                   size: 24,
                 ),
               ],

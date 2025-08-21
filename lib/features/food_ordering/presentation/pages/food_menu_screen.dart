@@ -12,7 +12,7 @@ import '../../../shared/cart/presentation/pages/cart_screen.dart';
 import '../../../shared/food/presentation/pages/food_search_screen.dart';
 import 'food_categories_screen.dart';
 
-/// Food menu screen matching Figma design with dark theme
+/// Food menu screen matching Figma design with light theme
 /// Displays food items from a selected restaurant location
 class FoodMenuScreen extends ConsumerStatefulWidget {
   final String locationId;
@@ -53,9 +53,14 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
       brandId: widget.brandId,
     );
     final state = ref.watch(foodMenuProvider(menuParams));
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors
+    final backgroundColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5);
+    final statusBarColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral background
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           // Main content
@@ -64,7 +69,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
               // Status bar spacer
               Container(
                 height: MediaQuery.of(context).padding.top,
-                color: const Color(0xFF1A1A1A),
+                color: statusBarColor,
               ),
 
               // Header with back button, title, and action buttons
@@ -137,8 +142,11 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
 
   /// Build food items grid matching Figma layout
   Widget _buildFoodItemsGrid(List<FoodItemEntity> foodItems) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final gridBackgroundColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF);
+    
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: gridBackgroundColor,
       child: GridView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16.0),
@@ -174,11 +182,18 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
 
   /// Handle add to cart action
   void _handleAddToCart(FoodItemEntity foodItem) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final snackBarBgColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF);
+    final snackBarTextColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    
     // TODO: Add item to cart
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Added ${foodItem.name} to cart'),
-        backgroundColor: const Color(0xFF242424),
+        content: Text(
+          'Added ${foodItem.name} to cart',
+          style: TextStyle(color: snackBarTextColor),
+        ),
+        backgroundColor: snackBarBgColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -186,7 +201,7 @@ class _FoodMenuScreenState extends ConsumerState<FoodMenuScreen> {
         margin: const EdgeInsets.all(16.0),
         action: SnackBarAction(
           label: 'View Cart',
-          textColor: const Color(0xFFFFFBF1),
+          textColor: isDarkMode ? const Color(0xFFFFFBF1) : const Color(0xFF242424),
           onPressed: () {
             // TODO: Navigate to cart screen
           },

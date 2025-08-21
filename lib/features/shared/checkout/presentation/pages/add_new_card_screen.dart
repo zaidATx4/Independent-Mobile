@@ -239,15 +239,15 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+      backgroundColor: isDark
+          ? const Color(0xFF1A1A1A)
+          : const Color(0xFFFFFCF5),
       body: Form(
         key: _formKey,
         child: Column(
           children: [
             // Header with back button and title
-            SafeArea(
-              child: _buildHeader(context, isDark),
-            ),
+            SafeArea(child: _buildHeader(context, isDark)),
 
             // Main content
             Expanded(
@@ -263,65 +263,67 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                     const SizedBox(height: 24),
 
                     // Cardholder name field
-                      SecureCardholderNameField(
-                        controller: _cardholderNameController,
-                        focusNode: _cardholderNameFocus,
-                        errorText: _cardholderNameError,
-                        enabled: !_isProcessing,
-                      ),
-                      const SizedBox(height: 16),
+                    SecureCardholderNameField(
+                      controller: _cardholderNameController,
+                      focusNode: _cardholderNameFocus,
+                      errorText: _cardholderNameError,
+                      enabled: !_isProcessing,
+                    ),
+                    const SizedBox(height: 16),
 
-                      // Card number field
-                      SecureCardNumberField(
-                        controller: _cardNumberController,
-                        focusNode: _cardNumberFocus,
-                        onCardTypeChanged: _onCardTypeChanged,
-                        errorText: _cardNumberError,
-                        enabled: !_isProcessing,
-                      ),
-                      const SizedBox(height: 16),
+                    // Card number field
+                    SecureCardNumberField(
+                      controller: _cardNumberController,
+                      focusNode: _cardNumberFocus,
+                      onCardTypeChanged: _onCardTypeChanged,
+                      errorText: _cardNumberError,
+                      enabled: !_isProcessing,
+                    ),
+                    const SizedBox(height: 16),
 
-                      // Expiration date and CVV section
-                      _buildExpirationSection(isDark),
+                    // Expiration date and CVV section
+                    _buildExpirationSection(isDark),
 
-                      const SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
-                      // Error message
-                      if (_errorMessage != null)
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: const Color(0xFFE53E3E),
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _errorMessage!,
-                                  style: const TextStyle(
-                                    color: const Color(0xFFE53E3E),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
+                    // Error message
+                    if (_errorMessage != null)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE53E3E).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: const Color(
+                              0xFFE53E3E,
+                            ).withValues(alpha: 0.3),
                           ),
                         ),
-                    ],
-                  ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: const Color(0xFFE53E3E),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(
+                                  color: const Color(0xFFE53E3E),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
+            ),
 
             // Bottom button
             _buildBottomButton(isDark),
@@ -346,12 +348,18 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFFEFEFF)),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFFFEFEFF)
+                      : const Color(0xFF1A1A1A),
+                ),
                 borderRadius: BorderRadius.circular(44),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF),
+                color: isDark
+                    ? const Color(0xFFFEFEFF)
+                    : const Color(0xFF1A1A1A),
                 size: 16,
               ),
             ),
@@ -359,14 +367,16 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
           const SizedBox(width: 16),
 
           // Title
-          const Expanded(
+          Expanded(
             child: Text(
               'Add New Card and Pay',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xCCFEFEFF),
+                color: isDark
+                    ? const Color(0xCCFEFEFF)
+                    : const Color(0xFF1A1A1A),
                 height: 32 / 24,
               ),
             ),
@@ -405,7 +415,8 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
       },
       {
         'type': 'Mastercard',
-        'path': 'assets/images/icons/Payment_Methods/Colored_Icons/MasterCard.svg',
+        'path':
+            'assets/images/icons/Payment_Methods/Colored_Icons/MasterCard.svg',
       },
       {
         'type': 'American Express',
@@ -413,7 +424,8 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
       },
       {
         'type': 'Discover',
-        'path': 'assets/images/icons/Payment_Methods/Colored_Icons/Discover.svg',
+        'path':
+            'assets/images/icons/Payment_Methods/Colored_Icons/Discover.svg',
       },
     ];
 
@@ -421,7 +433,7 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
       children: cardTypes.asMap().entries.map((entry) {
         final index = entry.key;
         final card = entry.value;
-        
+
         return Container(
           margin: EdgeInsets.only(right: index < cardTypes.length - 1 ? 8 : 0),
           width: 52,
@@ -524,7 +536,9 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
         border: Border.all(
           color: _expiryDateError != null
               ? const Color(0xFFE53E3E)
-              : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
+              : isDark
+              ? const Color(0xFFFEFEFF).withValues(alpha: 0.64)
+              : const Color(0xFF1A1A1A).withValues(alpha: 0.64),
         ),
         color: Colors.transparent,
       ),
@@ -539,10 +553,7 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
           color: Color(0xFF9C9C9D),
         ),
         decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
@@ -562,7 +573,12 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
   Widget _buildBottomButton(bool isDark) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 8),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1A1A) : Colors.white,
       ),
@@ -573,7 +589,7 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF1),
+              color: isDark ? const Color(0xFFFFFBF1) : const Color(0xFF1A1A1A),
               borderRadius: BorderRadius.circular(44),
             ),
             child: Material(
@@ -598,7 +614,9 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              const Color(0xFF242424),
+                              isDark
+                                  ? const Color(0xFF242424)
+                                  : const Color(0xFFFEFEFF),
                             ),
                           ),
                         ),
@@ -608,10 +626,12 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                       // Amount
                       Text(
                         '${widget.total.toInt()}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF242424),
+                          color: isDark
+                              ? const Color(0xFF242424)
+                              : const Color(0xFFFEFEFF),
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -621,8 +641,10 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                         'assets/images/icons/Payment_Methods/SAR.svg',
                         width: 11,
                         height: 12,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xFF242424),
+                        colorFilter: ColorFilter.mode(
+                          isDark
+                              ? const Color(0xFF242424)
+                              : const Color(0xFFFEFEFF),
                           BlendMode.srcIn,
                         ),
                       ),
@@ -630,12 +652,14 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                       const SizedBox(width: 16),
 
                       // Divider
-                      const Text(
+                      Text(
                         '|',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF242424),
+                          color: isDark
+                              ? const Color(0xFF242424)
+                              : const Color(0xFFFEFEFF),
                         ),
                       ),
 
@@ -646,10 +670,12 @@ class _AddNewCardScreenState extends ConsumerState<AddNewCardScreen> {
                         _isProcessing
                             ? 'Processing...'
                             : 'Add Card & Review Order',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF242424),
+                          color: isDark
+                              ? const Color(0xFF242424)
+                              : const Color(0xFFFEFEFF),
                         ),
                       ),
                     ],

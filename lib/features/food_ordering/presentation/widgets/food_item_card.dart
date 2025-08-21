@@ -21,6 +21,8 @@ class FoodItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -41,29 +43,29 @@ class FoodItemCard extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF242424),
+                      color: isDarkMode ? const Color(0xFF242424) : const Color(0xFFE0E0E0),
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.restaurant,
-                          color: Color(0xFF9C9C9D),
+                          color: isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787),
                           size: 48.0,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
                           'Image not found',
-                          style: const TextStyle(
-                            color: Color(0xFF9C9C9D),
+                          style: TextStyle(
+                            color: isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787),
                             fontSize: 10.0,
                           ),
                         ),
                         Text(
                           foodItem.imagePath,
-                          style: const TextStyle(
-                            color: Color(0xFF9C9C9D),
+                          style: TextStyle(
+                            color: isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787),
                             fontSize: 8.0,
                           ),
                           maxLines: 2,
@@ -92,7 +94,7 @@ class FoodItemCard extends StatelessWidget {
                     // padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
-                      // Combined background: rgba(0,0,0,0.4) with glass-fill rgba(255,255,255,0.25)
+                      // Dark overlay for contrast - same for both themes to ensure readability
                       color: const Color.fromRGBO(0, 0, 0, 0.4),
                     ),
                     child: Container(
@@ -112,16 +114,16 @@ class FoodItemCard extends StatelessWidget {
                               children: [
                                 Text(
                                   foodItem.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Roboto',
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xCC1A1A1A), // Dark text with 80% opacity on light theme
+                                    color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xCC1A1A1A), // Theme-aware text color
                                     shadows: [
                                       Shadow(
-                                        offset: Offset(0, 1),
+                                        offset: const Offset(0, 1),
                                         blurRadius: 2.0,
-                                        color: Color.fromRGBO(0, 0, 0, 0.1), // Lighter shadow for light theme
+                                        color: isDarkMode ? const Color.fromRGBO(0, 0, 0, 0.3) : const Color.fromRGBO(0, 0, 0, 0.1),
                                       ),
                                     ],
                                   ),
@@ -136,24 +138,24 @@ class FoodItemCard extends StatelessWidget {
                                       'assets/images/icons/SVGs/Loyalty/SAR.svg',
                                       width: 12.0,
                                       height: 12.0,
-                                      colorFilter: const ColorFilter.mode(
-                                        Color(0xFF1A1A1A), // Dark icon on light theme
+                                      colorFilter: ColorFilter.mode(
+                                        isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A), // Theme-aware icon color
                                         BlendMode.srcIn,
                                       ),
                                     ),
                                     const SizedBox(width: 4.0),
                                     Text(
                                       '${foodItem.price.toInt()}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontFamily: 'Roboto',
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w400,
-                                        color: Color(0xFF1A1A1A), // Dark text on light theme
+                                        color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A), // Theme-aware text color
                                         shadows: [
                                           Shadow(
-                                            offset: Offset(0, 1),
+                                            offset: const Offset(0, 1),
                                             blurRadius: 2.0,
-                                            color: Color.fromRGBO(0, 0, 0, 0.1), // Lighter shadow for light theme
+                                            color: isDarkMode ? const Color.fromRGBO(0, 0, 0, 0.3) : const Color.fromRGBO(0, 0, 0, 0.1),
                                           ),
                                         ],
                                       ),

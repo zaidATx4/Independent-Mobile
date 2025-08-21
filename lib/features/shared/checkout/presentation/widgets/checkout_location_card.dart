@@ -16,10 +16,17 @@ class CheckoutLocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors based on Figma design
+    final borderColor = isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9); // #d9d9d9 from Figma light theme
+    final primaryTextColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A); // #1a1a1a from Figma
+    final tertiaryTextColor = isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787); // #878787 from Figma
+    
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFF4D4E52), // Figma stroke color
+          color: borderColor, // Theme-aware border color
           width: 1,
         ),
         borderRadius: BorderRadius.circular(8),
@@ -55,11 +62,11 @@ class CheckoutLocationCard extends StatelessWidget {
                       // Location Name
                       Text(
                         location.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Roboto',
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFFFEFEFF), // indpt/text primary
+                          color: primaryTextColor, // Theme-aware primary text from Figma
                           height: 21 / 14, // lineHeight / fontSize
                         ),
                       ),
@@ -74,8 +81,8 @@ class CheckoutLocationCard extends StatelessWidget {
                             margin: const EdgeInsets.only(top: 3),
                             child: SvgPicture.asset(
                               'assets/images/icons/SVGs/Select_Location_Icon.svg',
-                              colorFilter: const ColorFilter.mode(
-                                Color(0xFF9C9C9D), // indpt/text tertiary
+                              colorFilter: ColorFilter.mode(
+                                tertiaryTextColor, // Theme-aware tertiary text from Figma
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -85,11 +92,11 @@ class CheckoutLocationCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               location.address,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Roboto',
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
-                                color: Color(0xFF9C9C9D), // indpt/text tertiary
+                                color: tertiaryTextColor, // Theme-aware tertiary text from Figma
                                 height: 18 / 12, // lineHeight / fontSize
                               ),
                             ),
@@ -113,10 +120,14 @@ class CheckoutLocationCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9);
+    final skeletonColor = isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9);
+    
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color(0xFF4D4E52),
+          color: borderColor,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(8),
@@ -130,7 +141,7 @@ class CheckoutLocationCardSkeleton extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: const Color(0xFF4D4E52),
+                color: skeletonColor,
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
@@ -146,7 +157,7 @@ class CheckoutLocationCardSkeleton extends StatelessWidget {
                     height: 21,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF4D4E52),
+                      color: skeletonColor,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -158,7 +169,7 @@ class CheckoutLocationCardSkeleton extends StatelessWidget {
                         width: 12,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4D4E52),
+                          color: skeletonColor,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -167,7 +178,7 @@ class CheckoutLocationCardSkeleton extends StatelessWidget {
                         child: Container(
                           height: 18,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF4D4E52),
+                            color: skeletonColor,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),

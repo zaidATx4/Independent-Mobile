@@ -22,9 +22,17 @@ class FoodMenuHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors
+    final headerBgColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF);
+    final borderColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    final iconColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    final textColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    
     return Container(
       width: double.infinity,
-      color: const Color(0xFF1A1A1A), // indpt/neutral background
+      color: headerBgColor,
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
@@ -37,12 +45,12 @@ class FoodMenuHeader extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFFEFEFF)),
+                border: Border.all(color: borderColor),
                 borderRadius: BorderRadius.circular(44),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF),
+                color: iconColor,
                 size: 16,
               ),
             ),
@@ -50,14 +58,14 @@ class FoodMenuHeader extends ConsumerWidget {
 
           const SizedBox(width: 16.0), // gap-4
           // Menu title
-          const Expanded(
+          Expanded(
             child: Text(
               'Menu',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xCCFEFEFF),
+                color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xCC1A1A1A), // Theme-aware text with 80% opacity
                 height: 32 / 24,
               ),
             ),
@@ -69,9 +77,9 @@ class FoodMenuHeader extends ConsumerWidget {
               // Cart button with count badge
               CartCountBadge(
                 onTap: onCartPressed ?? () => context.push('/cart'),
-                iconColor: const Color(0xFFFEFEFF),
+                iconColor: iconColor,
                 backgroundColor: Colors.transparent,
-                borderColor: const Color(0xFFFEFEFF),
+                borderColor: borderColor,
                 badgeColor: const Color(0xFFFF4444),
                 badgeTextColor: Colors.white,
                 size: 40.0,
@@ -88,7 +96,7 @@ class FoodMenuHeader extends ConsumerWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(44.0),
                     border: Border.all(
-                      color: const Color(0xFFFEFEFF),
+                      color: borderColor,
                       width: 1.0,
                     ),
                   ),
@@ -97,8 +105,8 @@ class FoodMenuHeader extends ConsumerWidget {
                       'assets/images/icons/SVGs/Loyalty/Search_icon.svg',
                       width: 16.0,
                       height: 16.0,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFFFEFEFF),
+                      colorFilter: ColorFilter.mode(
+                        iconColor,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -130,17 +138,27 @@ class LocationInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware colors
+    final bgColor = isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF);
+    final borderColor = isDarkMode ? const Color(0xFF404040) : const Color(0xFFD9D9D9);
+    final textPrimaryColor = isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A);
+    final textSecondaryColor = isDarkMode ? const Color(0xCC878787) : const Color(0xFF878787);
+    final defaultLogoBgColor = isDarkMode ? const Color(0xFF404040) : const Color(0xFFE0E0E0);
+    final defaultLogoIconColor = isDarkMode ? const Color(0xFF9C9C9D) : const Color(0xFF878787);
+    
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 8.0,
       ), // px-4 py-2
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A), // indpt/neutral background
+      decoration: BoxDecoration(
+        color: bgColor,
         border: Border(
-          top: BorderSide(color: Color(0xFF4D4E52), width: 1.0), // indpt/stroke
-          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1.0),
+          top: BorderSide(color: borderColor, width: 1.0),
+          bottom: BorderSide(color: borderColor, width: 1.0),
         ),
       ),
       child: Row(
@@ -151,7 +169,7 @@ class LocationInfoWidget extends StatelessWidget {
             height: 64.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0), // rounded-2xl
-              color: const Color(0xFF242424), // Default background
+              color: defaultLogoBgColor,
             ),
             child: brandLogoPath != null
                 ? ClipRRect(
@@ -162,11 +180,11 @@ class LocationInfoWidget extends StatelessWidget {
                       height: 64.0,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return _buildDefaultLogo();
+                        return _buildDefaultLogo(defaultLogoIconColor);
                       },
                     ),
                   )
-                : _buildDefaultLogo(),
+                : _buildDefaultLogo(defaultLogoIconColor),
           ),
 
           const SizedBox(width: 16.0), // gap-4
@@ -178,11 +196,11 @@ class LocationInfoWidget extends StatelessWidget {
                 // Location name
                 Text(
                   locationName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 14.0,
                     fontWeight: FontWeight.w500, // Medium
-                    color: Color(0xFFFEFEFF), // indpt/text primary
+                    color: textPrimaryColor,
                     height: 1.5, // line-height: 21px / 14px
                   ),
                   maxLines: 1,
@@ -197,8 +215,8 @@ class LocationInfoWidget extends StatelessWidget {
                       'assets/images/icons/SVGs/Select_Location_Icon.svg',
                       width: 12.0,
                       height: 12.0,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF9C9C9D), // indpt/text tertiary
+                      colorFilter: ColorFilter.mode(
+                        textSecondaryColor,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -208,11 +226,11 @@ class LocationInfoWidget extends StatelessWidget {
                     Expanded(
                       child: Text(
                         locationAddress,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Roboto',
                           fontSize: 12.0,
                           fontWeight: FontWeight.w400, // Regular
-                          color: Color(0xFF9C9C9D), // indpt/text tertiary
+                          color: textSecondaryColor,
                           height: 1.5, // line-height: 18px / 12px
                         ),
                         maxLines: 1,
@@ -230,22 +248,22 @@ class LocationInfoWidget extends StatelessWidget {
   }
 
   /// Build default brand logo when image is not available
-  Widget _buildDefaultLogo() {
+  Widget _buildDefaultLogo(Color iconColor) {
     return Container(
       width: 64.0,
       height: 64.0,
       decoration: BoxDecoration(
-        color: const Color(0xFF242424),
+        color: Colors.transparent, // Use the container's background color
         borderRadius: BorderRadius.circular(16.0),
       ),
-      child: const Center(
+      child: Center(
         child: Text(
           'SALT',
           style: TextStyle(
             fontFamily: 'Roboto',
             fontSize: 12.0,
             fontWeight: FontWeight.w700,
-            color: Color(0xFFFFFBF1),
+            color: iconColor,
           ),
         ),
       ),

@@ -26,13 +26,20 @@ class CheckoutContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Theme-aware button background: #1A1A1A for light theme, #FFFBF1 for dark theme
+    final buttonColor = isDarkMode ? const Color(0xFFFFFBF1) : const Color(0xFF1A1A1A);
+    // Theme-aware text color: light text on dark button in light theme, dark text on light button in dark theme
+    final textColor = isDarkMode ? const Color(0xFF242424) : const Color(0xFFFEFEFF);
+    
     return Container(
       width: double.infinity,
       height: 56,
       decoration: BoxDecoration(
         color: enabled && !isLoading 
-            ? const Color(0xFFFFFBF1) // indpt/sand - enabled
-            : const Color(0xFFFFFBF1).withValues(alpha: 0.5), // disabled/loading
+            ? buttonColor
+            : buttonColor.withValues(alpha: 0.5), // disabled/loading
         borderRadius: BorderRadius.circular(44),
       ),
       child: Material(
@@ -46,13 +53,13 @@ class CheckoutContinueButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (isLoading)
-                  const SizedBox(
+                  SizedBox(
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF242424), // indpt/accent
+                        textColor, // Theme-aware color
                       ),
                     ),
                   )
@@ -61,11 +68,11 @@ class CheckoutContinueButton extends StatelessWidget {
                   Flexible(
                     child: Text(
                       text!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF242424), // indpt/accent
+                        color: textColor, // Theme-aware color
                         height: 24 / 16,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -81,11 +88,11 @@ class CheckoutContinueButton extends StatelessWidget {
                       children: [
                         Text(
                           price!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF242424), // indpt/accent
+                            color: textColor, // Theme-aware color
                             height: 24 / 16,
                           ),
                         ),
@@ -96,8 +103,8 @@ class CheckoutContinueButton extends StatelessWidget {
                           height: 12,
                           child: SvgPicture.asset(
                             'assets/images/icons/SVGs/Loyalty/SAR.svg',
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF242424), // indpt/accent
+                            colorFilter: ColorFilter.mode(
+                              textColor, // Theme-aware color
                               BlendMode.srcIn,
                             ),
                           ),
@@ -107,13 +114,13 @@ class CheckoutContinueButton extends StatelessWidget {
                   ),
                   // Separator
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     '|',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF242424), // indpt/accent
+                      color: textColor, // Theme-aware color
                       height: 24 / 16,
                     ),
                   ),
@@ -122,11 +129,11 @@ class CheckoutContinueButton extends StatelessWidget {
                   Flexible(
                     child: Text(
                       buttonText!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF242424), // indpt/accent
+                        color: textColor, // Theme-aware color
                         height: 24 / 16,
                       ),
                       overflow: TextOverflow.ellipsis,

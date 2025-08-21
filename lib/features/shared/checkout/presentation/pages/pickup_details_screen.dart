@@ -1,5 +1,5 @@
 // Updated Pickup Details Screen for Secure Checkout Flow
-// 
+//
 // Key Changes Made:
 // 1. Location Source: Uses food's location from ordering flow instead of separate location list
 // 2. Time Picker Only: "Pick Up Later" shows time picker only, no date selection
@@ -7,12 +7,12 @@
 // 4. Auto Time Picker: Time picker automatically shows when "Pick Up Later" is selected
 // 5. Business Hours Validation: Validates time against location's operating hours
 // 6. Enhanced Security: Maintains PCI DSS compliance and secure state management
-// 
+//
 // Usage Examples:
 // - Pass LocationEntity from food ordering: orderingLocation parameter
-// - Pass converted PickupLocationEntity: foodLocation parameter  
+// - Pass converted PickupLocationEntity: foodLocation parameter
 // - Auto-conversion between location entity types
-// 
+//
 // Integration with Food Ordering:
 // context.push('/checkout/pickup-details', extra: {
 //   'subtotal': 29.99, 'tax': 4.50, 'total': 34.49,
@@ -41,7 +41,8 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
   final double tax;
   final double total;
   final PickupLocationEntity? foodLocation; // Location from food ordering flow
-  final LocationEntity? orderingLocation; // Alternative: pass LocationEntity from food ordering
+  final LocationEntity?
+  orderingLocation; // Alternative: pass LocationEntity from food ordering
   final String? brandLogoUrl; // Brand logo URL from cart data
 
   const PickupDetailsScreen({
@@ -58,16 +59,18 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
 
   /// Convert LocationEntity from food ordering to PickupLocationEntity
   static PickupLocationEntity convertLocationToPickupLocation(
-    LocationEntity location,
-    {String? brandLogoPath}
-  ) {
+    LocationEntity location, {
+    String? brandLogoPath,
+  }) {
     return PickupLocationEntity(
       id: location.id,
       name: location.name,
       address: location.address,
       latitude: location.latitude,
       longitude: location.longitude,
-      brandLogoPath: brandLogoPath ?? 'assets/images/logos/default_brand.png', // Default logo
+      brandLogoPath:
+          brandLogoPath ??
+          'assets/images/logos/default_brand.png', // Default logo
       isActive: location.isOpen && location.acceptsPickup,
       metadata: {
         'phone': location.phoneNumber,
@@ -81,7 +84,8 @@ class PickupDetailsScreen extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<PickupDetailsScreen> createState() => _PickupDetailsScreenState();
+  ConsumerState<PickupDetailsScreen> createState() =>
+      _PickupDetailsScreenState();
 }
 
 class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
@@ -91,63 +95,63 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     // Clear any previous pickup selections when entering the screen
     // This ensures clean state for re-selection after navigation back
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(checkoutProvider.notifier).refreshForReentry();
     });
   }
-  
+
   void _initializeCheckoutIfNeeded() {
     if (_isInitialized) return;
     _isInitialized = true;
-    
-    
+
     // Convert ordering location to pickup location if provided
     PickupLocationEntity? convertedFoodLocation = widget.foodLocation;
     if (convertedFoodLocation == null && widget.orderingLocation != null) {
-      final brandLogo = widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png';
-      
-      convertedFoodLocation = PickupDetailsScreen.convertLocationToPickupLocation(
-        widget.orderingLocation!,
-        brandLogoPath: brandLogo,
-      );
+      final brandLogo =
+          widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png';
+
+      convertedFoodLocation =
+          PickupDetailsScreen.convertLocationToPickupLocation(
+            widget.orderingLocation!,
+            brandLogoPath: brandLogo,
+          );
     }
-    
+
     // TEMP FIX: If no location is provided, create a default location for testing
-    if (convertedFoodLocation == null) {
-      convertedFoodLocation = const PickupLocationEntity(
-        id: 'temp-1',
-        name: 'Default Test Location',
-        address: 'Test Address, City, Country',
-        brandLogoPath: 'assets/images/logos/brands/Salt.png',
-        latitude: 25.2048,
-        longitude: 55.2708,
-        isActive: true,
-      );
-    }
-    
-    
-    ref.read(checkoutProvider.notifier).initializeCheckout(
-      subtotal: widget.subtotal,
-      tax: widget.tax,
-      total: widget.total,
-      brandId: widget.brandId,
-      locationId: widget.locationId,
-      foodLocation: convertedFoodLocation, // Pass converted food location to provider
+    convertedFoodLocation ??= const PickupLocationEntity(
+      id: 'temp-1',
+      name: 'Default Test Location',
+      address: 'Test Address, City, Country',
+      brandLogoPath: 'assets/images/logos/brands/Salt.png',
+      latitude: 25.2048,
+      longitude: 55.2708,
+      isActive: true,
     );
-    
+
+    ref
+        .read(checkoutProvider.notifier)
+        .initializeCheckout(
+          subtotal: widget.subtotal,
+          tax: widget.tax,
+          total: widget.total,
+          brandId: widget.brandId,
+          locationId: widget.locationId,
+          foodLocation:
+              convertedFoodLocation, // Pass converted food location to provider
+        );
+
     // Auto-select "Pick Up Now" only if no pickup time is already selected
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         final currentState = ref.read(checkoutProvider);
         if (currentState.selectedPickupTime == null) {
-          ref.read(checkoutProvider.notifier).selectPickupTime(
-            PickupTimeEntity.now(),
-          );
-        } else {
-        }
+          ref
+              .read(checkoutProvider.notifier)
+              .selectPickupTime(PickupTimeEntity.now());
+        } else {}
       }
     });
   }
@@ -158,18 +162,30 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     if (!_isInitialized) {
       Future(() => _initializeCheckoutIfNeeded());
     }
-    
+
     final checkoutState = ref.watch(checkoutProvider);
     final selectedPickupTime = ref.watch(selectedPickupTimeProvider);
     final canProceed = ref.watch(canProceedToPaymentProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Theme-aware colors based on Figma design specifications
+    final backgroundColor = isDarkMode
+        ? const Color(0xFF1A1A1A)
+        : const Color(0xFFFFFCF5); // #fffcf5 from Figma
+    final primaryTextColor = isDarkMode
+        ? const Color(0xFFFEFEFF)
+        : const Color(0xFF1A1A1A); // #1a1a1a from Figma
+    final strokeColor = isDarkMode
+        ? const Color(0xFF4D4E52)
+        : const Color(0xFFD9D9D9); // #d9d9d9 from Figma
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             // Custom App Bar
-            _buildAppBar(context),
+            _buildAppBar(context, isDarkMode, primaryTextColor, strokeColor),
             // Content
             Expanded(
               child: SingleChildScrollView(
@@ -179,19 +195,19 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 16),
-                      
+
                       // Pickup Location Section
-                      _buildSectionHeader('Pickup Location'),
+                      _buildSectionHeader('Pickup Location', primaryTextColor),
                       const SizedBox(height: 8),
                       _buildLocationSection(checkoutState),
-                      
+
                       const SizedBox(height: 32),
-                      
+
                       // Pickup Time Section
-                      _buildSectionHeader('Pickup Time'),
+                      _buildSectionHeader('Pickup Time', primaryTextColor),
                       const SizedBox(height: 8),
                       _buildPickupTimeSection(selectedPickupTime),
-                      
+
                       const SizedBox(height: 100), // Space for bottom button
                     ],
                   ),
@@ -199,14 +215,23 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
               ),
             ),
             // Bottom Section with Continue Button
-            _buildBottomSection(canProceed),
+            _buildBottomSection(canProceed, isDarkMode),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  Widget _buildAppBar(
+    BuildContext context,
+    bool isDarkMode,
+    Color primaryTextColor,
+    Color strokeColor,
+  ) {
+    // Use Figma design colors: #1a1a1a for text and icons in light theme
+    final borderColor = strokeColor;
+    final iconColor = primaryTextColor;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -217,19 +242,16 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFFFEFEFF), // indpt/text primary
-                width: 1,
-              ),
+              border: Border.all(color: borderColor, width: 1),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => context.pop(),
                 borderRadius: BorderRadius.circular(20),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_back_ios_new,
-                  color: Color(0xFFFEFEFF),
+                  color: iconColor,
                   size: 16,
                 ),
               ),
@@ -237,14 +259,14 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
           ),
           const SizedBox(width: 16),
           // Title
-          const Expanded(
+          Expanded(
             child: Text(
               'Pickup Details',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFFEFEFF), // indpt/text primary with opacity 0.8
+                color: primaryTextColor, // Theme-aware text color from Figma
                 height: 32 / 24,
               ),
             ),
@@ -254,14 +276,16 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, Color textColor) {
+    // Use passed color which is theme-aware from Figma design
+
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontFamily: 'Roboto',
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: Color(0xFFFEFEFF), // indpt/text primary
+        color: textColor, // Figma design: #1a1a1a for light theme
         height: 21 / 14,
       ),
     );
@@ -273,16 +297,20 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     // 2. Food location from parameter
     // 3. Converted ordering location
     // 4. First available location
-    PickupLocationEntity? location = state.selectedLocation ?? widget.foodLocation;
-    
+    PickupLocationEntity? location =
+        state.selectedLocation ?? widget.foodLocation;
+
     if (location == null && widget.orderingLocation != null) {
       location = PickupDetailsScreen.convertLocationToPickupLocation(
         widget.orderingLocation!,
-        brandLogoPath: widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png',
+        brandLogoPath:
+            widget.brandLogoUrl ?? 'assets/images/logos/brands/Salt.png',
       );
     }
-    
-    location ??= (state.availableLocations.isNotEmpty ? state.availableLocations.first : null);
+
+    location ??= (state.availableLocations.isNotEmpty
+        ? state.availableLocations.first
+        : null);
 
     if (location == null) {
       if (state.isLoading) {
@@ -309,9 +337,9 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
           title: 'Pick Up Now',
           description: 'Get your order as soon as possible',
           onTap: () {
-            ref.read(checkoutProvider.notifier).selectPickupTime(
-              PickupTimeEntity.now(),
-            );
+            ref
+                .read(checkoutProvider.notifier)
+                .selectPickupTime(PickupTimeEntity.now());
           },
         ),
         const SizedBox(height: 16),
@@ -325,9 +353,13 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
             if (selectedPickupTime?.type != PickupTimeType.later) {
               // Create a temporary "later" pickup time entity without scheduled time
               // This will be updated when user picks a time
-              final tempLaterEntity = PickupTimeEntity.later(DateTime.now().add(const Duration(hours: 1)));
-              ref.read(checkoutProvider.notifier).selectPickupTime(tempLaterEntity);
-              
+              final tempLaterEntity = PickupTimeEntity.later(
+                DateTime.now().add(const Duration(hours: 1)),
+              );
+              ref
+                  .read(checkoutProvider.notifier)
+                  .selectPickupTime(tempLaterEntity);
+
               // Then show time picker for user to select actual time
               Future.delayed(const Duration(milliseconds: 100), () {
                 _showTimePicker();
@@ -346,17 +378,18 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     );
   }
 
-  Widget _buildBottomSection(bool canProceed) {
-    final checkoutState = ref.watch(checkoutProvider);
+  Widget _buildBottomSection(bool canProceed, bool isDarkMode) {
     final isLoading = ref.watch(isCheckoutLoadingProvider);
-    
+    // Use Figma surface color: #fefeff for light theme
+    final bottomBgColor = isDarkMode
+        ? const Color(0xFF1A1A1A)
+        : const Color(0xFFFEFEFF);
+
     // Debug: Print state for troubleshooting
-    
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1A), // indpt/neutral
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      decoration: BoxDecoration(color: bottomBgColor),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -374,28 +407,32 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
   }
 
   Widget _buildErrorState(String message) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDarkMode
+        ? const Color(0xFF4D4E52)
+        : const Color(0xFFD9D9D9);
+    final textColor = isDarkMode
+        ? const Color(0xFF9C9C9D)
+        : const Color(0xFF878787);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFF4D4E52)),
+        border: Border.all(color: borderColor),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Color(0xFF9C9C9D),
-            size: 24,
-          ),
+          Icon(Icons.error_outline, color: textColor, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF9C9C9D),
+                color: textColor,
                 height: 21 / 14,
               ),
             ),
@@ -415,14 +452,22 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
       context: context,
       initialTime: selectedTime ?? currentTime,
       builder: (context, child) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFFFFFBF1), // indpt/sand
-              onPrimary: Color(0xFF242424), // indpt/accent
-              surface: Color(0xFF1A1A1A), // indpt/neutral
-              onSurface: Color(0xFFFEFEFF), // indpt/text primary
-            ),
+            colorScheme: isDarkMode
+                ? const ColorScheme.dark(
+                    primary: Color(0xFFFFFBF1), // indpt/sand
+                    onPrimary: Color(0xFF242424), // indpt/accent
+                    surface: Color(0xFF1A1A1A), // indpt/neutral
+                    onSurface: Color(0xFFFEFEFF), // indpt/text primary
+                  )
+                : const ColorScheme.light(
+                    primary: Color(0xFF1A1A1A), // Figma primary for light theme
+                    onPrimary: Color(0xFFFEFEFF), // White on primary
+                    surface: Color(0xFFFEFEFF), // Figma surface
+                    onSurface: Color(0xFF1A1A1A), // Figma text
+                  ),
           ),
           child: child!,
         );
@@ -444,8 +489,8 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     if (selectedDateTime.isBefore(minimumTime)) {
       if (mounted) {
         CheckoutErrorHandler.showErrorSnackBar(
-          context, 
-          'Pickup time must be at least 30 minutes from now'
+          context,
+          'Pickup time must be at least 30 minutes from now',
         );
       }
       return;
@@ -455,8 +500,8 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     if (!_isTimeWithinBusinessHours(pickedTime)) {
       if (mounted) {
         CheckoutErrorHandler.showErrorSnackBar(
-          context, 
-          'Pickup time must be within business hours (9:00 AM - 10:00 PM)'
+          context,
+          'Pickup time must be within business hours (9:00 AM - 10:00 PM)',
         );
       }
       return;
@@ -467,9 +512,9 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     });
 
     // Update the pickup time selection with today's date and selected time
-    ref.read(checkoutProvider.notifier).selectPickupTime(
-      PickupTimeEntity.later(selectedDateTime),
-    );
+    ref
+        .read(checkoutProvider.notifier)
+        .selectPickupTime(PickupTimeEntity.later(selectedDateTime));
   }
 
   /// Validate if the selected time is within business hours
@@ -477,33 +522,34 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     // Get current location's operating hours
     final checkoutState = ref.read(checkoutProvider);
     final location = checkoutState.selectedLocation ?? widget.foodLocation;
-    
+
     if (location == null) {
       // Default business hours if no location data
       return time.hour >= 9 && time.hour < 22;
     }
-    
+
     // If location has metadata with operating hours from food ordering
-    final operatingHours = location.metadata?['operatingHours'] as Map<String, String>?;
+    final operatingHours =
+        location.metadata?['operatingHours'] as Map<String, String>?;
     if (operatingHours != null) {
       final today = DateTime.now();
       final dayName = _getDayName(today.weekday);
       final todayHours = operatingHours[dayName];
-      
+
       if (todayHours != null) {
         return _isTimeWithinRange(time, todayHours);
       }
     }
-    
+
     // Default business hours (9 AM to 10 PM) if no operating hours data
     return time.hour >= 9 && time.hour < 22;
   }
-  
+
   /// Get day name from weekday number
   String _getDayName(int weekday) {
     const days = {
       1: 'monday',
-      2: 'tuesday', 
+      2: 'tuesday',
       3: 'wednesday',
       4: 'thursday',
       5: 'friday',
@@ -512,25 +558,25 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
     };
     return days[weekday] ?? 'monday';
   }
-  
+
   /// Check if time is within operating hours range (e.g., "09:00-22:00")
   bool _isTimeWithinRange(TimeOfDay time, String hoursRange) {
     try {
       final parts = hoursRange.split('-');
       if (parts.length != 2) return false;
-      
+
       final startParts = parts[0].split(':');
       final endParts = parts[1].split(':');
-      
+
       final startHour = int.parse(startParts[0]);
       final startMinute = int.parse(startParts[1]);
       final endHour = int.parse(endParts[0]);
       final endMinute = int.parse(endParts[1]);
-      
+
       final timeMinutes = time.hour * 60 + time.minute;
       final startMinutes = startHour * 60 + startMinute;
       final endMinutes = endHour * 60 + endMinute;
-      
+
       return timeMinutes >= startMinutes && timeMinutes < endMinutes;
     } catch (e) {
       // If parsing fails, use default hours
@@ -540,16 +586,16 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
 
   void _onContinuePressed() async {
     final checkoutNotifier = ref.read(checkoutProvider.notifier);
-    
+
     try {
       await checkoutNotifier.confirmPickupDetails();
-      
+
       // Navigate to payment method selection screen
       if (mounted) {
-        context.push('/checkout/payment-method', extra: {
-          'total': widget.total,
-          'currency': 'SAR',
-        });
+        context.push(
+          '/checkout/payment-method',
+          extra: {'total': widget.total, 'currency': 'SAR'},
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -558,7 +604,6 @@ class _PickupDetailsScreenState extends ConsumerState<PickupDetailsScreen> {
       }
     }
   }
-
 }
 
 // Mock pickup locations for development

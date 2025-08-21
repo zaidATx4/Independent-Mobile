@@ -23,16 +23,15 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
     final checkoutState = ref.watch(checkoutProvider);
     final isLoading = ref.watch(isCheckoutLoadingProvider);
     final error = ref.watch(checkoutErrorProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5),
       body: Column(
         children: [
           // Header with SafeArea
-          SafeArea(
-            child: _buildHeader(context),
-          ),
-          
+          SafeArea(child: _buildHeader(context, isDarkMode)),
+
           // Content
           Expanded(
             child: SingleChildScrollView(
@@ -41,13 +40,13 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Order Items Section
-                  _buildOrderSection(cartState),
-                  
+                  _buildOrderSection(cartState, isDarkMode),
+
                   const SizedBox(height: 24),
-                  
+
                   // Location Section
-                  _buildLocationSection(checkoutState),
-                  
+                  _buildLocationSection(checkoutState, isDarkMode),
+
                   // Error Display
                   if (error != null) ...[
                     const SizedBox(height: 16),
@@ -57,15 +56,15 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
               ),
             ),
           ),
-          
+
           // Bottom Section with totals and checkout button
-          _buildBottomSection(checkoutState, cartState, isLoading),
+          _buildBottomSection(checkoutState, cartState, isLoading, isDarkMode),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -77,25 +76,25 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFFEFEFF)),
+                border: Border.all(color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A)),
                 borderRadius: BorderRadius.circular(44),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFFEFEFF),
+                color: isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A),
                 size: 16,
               ),
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // Title
-          const Expanded(
+          Expanded(
             child: Text(
               'Checkout',
               style: TextStyle(
-                color: Color(0xCCFEFEFF),
+                color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
@@ -107,7 +106,7 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
     );
   }
 
-  Widget _buildOrderSection(cartState) {
+  Widget _buildOrderSection(cartState, bool isDarkMode) {
     final cart = cartState.cart;
     if (cart == null || cart.items.isEmpty) {
       return const SizedBox.shrink();
@@ -117,33 +116,41 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Order Section Title
-        const Text(
+        Text(
           'Order',
           style: TextStyle(
-            color: Color(0xCCFEFEFF),
+            color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
             fontSize: 16,
             fontWeight: FontWeight.w500,
             fontFamily: 'Roboto',
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Order Items List
         Column(
-          children: cart.items.map<Widget>((item) => _buildOrderItem(item)).toList(),
+          children: cart.items
+              .map<Widget>((item) => _buildOrderItem(item, isDarkMode))
+              .toList(),
         ),
       ],
     );
   }
 
-  Widget _buildOrderItem(item) {
+  Widget _buildOrderItem(item, bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Color(0xFF4D4E52), width: 1),
-          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+          top: BorderSide(
+            color: isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9), 
+            width: 1
+          ),
+          bottom: BorderSide(
+            color: isDarkMode ? const Color(0xFF4D4E52) : const Color(0xFFD9D9D9), 
+            width: 1
+          ),
         ),
       ),
       child: Row(
@@ -152,66 +159,62 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
           // Quantity
           Text(
             '${item.quantity}x',
-            style: const TextStyle(
-              color: Color(0xCCFEFEFF),
+            style: TextStyle(
+              color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
               fontSize: 14,
               fontFamily: 'Roboto',
             ),
           ),
-          
+
           const SizedBox(width: 10),
-          
+
           // Item Name
           Expanded(
             child: Text(
               item.name,
-              style: const TextStyle(
-                color: Color(0xCCFEFEFF),
+              style: TextStyle(
+                color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
                 fontSize: 14,
                 fontFamily: 'Roboto',
               ),
             ),
           ),
-          
+
           // Price
           Text(
             '${item.totalPrice.toInt()}',
-            style: const TextStyle(
-              color: Color(0xCCFEFEFF),
+            style: TextStyle(
+              color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
               fontSize: 14,
               fontFamily: 'Roboto',
             ),
           ),
-          
+
           const SizedBox(width: 4),
-          
+
           // SAR Icon
           SvgPicture.asset(
             'assets/images/icons/Payment_Methods/SAR.svg',
             width: 11,
             height: 12,
-            colorFilter: const ColorFilter.mode(
-              Color(0xCCFEFEFF),
+            colorFilter: ColorFilter.mode(
+              isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
               BlendMode.srcIn,
             ),
           ),
-          
+
           const SizedBox(width: 10),
-          
+
           // Remove Icon (disabled in review - just for design consistency)
-          const Icon(
-            Icons.close,
-            color: Color(0xCCFEFEFF),
-            size: 16,
-          ),
+          Icon(Icons.close, color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A), size: 16),
         ],
       ),
     );
   }
 
-  Widget _buildLocationSection(CheckoutState checkoutState) {
+  Widget _buildLocationSection(CheckoutState checkoutState, bool isDarkMode) {
     final selectedLocation = checkoutState.selectedLocation;
-    
+
     if (selectedLocation == null) {
       return const SizedBox.shrink();
     }
@@ -220,18 +223,18 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Location Section Title
-        const Text(
+        Text(
           'Location',
           style: TextStyle(
-            color: Color(0xCCFEFEFF),
+            color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
             fontSize: 16,
             fontWeight: FontWeight.w500,
             fontFamily: 'Roboto',
           ),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Location Details
         Container(
           width: double.infinity,
@@ -242,20 +245,20 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
               // Location Name
               Text(
                 selectedLocation.name,
-                style: const TextStyle(
-                  color: Color(0xCCFEFEFF),
+                style: TextStyle(
+                  color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
                   fontSize: 16,
                   fontFamily: 'Roboto',
                 ),
               ),
-              
+
               const SizedBox(height: 4),
-              
+
               // Location Address
               Text(
                 selectedLocation.address,
-                style: const TextStyle(
-                  color: Color(0xCCFEFEFF),
+                style: TextStyle(
+                  color: isDarkMode ? const Color(0xCCFEFEFF) : const Color(0xFF1A1A1A),
                   fontSize: 14,
                   fontFamily: 'Roboto',
                 ),
@@ -278,11 +281,7 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red.shade300,
-            size: 20,
-          ),
+          Icon(Icons.error_outline, color: Colors.red.shade300, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -299,20 +298,25 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
     );
   }
 
-  Widget _buildBottomSection(CheckoutState checkoutState, cartState, bool isLoading) {
+  Widget _buildBottomSection(
+    CheckoutState checkoutState,
+    cartState,
+    bool isLoading,
+    bool isDarkMode,
+  ) {
     final cart = cartState.cart;
     final fees = checkoutState.fees;
-    
+
     // Calculate totals from fees or fallback to cart
     final subtotal = fees?['subtotal'] ?? cart?.subtotal ?? 0.0;
     final serviceCharge = fees?['service_fee'] ?? 0.0;
     final discounts = fees?['discounts'] ?? 0.0;
     final total = fees?['total'] ?? cart?.total ?? 0.0;
-    
+
     final itemCount = cart?.totalItemCount ?? 0;
 
     return Container(
-      color: const Color(0xFF1A1A1A),
+      color: isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFFFFCF5),
       child: Column(
         children: [
           // Totals Section
@@ -322,33 +326,53 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
             child: Column(
               children: [
                 // Subtotal
-                _buildTotalRow('Subtotal (x$itemCount)', subtotal, isSecondary: true),
-                
+                _buildTotalRow(
+                  'Subtotal (x$itemCount)',
+                  subtotal,
+                  isSecondary: true,
+                  isDarkMode: isDarkMode,
+                ),
+
                 const SizedBox(height: 4),
-                
+
                 // Service Charge
-                _buildTotalRow('Service Charge', serviceCharge, isSecondary: true),
-                
+                _buildTotalRow(
+                  'Service Charge',
+                  serviceCharge,
+                  isSecondary: true,
+                  isDarkMode: isDarkMode,
+                ),
+
                 const SizedBox(height: 4),
-                
+
                 // Discounts (negative value)
-                _buildTotalRow('Discounts', -discounts.abs(), isSecondary: true),
-                
+                _buildTotalRow(
+                  'Discounts',
+                  -discounts.abs(),
+                  isSecondary: true,
+                  isDarkMode: isDarkMode,
+                ),
+
                 const SizedBox(height: 4),
-                
+
                 // Total (primary color)
-                _buildTotalRow('Total', total, isSecondary: false),
+                _buildTotalRow('Total', total, isSecondary: false, isDarkMode: isDarkMode),
               ],
             ),
           ),
-          
+
           // Checkout Button Section
           Container(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 8),
+            padding: EdgeInsets.fromLTRB(
+              16,
+              16,
+              16,
+              MediaQuery.of(context).padding.bottom,
+            ),
             child: CheckoutContinueButton(
               text: 'Check out',
               isLoading: _isProcessingPayment || isLoading,
-              onPressed: _canProceedToPayment(checkoutState, cartState) 
+              onPressed: _canProceedToPayment(checkoutState, cartState)
                   ? () => _processPayment()
                   : null,
             ),
@@ -358,36 +382,37 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
     );
   }
 
-  Widget _buildTotalRow(String label, double amount, {required bool isSecondary}) {
-    final color = isSecondary ? const Color(0xFF9C9C9D) : const Color(0xFFFEFEFF);
-    final sarColor = isSecondary ? const Color(0xFF9C9C9D) : const Color(0xFFFEFEFF);
-    
+  Widget _buildTotalRow(
+    String label,
+    double amount, {
+    required bool isSecondary,
+    required bool isDarkMode,
+  }) {
+    final color = isSecondary
+        ? const Color(0xFF9C9C9D)
+        : (isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A));
+    final sarColor = isSecondary
+        ? const Color(0xFF9C9C9D)
+        : (isDarkMode ? const Color(0xFFFEFEFF) : const Color(0xFF1A1A1A));
+
     return Row(
       children: [
         // Label
         Expanded(
           child: Text(
             label,
-            style: TextStyle(
-              color: color,
-              fontSize: 14,
-              fontFamily: 'Roboto',
-            ),
+            style: TextStyle(color: color, fontSize: 14, fontFamily: 'Roboto'),
           ),
         ),
-        
+
         // Amount
         Text(
           amount < 0 ? '-${amount.abs().toInt()}' : '${amount.toInt()}',
-          style: TextStyle(
-            color: color,
-            fontSize: 14,
-            fontFamily: 'Roboto',
-          ),
+          style: TextStyle(color: color, fontSize: 14, fontFamily: 'Roboto'),
         ),
-        
+
         const SizedBox(width: 4),
-        
+
         // SAR Icon
         SvgPicture.asset(
           'assets/images/icons/Payment_Methods/SAR.svg',
@@ -401,12 +426,12 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
 
   bool _canProceedToPayment(CheckoutState checkoutState, cartState) {
     return !_isProcessingPayment &&
-           cartState.cart != null &&
-           cartState.cart!.isNotEmpty &&
-           checkoutState.selectedLocation != null &&
-           checkoutState.selectedPickupTime != null &&
-           checkoutState.selectedPaymentMethod != null &&
-           checkoutState.error == null;
+        cartState.cart != null &&
+        cartState.cart!.isNotEmpty &&
+        checkoutState.selectedLocation != null &&
+        checkoutState.selectedPickupTime != null &&
+        checkoutState.selectedPaymentMethod != null &&
+        checkoutState.error == null;
   }
 
   Future<void> _processPayment() async {
@@ -418,20 +443,25 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
 
     // TEMPORARY: Bypass all payment logic for UI testing
     // TODO: Re-enable payment processing when UI is complete
-    await Future.delayed(const Duration(seconds: 1)); // Simulate processing time
-    
+    await Future.delayed(
+      const Duration(seconds: 1),
+    ); // Simulate processing time
+
     if (mounted) {
       setState(() {
         _isProcessingPayment = false;
       });
-      
+
       // Direct navigation to success screen with mock data
-      context.go('/checkout/success', extra: {
-        'orderNumber': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
-        'locationName': 'Mall of the Emirates',
-        'locationAddress': 'North Beach, Jumeirah 1, Dubai, UAE',
-        'estimatedTime': '25-30 minutes',
-      });
+      context.go(
+        '/checkout/success',
+        extra: {
+          'orderNumber': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
+          'locationName': 'Mall of the Emirates',
+          'locationAddress': 'North Beach, Jumeirah 1, Dubai, UAE',
+          'estimatedTime': '25-30 minutes',
+        },
+      );
     }
 
     /* COMMENTED OUT - PAYMENT LOGIC TO RE-ENABLE LATER
@@ -481,7 +511,6 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
     */
   }
 
-
   void _showPaymentErrorDialog(String message) {
     showDialog(
       context: context,
@@ -490,11 +519,7 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 24,
-            ),
+            Icon(Icons.error_outline, color: Colors.red, size: 24),
             SizedBox(width: 12),
             Text(
               'Payment Failed',
@@ -508,10 +533,7 @@ class _ReviewOrderScreenState extends ConsumerState<ReviewOrderScreen> {
         ),
         content: Text(
           message,
-          style: const TextStyle(
-            color: Color(0xCCFEFEFF),
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Color(0xCCFEFEFF), fontSize: 14),
         ),
         actions: [
           TextButton(

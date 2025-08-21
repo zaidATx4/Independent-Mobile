@@ -59,6 +59,9 @@ dependencies:
   # Video player
   video_player: ^2.8.1
   meta: ^1.16.0
+  
+  # Cryptographic functions
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

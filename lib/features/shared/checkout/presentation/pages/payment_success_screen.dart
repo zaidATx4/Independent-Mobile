@@ -8,7 +8,7 @@ class PaymentSuccessScreen extends ConsumerWidget {
   final String? locationName;
   final String? locationAddress;
   final String? estimatedTime;
-  
+
   const PaymentSuccessScreen({
     super.key,
     this.orderNumber,
@@ -19,6 +19,8 @@ class PaymentSuccessScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -30,17 +32,12 @@ class PaymentSuccessScreen extends ConsumerWidget {
         child: Column(
           children: [
             // Header with back button in SafeArea
-            SafeArea(
-              child: _buildHeader(context),
-            ),
-            
+            SafeArea(child: _buildHeader(context)),
+
             const Spacer(),
-            
+
             // Glass blur overlay with success details - extends to bottom
-            Expanded(
-              flex: 0,
-              child: _buildGlassmorphismOverlay(context),
-            ),
+            Expanded(flex: 0, child: _buildGlassmorphismOverlay(context, isDarkMode)),
           ],
         ),
       ),
@@ -80,7 +77,7 @@ class PaymentSuccessScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildGlassmorphismOverlay(BuildContext context) {
+  Widget _buildGlassmorphismOverlay(BuildContext context, bool isDarkMode) {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(40),
@@ -92,22 +89,27 @@ class PaymentSuccessScreen extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             // Combined gradient: black 0.1 opacity + white 0.25 opacity
-            color: const Color.fromRGBO(255, 255, 255, 0.25).withValues(alpha: 0.35),
+            color: const Color.fromRGBO(
+              255,
+              255,
+              255,
+              0.25,
+            ).withValues(alpha: 0.35),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(40),
               topRight: Radius.circular(40),
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-            child: _buildSuccessContent(context),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: _buildSuccessContent(context, isDarkMode),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSuccessContent(BuildContext context) {
+  Widget _buildSuccessContent(BuildContext context, bool isDarkMode) {
     return Column(
       children: [
         // Success title and message
@@ -123,9 +125,9 @@ class PaymentSuccessScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             const Text(
               'Thank you for your order! Your food is being prepared with love and care.',
               style: TextStyle(
@@ -135,18 +137,18 @@ class PaymentSuccessScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: 32),
           ],
         ),
-        
+
         // Order details
         _buildOrderDetails(),
-        
+
         const SizedBox(height: 32),
-        
+
         // Back to Home button
-        _buildBackToHomeButton(context),
+        _buildBackToHomeButton(context, isDarkMode),
       ],
     );
   }
@@ -161,9 +163,9 @@ class PaymentSuccessScreen extends ConsumerWidget {
           subtitle: locationName ?? 'Mall of the Emirates',
           description: locationAddress ?? 'North Beach, Jumeirah 1, Dubai, UAE',
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Pickup Time
         _buildDetailRow(
           icon: Icons.schedule_outlined,
@@ -193,15 +195,11 @@ class PaymentSuccessScreen extends ConsumerWidget {
               border: Border.all(color: const Color(0x40FEFEFF)),
               borderRadius: BorderRadius.circular(22),
             ),
-            child: Icon(
-              icon,
-              color: const Color(0xCCFEFEFF),
-              size: 16,
-            ),
+            child: Icon(icon, color: const Color(0xCCFEFEFF), size: 16),
           ),
-          
+
           const SizedBox(width: 8),
-          
+
           // Content
           Expanded(
             child: Column(
@@ -216,7 +214,7 @@ class PaymentSuccessScreen extends ConsumerWidget {
                     fontFamily: 'Roboto',
                   ),
                 ),
-                
+
                 if (subtitle.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
@@ -228,7 +226,7 @@ class PaymentSuccessScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
-                
+
                 if (description != null && description.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
@@ -248,14 +246,14 @@ class PaymentSuccessScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBackToHomeButton(BuildContext context) {
+  Widget _buildBackToHomeButton(BuildContext context, bool isDarkMode) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () => GoRouter.of(context).go('/home'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFFFBF1), // indpt/sand color
-          foregroundColor: const Color(0xFF242424), // indpt/accent color
+          backgroundColor: isDarkMode ? const Color(0xFFFFFBF1) : const Color(0xFF1A1A1A), // Light button for dark theme, dark button for light theme
+          foregroundColor: isDarkMode ? const Color(0xFF242424) : const Color(0xFFFEFEFF), // Dark text for dark theme, light text for light theme
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(44),
@@ -273,5 +271,4 @@ class PaymentSuccessScreen extends ConsumerWidget {
       ),
     );
   }
-
 }
