@@ -23,24 +23,25 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                // No horizontal padding so card can be full-bleed
-                child: Column(
-                  children: [
-                    _buildCenteredWalletCard(context),
-                    const SizedBox(height: 140),
-                  ],
-                ),
+      body: Column(
+        children: [
+          SafeArea(
+            bottom: false,
+            child: _buildHeader(context),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              // No horizontal padding so card can be full-bleed
+              child: Column(
+                children: [
+                  _buildCenteredWalletCard(context),
+                  const SizedBox(height: 140),
+                ],
               ),
             ),
-            _buildBottomActions(context),
-          ],
-        ),
+          ),
+          _buildBottomActions(context),
+        ],
       ),
     );
   }
@@ -115,9 +116,9 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
   Widget _buildCenteredWalletCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(32, 40, 32, 40),
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
       decoration: BoxDecoration(
-        color: const Color(0x1A000000), // #0000001A (10% opacity black)
+        color: const Color(0x1A000000), // #0000001A
         borderRadius: BorderRadius.circular(56),
       ),
       child: Column(
@@ -276,14 +277,13 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
 
   Widget _buildBottomActions(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+      padding: EdgeInsets.fromLTRB(24, 12, 24, 28 + MediaQuery.of(context).padding.bottom),
       decoration: const BoxDecoration(
         color: Color(0xFF121212),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(48),
           topRight: Radius.circular(48),
         ),
-        border: Border(top: BorderSide(color: Color(0xFF454545), width: 1)),
       ),
       child: Row(
         children: [

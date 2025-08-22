@@ -57,7 +57,7 @@ class MockCheckoutData {
       displayName: 'Visa ending in 1234',
       lastFourDigits: '1234',
       cardBrand: 'Visa',
-      iconPath: 'assets/images/icons/payment/visa.png',
+      iconPath: 'assets/images/icons/Payment_Methods/Visa.svg',
       isDefault: true,
       requiresBiometric: true,
       secureMetadata: {
@@ -71,7 +71,7 @@ class MockCheckoutData {
       displayName: 'Mastercard ending in 5678',
       lastFourDigits: '5678',
       cardBrand: 'Mastercard',
-      iconPath: 'assets/images/icons/payment/mastercard.png',
+      iconPath: 'assets/images/icons/Payment_Methods/Mastercard.svg',
       isDefault: false,
       requiresBiometric: true,
       secureMetadata: {
@@ -83,7 +83,7 @@ class MockCheckoutData {
       id: 'apple-pay-001',
       type: PaymentMethodType.applePay,
       displayName: 'Apple Pay',
-      iconPath: 'assets/images/icons/payment/apple_pay.png',
+      iconPath: 'assets/images/icons/Payment_Methods/Apple_Pay.svg',
       isDefault: false,
       requiresBiometric: true,
       secureMetadata: {
@@ -95,7 +95,7 @@ class MockCheckoutData {
       id: 'google-pay-001',
       type: PaymentMethodType.googlePay,
       displayName: 'Google Pay',
-      iconPath: 'assets/images/icons/payment/google_pay.png',
+      iconPath: 'assets/images/icons/Payment_Methods/Google_Pay.svg',
       isDefault: false,
       requiresBiometric: false,
       secureMetadata: {
@@ -107,7 +107,7 @@ class MockCheckoutData {
       id: 'wallet-balance',
       type: PaymentMethodType.wallet,
       displayName: 'Wallet Balance (SAR 250.00)',
-      iconPath: 'assets/images/icons/payment/wallet.png',
+      iconPath: 'assets/images/icons/Payment_Methods/Wallet.svg',
       isDefault: false,
       requiresBiometric: false,
       secureMetadata: {

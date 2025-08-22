@@ -35,6 +35,8 @@ import 'package:independent/features/wallet/presentation/pages/transaction_detai
 import 'package:independent/features/wallet/presentation/pages/add_money_screen.dart';
 import 'package:independent/features/wallet/presentation/pages/add_money_confirmation_screen.dart';
 import 'package:independent/features/wallet/presentation/pages/manage_wallet_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/add_wallet_screen.dart';
+import 'package:independent/features/wallet/presentation/pages/wallet_payment_options_screen.dart';
 
 // TESTING FLAG: Set to true to skip authorization flow during development
 const bool BYPASS_AUTH_FOR_TESTING = true;
@@ -249,7 +251,62 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         );
       },
     ),
-    // Add other routes here
+    // Wallet Routes
+    GoRoute(
+      path: '/wallet',
+      builder: (context, state) => const MyWalletsListScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/details/:walletId',
+      builder: (context, state) {
+        final walletId = state.pathParameters['walletId'] ?? 'unknown';
+        return MyWalletScreen(walletId: walletId);
+      },
+    ),
+    GoRoute(
+      path: '/wallet/transactions',
+      builder: (context, state) => const WalletTransactionsScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/transaction-details',
+      builder: (context, state) {
+        final transactionId = state.extra as String? ?? 'unknown';
+        return TransactionDetailScreen(transactionId: transactionId);
+      },
+    ),
+    GoRoute(
+      path: '/wallet/add-money',
+      builder: (context, state) => const AddMoneyScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/add-money/confirm',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final amount = extra?['amount'] as String? ?? '0';
+        final paymentMethod = extra?['paymentMethod'] as String? ?? 'visa';
+        
+        return AddMoneyConfirmationScreen(
+          amount: amount,
+          paymentMethod: paymentMethod,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/wallet/manage',
+      builder: (context, state) => const ManageWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/add',
+      builder: (context, state) => const AddWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallets/add',
+      builder: (context, state) => const AddWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/payment-options',
+      builder: (context, state) => const WalletPaymentOptionsScreen(),
+    ),
   ],
   );
 });
@@ -588,6 +645,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/wallet/manage',
       builder: (context, state) => const ManageWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/add',
+      builder: (context, state) => const AddWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallets/add',
+      builder: (context, state) => const AddWalletScreen(),
+    ),
+    GoRoute(
+      path: '/wallet/payment-options',
+      builder: (context, state) => const WalletPaymentOptionsScreen(),
     ),
     // Add other routes here
   ],

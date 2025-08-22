@@ -132,7 +132,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  // TODO: Navigate to add wallet screen
+                  context.push('/wallet/add');
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: const Icon(

@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Wallet management screen
-/// Allows editing wallet settings like name, amount, renewal period, etc.
-class ManageWalletScreen extends ConsumerStatefulWidget {
-  const ManageWalletScreen({super.key});
+class AddWalletScreen extends ConsumerStatefulWidget {
+  const AddWalletScreen({super.key});
 
   @override
-  ConsumerState<ManageWalletScreen> createState() => _ManageWalletScreenState();
+  ConsumerState<AddWalletScreen> createState() => _AddWalletScreenState();
 }
 
-class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
+class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
   final _walletNameController = TextEditingController();
   final _spendingLimitController = TextEditingController();
   final _resetDateController = TextEditingController();
@@ -21,22 +19,13 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
   bool _spendingLimitEnabled = true;
 
   @override
-  void initState() {
-    super.initState();
-    // Pre-populate with existing wallet data
-    _walletNameController.text = 'Daily Meal Wallet';
-    _spendingLimitController.text = '900';
-    _resetDateController.text = '25 - Apr - 2025';
-  }
-
-  @override
   void dispose() {
     _walletNameController.dispose();
     _spendingLimitController.dispose();
     _resetDateController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +80,7 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
           const SizedBox(width: 16),
           const Expanded(
             child: Text(
-              'Manage Wallet',
+              'Add Wallet',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -394,37 +383,6 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
     );
   }
 
-  Widget _buildCustomSwitch() {
-    return GestureDetector(
-      onTap: () => setState(() => _spendingLimitEnabled = !_spendingLimitEnabled),
-      child: Container(
-        width: 50,
-        height: 30,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: _spendingLimitEnabled 
-              ? const Color(0xFFFFFBF1) // Background when selected
-              : const Color(0xFF9C9C9D), // Background when not selected
-        ),
-        child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
-          alignment: _spendingLimitEnabled ? Alignment.centerRight : Alignment.centerLeft,
-          child: Container(
-            width: 26,
-            height: 26,
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _spendingLimitEnabled 
-                  ? const Color(0xFF1E1E1E) // Dot color when selected
-                  : const Color(0xFF1A1A1A), // Dot color when not selected
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildBottomButton(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(24, 12, 24, 28 + MediaQuery.of(context).padding.bottom),
@@ -445,10 +403,41 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
             ),
           ),
           onPressed: () {
-            // Navigate to payment options screen for wallet management
+            // Navigate to payment options screen
             context.push('/wallet/payment-options');
           },
           child: const Text('Next'),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomSwitch() {
+    return GestureDetector(
+      onTap: () => setState(() => _spendingLimitEnabled = !_spendingLimitEnabled),
+      child: Container(
+        width: 50,
+        height: 30,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: _spendingLimitEnabled 
+              ? const Color(0xFFFFFBF1) // Background when selected (#FFFBF1)
+              : const Color(0xFF9C9C9D), // Background when not selected (#9C9C9D)
+        ),
+        child: AnimatedAlign(
+          duration: const Duration(milliseconds: 200),
+          alignment: _spendingLimitEnabled ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            width: 26,
+            height: 26,
+            margin: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _spendingLimitEnabled 
+                  ? const Color(0xFF1E1E1E) // Dot color when selected
+                  : const Color(0xFF1A1A1A), // Dot color when not selected
+            ),
+          ),
         ),
       ),
     );
@@ -477,16 +466,8 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
     
     if (picked != null) {
       setState(() {
-        _resetDateController.text = '${picked.day} - ${_getMonthName(picked.month)} - ${picked.year}';
+        _resetDateController.text = '${picked.day}/${picked.month}/${picked.year}';
       });
     }
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return months[month - 1];
   }
 }
