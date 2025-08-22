@@ -7,10 +7,12 @@ class WalletPaymentOptionsScreen extends ConsumerStatefulWidget {
   const WalletPaymentOptionsScreen({super.key});
 
   @override
-  ConsumerState<WalletPaymentOptionsScreen> createState() => _WalletPaymentOptionsScreenState();
+  ConsumerState<WalletPaymentOptionsScreen> createState() =>
+      _WalletPaymentOptionsScreenState();
 }
 
-class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOptionsScreen> {
+class _WalletPaymentOptionsScreenState
+    extends ConsumerState<WalletPaymentOptionsScreen> {
   String? _selectedPaymentMethod;
 
   final List<PaymentOption> _paymentOptions = [
@@ -46,13 +48,8 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
       backgroundColor: const Color(0xFF1A1A1A),
       body: Column(
         children: [
-          SafeArea(
-            bottom: false,
-            child: _buildHeader(context),
-          ),
-          Expanded(
-            child: _buildPaymentOptionsList(),
-          ),
+          SafeArea(bottom: false, child: _buildHeader(context)),
+          Expanded(child: _buildPaymentOptionsList()),
           _buildBottomButton(context),
         ],
       ),
@@ -125,7 +122,7 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
         final option = _paymentOptions[index];
         final isSelected = _selectedPaymentMethod == option.id;
         final isFirst = index == 0;
-        
+
         return Column(
           children: [
             // Top border for first item
@@ -173,7 +170,7 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
               ),
             ),
             const SizedBox(width: 16),
-            
+
             // Payment method details
             Expanded(
               child: Column(
@@ -198,7 +195,7 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
                 ],
               ),
             ),
-            
+
             // Selection radio button
             Container(
               width: 24,
@@ -206,7 +203,9 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFFFFFBF1) : const Color(0xFF9C9C9D),
+                  color: isSelected
+                      ? const Color(0xFFFFFBF1)
+                      : const Color(0xFF9C9C9D),
                   width: 2,
                 ),
                 color: Colors.transparent,
@@ -246,16 +245,21 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
 
   Widget _buildBottomButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 12, 24, 28 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        MediaQuery.of(context).padding.bottom,
+      ),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: _selectedPaymentMethod != null 
-                ? const Color(0xFFFFFBF1) 
+            backgroundColor: _selectedPaymentMethod != null
+                ? const Color(0xFFFFFBF1)
                 : const Color(0xFF454545),
-            foregroundColor: _selectedPaymentMethod != null 
-                ? const Color(0xFF242424) 
+            foregroundColor: _selectedPaymentMethod != null
+                ? const Color(0xFF242424)
                 : const Color(0xFF9C9C9D),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40),
@@ -267,7 +271,7 @@ class _WalletPaymentOptionsScreenState extends ConsumerState<WalletPaymentOption
               fontWeight: FontWeight.w700,
             ),
           ),
-          onPressed: _selectedPaymentMethod != null 
+          onPressed: _selectedPaymentMethod != null
               ? () {
                   // TODO: Implement payment confirmation logic
                   context.pop();

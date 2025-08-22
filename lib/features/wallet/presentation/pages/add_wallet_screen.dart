@@ -13,7 +13,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
   final _walletNameController = TextEditingController();
   final _spendingLimitController = TextEditingController();
   final _resetDateController = TextEditingController();
-  
+
   String _selectedAmount = '1000';
   String _selectedPeriod = 'Monthly';
   bool _spendingLimitEnabled = true;
@@ -32,10 +32,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
       backgroundColor: const Color(0xFF1A1A1A),
       body: Column(
         children: [
-          SafeArea(
-            bottom: false,
-            child: _buildHeader(context),
-          ),
+          SafeArea(bottom: false, child: _buildHeader(context)),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -136,16 +133,10 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const SizedBox(height: 12),
         TextField(
           controller: _walletNameController,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFFFEFEFF),
-          ),
+          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
           decoration: InputDecoration(
             hintText: 'Enter wallet name',
-            hintStyle: const TextStyle(
-              fontSize: 16,
-              color: Color(0x80FEFEFF),
-            ),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
             filled: false,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(100),
@@ -159,7 +150,10 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
               borderRadius: BorderRadius.circular(100),
               borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
         ),
       ],
@@ -168,7 +162,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
 
   Widget _buildWalletAmountSection() {
     final amounts = ['250', '500', '750', '1000'];
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,16 +180,22 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
             final isSelected = _selectedAmount == amount;
             return Expanded(
               child: Padding(
-                padding: EdgeInsets.only(right: amount != amounts.last ? 12 : 0),
+                padding: EdgeInsets.only(
+                  right: amount != amounts.last ? 12 : 0,
+                ),
                 child: GestureDetector(
                   onTap: () => setState(() => _selectedAmount = amount),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: isSelected ? const Color(0xFFFFFBF1) : Colors.transparent,
+                      color: isSelected
+                          ? const Color(0xFFFFFBF1)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(
-                        color: isSelected ? const Color(0xFFFFFBF1) : const Color(0xFFFEFEFF),
+                        color: isSelected
+                            ? const Color(0xFFFFFBF1)
+                            : const Color(0xFFFEFEFF),
                         width: 1,
                       ),
                     ),
@@ -205,7 +205,9 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: isSelected ? const Color(0xFF242424) : const Color(0xFFFEFEFF),
+                        color: isSelected
+                            ? const Color(0xFF242424)
+                            : const Color(0xFFFEFEFF),
                       ),
                     ),
                   ),
@@ -220,7 +222,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
 
   Widget _buildRenewalPeriodSection() {
     final periods = ['Weekly', 'Monthly'];
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,12 +243,19 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
               child: GestureDetector(
                 onTap: () => setState(() => _selectedPeriod = period),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFFFFFBF1) : Colors.transparent,
+                    color: isSelected
+                        ? const Color(0xFFFFFBF1)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
-                      color: isSelected ? const Color(0xFFFFFBF1) : const Color(0xFFFEFEFF),
+                      color: isSelected
+                          ? const Color(0xFFFFFBF1)
+                          : const Color(0xFFFEFEFF),
                       width: 1,
                     ),
                   ),
@@ -255,7 +264,9 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: isSelected ? const Color(0xFF242424) : const Color(0xFFFEFEFF),
+                      color: isSelected
+                          ? const Color(0xFF242424)
+                          : const Color(0xFFFEFEFF),
                     ),
                   ),
                 ),
@@ -283,16 +294,10 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         TextField(
           controller: _resetDateController,
           readOnly: true,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFFFEFEFF),
-          ),
+          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
           decoration: InputDecoration(
             hintText: 'Reset renewal date',
-            hintStyle: const TextStyle(
-              fontSize: 16,
-              color: Color(0x80FEFEFF),
-            ),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
             filled: false,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(100),
@@ -314,7 +319,10 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                 size: 20,
               ),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
           onTap: () => _selectDate(context),
         ),
@@ -343,19 +351,13 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const SizedBox(height: 8),
         const Text(
           'Set your own spending limit based on your preferences and budget control needs.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Color(0xCCFEFEFF),
-          ),
+          style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
         ),
         if (_spendingLimitEnabled) ...[
           const SizedBox(height: 16),
           TextField(
             controller: _spendingLimitController,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Color(0xFFFEFEFF),
-            ),
+            style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
             decoration: InputDecoration(
               hintText: 'Set spending limit',
               hintStyle: const TextStyle(
@@ -365,17 +367,29 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
               filled: false,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(100),
-                borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+                borderSide: const BorderSide(
+                  color: Color(0xFFFEFEFF),
+                  width: 1,
+                ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(100),
-                borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+                borderSide: const BorderSide(
+                  color: Color(0xFFFEFEFF),
+                  width: 1,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(100),
-                borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
+                borderSide: const BorderSide(
+                  color: Color(0xFFFFFBF1),
+                  width: 1,
+                ),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
             ),
           ),
         ],
@@ -385,7 +399,12 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
 
   Widget _buildBottomButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 12, 24, 28 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        MediaQuery.of(context).padding.bottom,
+      ),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -414,26 +433,31 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
 
   Widget _buildCustomSwitch() {
     return GestureDetector(
-      onTap: () => setState(() => _spendingLimitEnabled = !_spendingLimitEnabled),
+      onTap: () =>
+          setState(() => _spendingLimitEnabled = !_spendingLimitEnabled),
       child: Container(
         width: 50,
         height: 30,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: _spendingLimitEnabled 
+          color: _spendingLimitEnabled
               ? const Color(0xFFFFFBF1) // Background when selected (#FFFBF1)
-              : const Color(0xFF9C9C9D), // Background when not selected (#9C9C9D)
+              : const Color(
+                  0xFF9C9C9D,
+                ), // Background when not selected (#9C9C9D)
         ),
         child: AnimatedAlign(
           duration: const Duration(milliseconds: 200),
-          alignment: _spendingLimitEnabled ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: _spendingLimitEnabled
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
           child: Container(
             width: 26,
             height: 26,
             margin: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _spendingLimitEnabled 
+              color: _spendingLimitEnabled
                   ? const Color(0xFF1E1E1E) // Dot color when selected
                   : const Color(0xFF1A1A1A), // Dot color when not selected
             ),
@@ -463,10 +487,11 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         );
       },
     );
-    
+
     if (picked != null) {
       setState(() {
-        _resetDateController.text = '${picked.day}/${picked.month}/${picked.year}';
+        _resetDateController.text =
+            '${picked.day}/${picked.month}/${picked.year}';
       });
     }
   }

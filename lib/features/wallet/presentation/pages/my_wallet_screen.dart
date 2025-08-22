@@ -25,10 +25,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
       backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
       body: Column(
         children: [
-          SafeArea(
-            bottom: false,
-            child: _buildHeader(context),
-          ),
+          SafeArea(bottom: false, child: _buildHeader(context)),
           Expanded(
             child: SingleChildScrollView(
               // No horizontal padding so card can be full-bleed
@@ -277,7 +274,12 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
 
   Widget _buildBottomActions(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(24, 12, 24, 28 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        8 + MediaQuery.of(context).padding.bottom,
+      ),
       decoration: const BoxDecoration(
         color: Color(0xFF121212),
         borderRadius: BorderRadius.only(
