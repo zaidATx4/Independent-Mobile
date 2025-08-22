@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+/// NOTE: Screen redesigned to match new wallet detail design (single centered card
+/// with large balance, reset info, QR code, code fallback, info rows, and bottom
+/// action bar). Old sectioned layout removed.
+
 /// Individual wallet details screen - shows specific wallet details
 /// Displays wallet balance, QR code, and transaction history for a specific wallet
 class MyWalletScreen extends ConsumerStatefulWidget {
   final String walletId;
-  
-  const MyWalletScreen({
-    super.key,
-    required this.walletId,
-  });
+
+  const MyWalletScreen({super.key, required this.walletId});
 
   @override
   ConsumerState<MyWalletScreen> createState() => _MyWalletScreenState();
@@ -25,41 +26,19 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header with back button and title
             _buildHeader(context),
-            
-            // Main content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // No horizontal padding so card can be full-bleed
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
-                    
-                    // Balance cards section
-                    _buildBalanceCards(),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // QR Code section
-                    _buildQRCodeSection(),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Action buttons
-                    _buildActionButtons(),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Recent transactions
-                    _buildRecentTransactionsSection(),
-                    
-                    const SizedBox(height: 100), // Bottom padding
+                    _buildCenteredWalletCard(context),
+                    const SizedBox(height: 140),
                   ],
                 ),
               ),
             ),
+            _buildBottomActions(context),
           ],
         ),
       ),
@@ -67,77 +46,38 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
         children: [
-          // Back button
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFFFEFEFF), // indpt/text primary
-                width: 1,
-              ),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => context.pop(),
-                borderRadius: BorderRadius.circular(20),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Color(0xFFFEFEFF), // indpt/text primary
-                  size: 16,
-                ),
-              ),
+          _circleButton(
+            onTap: () => context.pop(),
+            border: true,
+            child: const Icon(
+              Icons.arrow_back_ios_new,
+              size: 16,
+              color: Color(0xFFFEFEFF),
             ),
           ),
-          
           const SizedBox(width: 16),
-          
-          // Title with dynamic wallet info
-          Expanded(
+          const Expanded(
             child: Text(
-              'Team Lunch Wallet', // This should be dynamic based on walletId in production
-              style: const TextStyle(
-                fontFamily: 'Roboto',
+              'Team Lunch', // TODO: make dynamic
+              style: TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.w700, // Bold
-                color: Color(0xFFFEFEFF), // indpt/text primary
-                height: 32 / 24, // lineHeight
+                fontWeight: FontWeight.w700,
+                color: Color(0xFFFEFEFF),
+                height: 32 / 24,
               ),
             ),
           ),
-          
-          // Menu dots
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFFFEFEFF), // indpt/text primary
-                width: 1,
-              ),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => context.push('/wallet/manage'),
-                borderRadius: BorderRadius.circular(20),
-                child: SvgPicture.asset(
-                  'assets/images/icons/SVGs/3_Dots.svg',
-                  width: 16,
-                  height: 16,
-                  colorFilter: const ColorFilter.mode(
-                    Color(0xFFFEFEFF), // indpt/text primary
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
+          _circleButton(
+            onTap: () => context.push('/wallet/manage'),
+            fill: const Color(0xFFFFFBF1),
+            child: const Icon(
+              Icons.settings,
+              size: 20,
+              color: Color(0xFF242424),
             ),
           ),
         ],
@@ -145,197 +85,187 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
     );
   }
 
-  Widget _buildBalanceCards() {
-    return Column(
-      children: [
-        // Main balance card
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF2A2A2A),
-                Color(0xFF1A1A1A),
-              ],
-            ),
-            border: Border.all(
-              color: const Color(0xFF4D4E52), // indpt/stroke
-              width: 1,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _circleButton({
+    required VoidCallback onTap,
+    required Widget child,
+    bool border = false,
+    Color? fill,
+  }) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: fill ?? Colors.transparent,
+        border: border
+            ? Border.all(color: const Color(0xFFFEFEFF), width: 1)
+            : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: Center(child: child),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCenteredWalletCard(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(32, 40, 32, 40),
+      decoration: BoxDecoration(
+        color: const Color(0x1A000000), // #0000001A (10% opacity black)
+        borderRadius: BorderRadius.circular(56),
+      ),
+      child: Column(
+        children: [
+          // Balance
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'Total Balance',
+                '5,050', // TODO: dynamic
                 style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xCCFEFEFF), // indpt/text secondary
-                  height: 21 / 14,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFFEFEFF),
+                  letterSpacing: 0.5,
                 ),
               ),
-              
-              const SizedBox(height: 8),
-              
-              Row(
-                children: [
-                  const Text(
-                    '4,550',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600, // SemiBold
-                      color: Color(0xFFFEFEFF), // indpt/text primary
-                      height: 48 / 32,
-                    ),
-                  ),
-                  
-                  const SizedBox(width: 8),
-                  
-                  SvgPicture.asset(
-                    'assets/images/icons/Payment_Methods/SAR.svg',
-                    width: 20,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xFFFEFEFF), // indpt/text primary
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 6),
+              SvgPicture.asset(
+                'assets/images/icons/Payment_Methods/SAR.svg',
+                width: 20,
+                height: 24,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFFFEFEFF),
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ),
-        ),
-        
-        const SizedBox(height: 16),
-        
-        // Secondary balance cards
-        Row(
-          children: [
-            // Gift card balance
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color(0xFF2A2A2A),
-                  border: Border.all(
-                    color: const Color(0xFF4D4E52), // indpt/stroke
-                    width: 1,
+          const SizedBox(height: 12),
+          const Text(
+            'Next reset on May 1, 2025', // TODO dynamic reset date
+            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+          ),
+          const SizedBox(height: 40),
+          // QR code container (reduced size) PNG placeholder
+          Container(
+            width: 220,
+            height: 220,
+            decoration: const BoxDecoration(color: Color(0xFFFFFBF1)),
+            alignment: Alignment.center,
+            child: Image.asset(
+              'assets/images/Static/qr.png',
+              width: 180,
+              height: 180,
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 32),
+          const Text(
+            'Scan this code at the counter to pay with your wallet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: Container(height: 1, color: const Color(0xFF454545)),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'Or',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFFEFEFF),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Gift Cards',
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xCCFEFEFF), // indpt/text secondary
-                        height: 18 / 12,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    Row(
-                      children: [
-                        const Text(
-                          '1,105',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFFEFEFF), // indpt/text primary
-                            height: 30 / 20,
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 4),
-                        
-                        SvgPicture.asset(
-                          'assets/images/icons/Payment_Methods/SAR.svg',
-                          width: 12,
-                          height: 14,
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xFFFEFEFF), // indpt/text primary
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              ),
+              Expanded(
+                child: Container(height: 1, color: const Color(0xFF454545)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 28),
+          // Code fallback box
+          GestureDetector(
+            onTap: () {}, // TODO: copy code
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFFFFC940), width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                'ALPHA-12345', // TODO dynamic code
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                  color: Color(0xFFFEFEFF),
                 ),
               ),
             ),
-            
-            const SizedBox(width: 12),
-            
-            // Loyalty points
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color(0xFF2A2A2A),
-                  border: Border.all(
-                    color: const Color(0xFF4D4E52), // indpt/stroke
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Loyalty',
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xCCFEFEFF), // indpt/text secondary
-                        height: 18 / 12,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    Row(
-                      children: [
-                        const Text(
-                          '300',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFFEFEFF), // indpt/text primary
-                            height: 30 / 20,
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 4),
-                        
-                        const Text(
-                          'Pts',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xCCFEFEFF), // indpt/text secondary
-                            height: 18 / 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Provide this code to the staff if scanning is unavailable.',
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.visible,
+            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+          ),
+          const SizedBox(height: 48),
+          _infoRow('Total Amount', '10,000'),
+          const SizedBox(height: 24),
+          _infoRow('Reset Schedule', 'Every 1st of the Month'),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFFFEFEFF),
+            ),
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFFFEFEFF),
+              ),
+            ),
+            const SizedBox(width: 4),
+            SvgPicture.asset(
+              'assets/images/icons/Payment_Methods/SAR.svg',
+              width: 12,
+              height: 14,
+              colorFilter: const ColorFilter.mode(
+                Color(0xFFFEFEFF),
+                BlendMode.srcIn,
               ),
             ),
           ],
@@ -344,311 +274,56 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
     );
   }
 
-  Widget _buildQRCodeSection() {
+  Widget _buildBottomActions(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: const Color(0xFF2A2A2A),
-        border: Border.all(
-          color: const Color(0xFF4D4E52), // indpt/stroke
-          width: 1,
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+      decoration: const BoxDecoration(
+        color: Color(0xFF121212),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(48),
+          topRight: Radius.circular(48),
         ),
-      ),
-      child: Column(
-        children: [
-          // QR Code image
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: const Color(0xFFFEFEFF), // White background for QR
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: SvgPicture.asset(
-                'assets/images/Static/qr_code.svg',
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 16),
-          
-          const Text(
-            'Scan this QR code to pay or send money.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xCCFEFEFF), // indpt/text secondary
-              height: 21 / 14,
-            ),
-          ),
-          
-          const SizedBox(height: 8),
-          
-          const Text(
-            'Share download',
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF9C9C9D), // indpt/text tertiary
-              height: 18 / 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButtons() {
-    return Row(
-      children: [
-        // Transactions button
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(44),
-              border: Border.all(
-                color: const Color(0xFFFEFEFF), // indpt/text primary
-                width: 1,
-              ),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => context.push('/wallet/transactions'),
-                borderRadius: BorderRadius.circular(44),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    'Transactions',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500, // Medium
-                      color: Color(0xFFFEFEFF), // indpt/text primary
-                      height: 24 / 16,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        
-        const SizedBox(width: 12),
-        
-        // Add Money button
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(44),
-              color: const Color(0xFFFFFBF1), // indpt/sand
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => context.push('/wallet/add-money'),
-                borderRadius: BorderRadius.circular(44),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    'Add Money',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500, // Medium
-                      color: Color(0xFF242424), // indpt/accent
-                      height: 24 / 16,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecentTransactionsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Recent Transactions',
-          style: TextStyle(
-            fontFamily: 'Roboto',
-            fontSize: 16,
-            fontWeight: FontWeight.w500, // Medium
-            color: Color(0xFFFEFEFF), // indpt/text primary
-            height: 24 / 16,
-          ),
-        ),
-        
-        const SizedBox(height: 16),
-        
-        // Mock transaction items
-        _buildTransactionItem(
-          title: 'Team Lunch',
-          subtitle: 'Payment to Restaurant',
-          amount: '-125',
-          time: '2h ago',
-          isPayment: true,
-        ),
-        
-        const SizedBox(height: 12),
-        
-        _buildTransactionItem(
-          title: 'Wallet Top-up',
-          subtitle: 'Added via Credit Card',
-          amount: '+500',
-          time: '1 day ago',
-          isPayment: false,
-        ),
-        
-        const SizedBox(height: 12),
-        
-        _buildTransactionItem(
-          title: 'Coffee Break',
-          subtitle: 'Payment to Joe & Juice',
-          amount: '-25',
-          time: '2 days ago',
-          isPayment: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTransactionItem({
-    required String title,
-    required String subtitle,
-    required String amount,
-    required String time,
-    required bool isPayment,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: const Color(0xFF2A2A2A),
-        border: Border.all(
-          color: const Color(0xFF4D4E52), // indpt/stroke
-          width: 1,
-        ),
+        border: Border(top: BorderSide(color: Color(0xFF454545), width: 1)),
       ),
       child: Row(
         children: [
-          // Transaction icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isPayment 
-                  ? const Color(0xFFFF2323).withValues(alpha: 0.1) // Error with opacity
-                  : const Color(0xFF2BE519).withValues(alpha: 0.1), // Success with opacity
-            ),
-            child: Icon(
-              isPayment ? Icons.arrow_outward : Icons.arrow_downward,
-              color: isPayment 
-                  ? const Color(0xFFFF2323) // indpt/Error/500
-                  : const Color(0xFF2BE519), // indpt/Success/500
-              size: 20,
-            ),
-          ),
-          
-          const SizedBox(width: 12),
-          
-          // Transaction details
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500, // Medium
-                    color: Color(0xFFFEFEFF), // indpt/text primary
-                    height: 21 / 14,
-                  ),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFFFEFEFF),
+                side: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
                 ),
-                
-                const SizedBox(height: 2),
-                
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF9C9C9D), // indpt/text tertiary
-                    height: 18 / 12,
-                  ),
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
+              ),
+              onPressed: () => context.push('/wallet/transactions'),
+              child: const Text('Transactions'),
             ),
           ),
-          
-          // Amount and time
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    amount,
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500, // Medium
-                      color: isPayment 
-                          ? const Color(0xFFFF2323) // indpt/Error/500
-                          : const Color(0xFF2BE519), // indpt/Success/500
-                      height: 21 / 14,
-                    ),
-                  ),
-                  
-                  const SizedBox(width: 4),
-                  
-                  SvgPicture.asset(
-                    'assets/images/icons/Payment_Methods/SAR.svg',
-                    width: 10,
-                    height: 12,
-                    colorFilter: ColorFilter.mode(
-                      isPayment 
-                          ? const Color(0xFFFF2323) // indpt/Error/500
-                          : const Color(0xFF2BE519), // indpt/Success/500
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 2),
-              
-              Text(
-                time,
-                style: const TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF9C9C9D), // indpt/text tertiary
-                  height: 15 / 10,
+          const SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFFBF1),
+                foregroundColor: const Color(0xFF242424),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                elevation: 0,
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            ],
+              onPressed: () {}, // TODO: reset logic
+              child: const Text('Reset now'),
+            ),
           ),
         ],
       ),
