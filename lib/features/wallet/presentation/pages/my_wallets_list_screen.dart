@@ -6,6 +6,7 @@ import '../../domain/entities/wallet_entities.dart';
 
 /// My Wallets List Screen - Shows all user wallets
 /// Entry point for wallet management, displays multiple wallet cards
+/// Light theme version matching Figma design specifications
 class MyWalletsListScreen extends ConsumerStatefulWidget {
   const MyWalletsListScreen({super.key});
 
@@ -57,7 +58,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
+      backgroundColor: const Color(0xFFFFFCF5), // dark/neutral (light theme background)
       body: SafeArea(
         child: Column(
           children: [
@@ -86,7 +87,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: const Color(0xFFFEFEFF), // indpt/text primary
+                color: const Color(0xCC1A1A1A), // dark/text secondary (light theme)
                 width: 1,
               ),
             ),
@@ -97,7 +98,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: const Icon(
                   Icons.arrow_back_ios_new,
-                  color: Color(0xFFFEFEFF), // indpt/text primary
+                  color: Color(0xCC1A1A1A), // dark/text secondary (light theme)
                   size: 16,
                 ),
               ),
@@ -114,7 +115,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
                 fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.w700, // Bold
-                color: Color(0xFFFEFEFF), // indpt/text primary
+                color: Color(0xCC1A1A1A), // dark/text secondary (light theme)
                 height: 32 / 24, // line height
               ),
             ),
@@ -126,7 +127,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFFFBF1), // indpt/sand
+              color: const Color(0xFF1A1A1A), // dark/sand (light theme)
             ),
             child: Material(
               color: Colors.transparent,
@@ -137,7 +138,7 @@ class _MyWalletsListScreenState extends ConsumerState<MyWalletsListScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: const Icon(
                   Icons.add,
-                  color: Color(0xFF242424), // indpt/accent
+                  color: Color(0xFFFEFEFF), // dark/accent (light theme)
                   size: 20,
                 ),
               ),

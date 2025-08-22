@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class WalletPaymentOptionsScreen extends ConsumerStatefulWidget {
   const WalletPaymentOptionsScreen({super.key});
@@ -15,48 +16,58 @@ class _WalletPaymentOptionsScreenState
     extends ConsumerState<WalletPaymentOptionsScreen> {
   String? _selectedPaymentMethod;
 
-  final List<PaymentOption> _paymentOptions = [
-    PaymentOption(
-      id: 'visa_4242',
-      icon: 'assets/images/icons/Payment_Methods/Visa.svg',
-      title: 'Visa Ending in 4242',
-      subtitle: 'Expires 08/26',
-    ),
-    PaymentOption(
-      id: 'mastercard_1837',
-      icon: 'assets/images/icons/Payment_Methods/Mastercard.svg',
-      title: 'Mastercard Ending in 1837',
-      subtitle: 'Expires 02/27',
-    ),
-    PaymentOption(
-      id: 'apple_pay',
-      icon: 'assets/images/icons/Payment_Methods/Apple_Pay.svg',
-      title: 'Apple Pay',
-      subtitle: 'Quick checkout using Apple Pay',
-    ),
-    PaymentOption(
-      id: 'google_pay',
-      icon: 'assets/images/icons/Payment_Methods/Google_Pay.svg',
-      title: 'Google Pay',
-      subtitle: 'Quick checkout using Google Pay',
-    ),
-  ];
+  List<PaymentOption> get _paymentOptions {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
+    return [
+      PaymentOption(
+        id: 'visa_4242',
+        icon: 'assets/images/icons/Payment_Methods/Visa.svg',
+        title: 'Visa Ending in 4242',
+        subtitle: 'Expires 08/26',
+      ),
+      PaymentOption(
+        id: 'mastercard_1837',
+        icon: 'assets/images/icons/Payment_Methods/Mastercard.svg',
+        title: 'Mastercard Ending in 1837',
+        subtitle: 'Expires 02/27',
+      ),
+      PaymentOption(
+        id: 'apple_pay',
+        icon: 'assets/images/icons/Payment_Methods/Apple_Pay.svg',
+        title: 'Apple Pay',
+        subtitle: 'Quick checkout using Apple Pay',
+      ),
+      PaymentOption(
+        id: 'google_pay',
+        icon: 'assets/images/icons/Payment_Methods/Google_Pay.svg',
+        title: 'Google Pay',
+        subtitle: 'Quick checkout using Google Pay',
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: isDarkMode
+          ? const Color(0xFF1A1A1A)
+          : AppColors.lightBackground,
       body: Column(
         children: [
-          SafeArea(bottom: false, child: _buildHeader(context)),
-          Expanded(child: _buildPaymentOptionsList()),
-          _buildBottomButton(context),
+          SafeArea(bottom: false, child: _buildHeader(context, isDarkMode)),
+          Expanded(child: _buildPaymentOptionsList(isDarkMode)),
+          _buildBottomButton(context, isDarkMode),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
@@ -64,20 +75,26 @@ class _WalletPaymentOptionsScreenState
           _circleButton(
             onTap: () => context.pop(),
             border: true,
-            child: const Icon(
+            isDarkMode: isDarkMode,
+            child: Icon(
               Icons.arrow_back_ios_new,
               size: 16,
-              color: Color(0xFFFEFEFF),
+              color: isDarkMode
+                  ? const Color(0xFFFEFEFF)
+                  : AppColors.lightOnSurface,
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Text(
               'Payment Options',
               style: TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFFEFEFF),
+                color: isDarkMode
+                    ? const Color(0xFFFEFEFF)
+                    : AppColors.lightOnSurface,
                 height: 32 / 24,
               ),
             ),
@@ -92,6 +109,7 @@ class _WalletPaymentOptionsScreenState
     required Widget child,
     bool border = false,
     Color? fill,
+    bool isDarkMode = true,
   }) {
     return Container(
       width: 40,
@@ -100,7 +118,12 @@ class _WalletPaymentOptionsScreenState
         shape: BoxShape.circle,
         color: fill ?? Colors.transparent,
         border: border
-            ? Border.all(color: const Color(0xFFFEFEFF), width: 1)
+            ? Border.all(
+                color: isDarkMode
+                    ? const Color(0xFFFEFEFF)
+                    : AppColors.lightOnSurface,
+                width: 1,
+              )
             : null,
       ),
       child: Material(
@@ -114,7 +137,7 @@ class _WalletPaymentOptionsScreenState
     );
   }
 
-  Widget _buildPaymentOptionsList() {
+  Widget _buildPaymentOptionsList(bool isDarkMode) {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
       itemCount: _paymentOptions.length,
@@ -129,14 +152,18 @@ class _WalletPaymentOptionsScreenState
             if (isFirst)
               Container(
                 height: 1,
-                color: const Color(0xFF454545),
+                color: isDarkMode
+                    ? const Color(0xFF454545)
+                    : AppColors.lightOutline,
                 margin: const EdgeInsets.only(bottom: 8),
               ),
-            _buildPaymentOptionItem(option, isSelected),
+            _buildPaymentOptionItem(option, isSelected, isDarkMode),
             // Bottom border for all items
             Container(
               height: 1,
-              color: const Color(0xFF454545),
+              color: isDarkMode
+                  ? const Color(0xFF454545)
+                  : AppColors.lightOutline,
               margin: const EdgeInsets.only(top: 4, bottom: 4),
             ),
           ],
@@ -145,7 +172,7 @@ class _WalletPaymentOptionsScreenState
     );
   }
 
-  Widget _buildPaymentOptionItem(PaymentOption option, bool isSelected) {
+  Widget _buildPaymentOptionItem(PaymentOption option, bool isSelected, bool isDarkMode) {
     return GestureDetector(
       onTap: () => setState(() => _selectedPaymentMethod = option.id),
       child: Container(
@@ -163,7 +190,9 @@ class _WalletPaymentOptionsScreenState
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     _getIconForPaymentMethod(option.id),
-                    color: const Color(0xFFFEFEFF),
+                    color: isDarkMode
+                        ? const Color(0xFFFEFEFF)
+                        : AppColors.lightOnSurface,
                     size: 52,
                   );
                 },
@@ -178,18 +207,26 @@ class _WalletPaymentOptionsScreenState
                 children: [
                   Text(
                     option.title,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFFEFEFF),
+                      color: isDarkMode
+                          ? const Color(0xFFFEFEFF)
+                          : AppColors.lightOnSurface,
+                      height: 24 / 16,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     option.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 14,
-                      color: Color(0xCCFEFEFF),
+                      color: isDarkMode
+                          ? const Color(0xCCFEFEFF)
+                          : AppColors.lightOnSurfaceVariant,
+                      height: 21 / 14,
                     ),
                   ),
                 ],
@@ -204,8 +241,12 @@ class _WalletPaymentOptionsScreenState
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFFFFFBF1)
-                      : const Color(0xFF9C9C9D),
+                      ? (isDarkMode
+                            ? const Color(0xFFFFFBF1)
+                            : AppColors.lightOnSurface)
+                      : (isDarkMode
+                            ? const Color(0xFF9C9C9D)
+                            : AppColors.lightOutline),
                   width: 2,
                 ),
                 color: Colors.transparent,
@@ -215,9 +256,11 @@ class _WalletPaymentOptionsScreenState
                       child: Container(
                         width: 12,
                         height: 12,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Color(0xFFFFFBF1),
+                          color: isDarkMode
+                              ? const Color(0xFFFFFBF1)
+                              : AppColors.lightOnSurface,
                         ),
                       ),
                     )
@@ -243,7 +286,9 @@ class _WalletPaymentOptionsScreenState
     }
   }
 
-  Widget _buildBottomButton(BuildContext context) {
+  Widget _buildBottomButton(BuildContext context, bool isDarkMode) {
+    final canProceed = _selectedPaymentMethod != null;
+    
     return Padding(
       padding: EdgeInsets.fromLTRB(
         24,
@@ -255,23 +300,33 @@ class _WalletPaymentOptionsScreenState
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: _selectedPaymentMethod != null
-                ? const Color(0xFFFFFBF1)
-                : const Color(0xFF454545),
-            foregroundColor: _selectedPaymentMethod != null
-                ? const Color(0xFF242424)
-                : const Color(0xFF9C9C9D),
+            backgroundColor: canProceed
+                ? (isDarkMode
+                      ? const Color(0xFFFFFBF1)
+                      : const Color(0xFF1A1A1A))
+                : (isDarkMode
+                      ? const Color(0xFF454545)
+                      : const Color(0xFF454545)),
+            foregroundColor: canProceed
+                ? (isDarkMode
+                      ? const Color(0xFF242424)
+                      : const Color(0xFFFEFEFF))
+                : (isDarkMode
+                      ? const Color(0xFF9C9C9D)
+                      : const Color(0xFF9C9C9D)),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40),
             ),
             padding: const EdgeInsets.symmetric(vertical: 18),
             elevation: 0,
             textStyle: const TextStyle(
+              fontFamily: 'Roboto',
               fontSize: 16,
               fontWeight: FontWeight.w700,
+              height: 24 / 16,
             ),
           ),
-          onPressed: _selectedPaymentMethod != null
+          onPressed: canProceed
               ? () {
                   // TODO: Implement payment confirmation logic
                   context.pop();

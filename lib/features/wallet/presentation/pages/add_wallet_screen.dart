@@ -29,7 +29,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFFFFFCF5),
       body: Column(
         children: [
           SafeArea(bottom: false, child: _buildHeader(context)),
@@ -71,7 +71,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
             child: const Icon(
               Icons.arrow_back_ios_new,
               size: 16,
-              color: Color(0xFFFEFEFF),
+              color: Color(0xFF1A1A1A),
             ),
           ),
           const SizedBox(width: 16),
@@ -81,7 +81,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xCC1A1A1A),
                 height: 32 / 24,
               ),
             ),
@@ -104,7 +104,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         shape: BoxShape.circle,
         color: fill ?? Colors.transparent,
         border: border
-            ? Border.all(color: const Color(0xFFFEFEFF), width: 1)
+            ? Border.all(color: const Color(0xFF1A1A1A), width: 1)
             : null,
       ),
       child: Material(
@@ -125,30 +125,30 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const Text(
           'Wallet Name',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A),
           ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _walletNameController,
-          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+          style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)),
           decoration: InputDecoration(
             hintText: 'Enter wallet name',
-            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0xFF878787)),
             filled: false,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xFF1A1A1A), width: 1),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -169,9 +169,9 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const Text(
           'Wallet Amount',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A),
           ),
         ),
         const SizedBox(height: 12),
@@ -189,13 +189,11 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFFFFFBF1)
+                          ? const Color(0xFF1A1A1A)
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: BorderRadius.circular(44),
                       border: Border.all(
-                        color: isSelected
-                            ? const Color(0xFFFFFBF1)
-                            : const Color(0xFFFEFEFF),
+                        color: const Color(0xFF1A1A1A),
                         width: 1,
                       ),
                     ),
@@ -206,8 +204,8 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: isSelected
-                            ? const Color(0xFF242424)
-                            : const Color(0xFFFEFEFF),
+                            ? const Color(0xFFFEFEFF)
+                            : const Color(0xFF1A1A1A),
                       ),
                     ),
                   ),
@@ -229,9 +227,9 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const Text(
           'Renewal Period',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A),
           ),
         ),
         const SizedBox(height: 12),
@@ -249,13 +247,11 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFFFFFBF1)
+                        ? const Color(0xFF1A1A1A)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: BorderRadius.circular(44),
                     border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFFFFFBF1)
-                          : const Color(0xFFFEFEFF),
+                      color: const Color(0xFF1A1A1A),
                       width: 1,
                     ),
                   ),
@@ -265,8 +261,8 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: isSelected
-                          ? const Color(0xFF242424)
-                          : const Color(0xFFFEFEFF),
+                          ? const Color(0xFFFEFEFF)
+                          : const Color(0xFF1A1A1A),
                     ),
                   ),
                 ),
@@ -285,37 +281,37 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const Text(
           'Reset Day',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A),
           ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _resetDateController,
           readOnly: true,
-          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+          style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)),
           decoration: InputDecoration(
             hintText: 'Reset renewal date',
-            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0xFF878787)),
             filled: false,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xFF1A1A1A), width: 1),
             ),
             suffixIcon: const Padding(
               padding: EdgeInsets.only(right: 16),
               child: Icon(
                 Icons.calendar_today,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xCC1A1A1A),
                 size: 20,
               ),
             ),
@@ -340,9 +336,9 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
             const Text(
               'Spending Limit',
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFFFEFEFF),
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xCC1A1A1A),
               ),
             ),
             _buildCustomSwitch(),
@@ -351,38 +347,38 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         const SizedBox(height: 8),
         const Text(
           'Set your own spending limit based on your preferences and budget control needs.',
-          style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF878787)),
         ),
         if (_spendingLimitEnabled) ...[
           const SizedBox(height: 16),
           TextField(
             controller: _spendingLimitController,
-            style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+            style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)),
             decoration: InputDecoration(
               hintText: 'Set spending limit',
               hintStyle: const TextStyle(
                 fontSize: 16,
-                color: Color(0x80FEFEFF),
+                color: Color(0xFF878787),
               ),
               filled: false,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xA31A1A1A),
                   width: 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xA31A1A1A),
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFFFBF1),
+                  color: Color(0xFF1A1A1A),
                   width: 1,
                 ),
               ),
@@ -409,8 +405,8 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFFFBF1),
-            foregroundColor: const Color(0xFF242424),
+            backgroundColor: const Color(0xFF1A1A1A),
+            foregroundColor: const Color(0xFFFEFEFF),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40),
             ),
@@ -441,7 +437,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: _spendingLimitEnabled
-              ? const Color(0xFFFFFBF1) // Background when selected (#FFFBF1)
+              ? const Color(0xFF1A1A1A) // Background when selected (dark)
               : const Color(
                   0xFF9C9C9D,
                 ), // Background when not selected (#9C9C9D)
@@ -458,7 +454,7 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _spendingLimitEnabled
-                  ? const Color(0xFF1E1E1E) // Dot color when selected
+                  ? const Color(0xFFFEFEFF) // Dot color when selected (white)
                   : const Color(0xFF1A1A1A), // Dot color when not selected
             ),
           ),
@@ -476,11 +472,11 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFFFFFBF1),
-              onPrimary: Color(0xFF242424),
-              surface: Color(0xFF2A2A2A),
-              onSurface: Color(0xFFFEFEFF),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF1A1A1A),
+              onPrimary: Color(0xFFFEFEFF),
+              surface: Color(0xFFFEFEFF),
+              onSurface: Color(0xFF1A1A1A),
             ),
           ),
           child: child!,

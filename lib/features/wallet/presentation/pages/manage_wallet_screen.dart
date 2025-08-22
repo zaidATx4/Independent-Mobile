@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Wallet management screen
+/// Wallet management screen - Light Theme
 /// Allows editing wallet settings like name, amount, renewal period, etc.
+/// Converted to light theme to match Figma design specifications
 class ManageWalletScreen extends ConsumerStatefulWidget {
   const ManageWalletScreen({super.key});
 
@@ -40,7 +41,7 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFFFFFCF5), // dark/neutral (light theme background)
       body: Column(
         children: [
           SafeArea(bottom: false, child: _buildHeader(context)),
@@ -82,7 +83,7 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
             child: const Icon(
               Icons.arrow_back_ios_new,
               size: 16,
-              color: Color(0xFFFEFEFF),
+              color: Color(0xFF1A1A1A), // dark/sand (dark icon for light background)
             ),
           ),
           const SizedBox(width: 16),
@@ -92,7 +93,7 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xCC1A1A1A), // dark/text secondary (dark text with opacity)
                 height: 32 / 24,
               ),
             ),
@@ -115,7 +116,7 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         shape: BoxShape.circle,
         color: fill ?? Colors.transparent,
         border: border
-            ? Border.all(color: const Color(0xFFFEFEFF), width: 1)
+            ? Border.all(color: const Color(0xFF1A1A1A), width: 1) // dark border for light theme
             : null,
       ),
       child: Material(
@@ -136,30 +137,30 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         const Text(
           'Wallet Name',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A), // dark/text secondary
           ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _walletNameController,
-          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+          style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)), // dark/text primary
           decoration: InputDecoration(
             hintText: 'Enter wallet name',
-            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80878787)), // dark/text tertiary with opacity
             filled: false,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1), // dark border with opacity
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1), // dark border with opacity
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xFF1A1A1A), width: 1), // darker border on focus
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -180,9 +181,9 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         const Text(
           'Wallet Amount',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A), // dark/text secondary
           ),
         ),
         const SizedBox(height: 12),
@@ -200,13 +201,11 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFFFFFBF1)
+                          ? const Color(0xFF1A1A1A) // dark background for selected
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: BorderRadius.circular(44),
                       border: Border.all(
-                        color: isSelected
-                            ? const Color(0xFFFFFBF1)
-                            : const Color(0xFFFEFEFF),
+                        color: const Color(0xFF1A1A1A), // always dark border
                         width: 1,
                       ),
                     ),
@@ -217,8 +216,8 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: isSelected
-                            ? const Color(0xFF242424)
-                            : const Color(0xFFFEFEFF),
+                            ? const Color(0xFFFEFEFF) // light text for selected (dark background)
+                            : const Color(0xFF1A1A1A), // dark text for unselected
                       ),
                     ),
                   ),
@@ -240,9 +239,9 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         const Text(
           'Renewal Period',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A), // dark/text secondary
           ),
         ),
         const SizedBox(height: 12),
@@ -260,13 +259,11 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFFFFFBF1)
+                        ? const Color(0xFF1A1A1A) // dark background for selected
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: BorderRadius.circular(44),
                     border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFFFFFBF1)
-                          : const Color(0xFFFEFEFF),
+                      color: const Color(0xFF1A1A1A), // always dark border
                       width: 1,
                     ),
                   ),
@@ -276,8 +273,8 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: isSelected
-                          ? const Color(0xFF242424)
-                          : const Color(0xFFFEFEFF),
+                          ? const Color(0xFFFEFEFF) // light text for selected (dark background)
+                          : const Color(0xFF1A1A1A), // dark text for unselected
                     ),
                   ),
                 ),
@@ -296,37 +293,37 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         const Text(
           'Reset Day',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFFEFEFF),
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xCC1A1A1A), // dark/text secondary
           ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _resetDateController,
           readOnly: true,
-          style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+          style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)), // dark/text primary
           decoration: InputDecoration(
             hintText: 'Reset renewal date',
-            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80FEFEFF)),
+            hintStyle: const TextStyle(fontSize: 16, color: Color(0x80878787)), // dark/text tertiary with opacity
             filled: false,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1), // dark border with opacity
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xA31A1A1A), width: 1), // dark border with opacity
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
-              borderSide: const BorderSide(color: Color(0xFFFFFBF1), width: 1),
+              borderRadius: BorderRadius.circular(34),
+              borderSide: const BorderSide(color: Color(0xFF1A1A1A), width: 1), // darker border on focus
             ),
             suffixIcon: const Padding(
               padding: EdgeInsets.only(right: 16),
               child: Icon(
                 Icons.calendar_today,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xCC1A1A1A), // dark icon with opacity
                 size: 20,
               ),
             ),
@@ -351,9 +348,9 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
             const Text(
               'Spending Limit',
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFFFEFEFF),
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xCC1A1A1A), // dark/text secondary
               ),
             ),
             _buildCustomSwitch(),
@@ -362,38 +359,38 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         const SizedBox(height: 8),
         const Text(
           'Set your own spending limit based on your preferences and budget control needs.',
-          style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF878787)), // dark/text tertiary
         ),
         if (_spendingLimitEnabled) ...[
           const SizedBox(height: 16),
           TextField(
             controller: _spendingLimitController,
-            style: const TextStyle(fontSize: 16, color: Color(0xFFFEFEFF)),
+            style: const TextStyle(fontSize: 16, color: Color(0xFF1A1A1A)), // dark/text primary
             decoration: InputDecoration(
               hintText: 'Set spending limit',
               hintStyle: const TextStyle(
                 fontSize: 16,
-                color: Color(0x80FEFEFF),
+                color: Color(0x80878787), // dark/text tertiary with opacity
               ),
               filled: false,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xA31A1A1A), // dark border with opacity
                   width: 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xA31A1A1A), // dark border with opacity
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(34),
                 borderSide: const BorderSide(
-                  color: Color(0xFFFFFBF1),
+                  color: Color(0xFF1A1A1A), // darker border on focus
                   width: 1,
                 ),
               ),
@@ -416,10 +413,10 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         width: 50,
         height: 30,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(25),
           color: _spendingLimitEnabled
-              ? const Color(0xFFFFFBF1) // Background when selected
-              : const Color(0xFF9C9C9D), // Background when not selected
+              ? const Color(0xFF1A1A1A) // dark background when selected
+              : const Color(0xFF9C9C9D), // gray background when not selected
         ),
         child: AnimatedAlign(
           duration: const Duration(milliseconds: 200),
@@ -433,8 +430,8 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _spendingLimitEnabled
-                  ? const Color(0xFF1E1E1E) // Dot color when selected
-                  : const Color(0xFF1A1A1A), // Dot color when not selected
+                  ? const Color(0xFFFEFEFF) // light dot when selected (on dark background)
+                  : const Color(0xFF1A1A1A), // dark dot when not selected
             ),
           ),
         ),
@@ -454,10 +451,10 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFFFBF1),
-            foregroundColor: const Color(0xFF242424),
+            backgroundColor: const Color(0xFF1A1A1A), // dark background for light theme
+            foregroundColor: const Color(0xFFFEFEFF), // light text on dark background
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.circular(44),
             ),
             padding: const EdgeInsets.symmetric(vertical: 18),
             elevation: 0,
@@ -485,11 +482,11 @@ class _ManageWalletScreenState extends ConsumerState<ManageWalletScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFFFFFBF1),
-              onPrimary: Color(0xFF242424),
-              surface: Color(0xFF2A2A2A),
-              onSurface: Color(0xFFFEFEFF),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF1A1A1A), // dark primary for light theme
+              onPrimary: Color(0xFFFEFEFF), // light text on dark primary
+              surface: Color(0xFFFFFCF5), // light surface
+              onSurface: Color(0xFF1A1A1A), // dark text on light surface
             ),
           ),
           child: child!,

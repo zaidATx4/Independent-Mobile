@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 /// Individual wallet details screen - shows specific wallet details
 /// Displays wallet balance, QR code, and transaction history for a specific wallet
+/// Light theme version matching Figma design specifications
 class MyWalletScreen extends ConsumerStatefulWidget {
   final String walletId;
 
@@ -22,7 +23,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // indpt/neutral
+      backgroundColor: const Color(0xFFFFFCF5), // dark/neutral (light theme background)
       body: Column(
         children: [
           SafeArea(bottom: false, child: _buildHeader(context)),
@@ -54,7 +55,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
             child: const Icon(
               Icons.arrow_back_ios_new,
               size: 16,
-              color: Color(0xFFFEFEFF),
+              color: Color(0xCC1A1A1A), // dark/text secondary (light theme)
             ),
           ),
           const SizedBox(width: 16),
@@ -64,18 +65,18 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xCC1A1A1A), // dark/text secondary (light theme)
                 height: 32 / 24,
               ),
             ),
           ),
           _circleButton(
             onTap: () => context.push('/wallet/manage'),
-            fill: const Color(0xFFFFFBF1),
+            fill: const Color(0xFF1A1A1A), // dark/sand (light theme)
             child: const Icon(
               Icons.settings,
               size: 20,
-              color: Color(0xFF242424),
+              color: Color(0xFFFEFEFF), // dark/accent (light theme)
             ),
           ),
         ],
@@ -96,7 +97,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
         shape: BoxShape.circle,
         color: fill ?? Colors.transparent,
         border: border
-            ? Border.all(color: const Color(0xFFFEFEFF), width: 1)
+            ? Border.all(color: const Color(0xCC1A1A1A), width: 1) // dark/text secondary (light theme)
             : null,
       ),
       child: Material(
@@ -115,7 +116,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
       decoration: BoxDecoration(
-        color: const Color(0x1A000000), // #0000001A
+        color: const Color(0x0C1A1A1A), // Light theme card background - subtle dark overlay
         borderRadius: BorderRadius.circular(56),
       ),
       child: Column(
@@ -130,7 +131,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xFF1A1A1A), // dark/text primary (light theme)
                   letterSpacing: 0.5,
                 ),
               ),
@@ -140,7 +141,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
                 width: 20,
                 height: 24,
                 colorFilter: const ColorFilter.mode(
-                  Color(0xFFFEFEFF),
+                  Color(0xFF1A1A1A), // dark/text primary (light theme)
                   BlendMode.srcIn,
                 ),
               ),
@@ -149,14 +150,14 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
           const SizedBox(height: 12),
           const Text(
             'Next reset on May 1, 2025', // TODO dynamic reset date
-            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+            style: TextStyle(fontSize: 14, color: Color(0xCC1A1A1A)), // dark/text secondary (light theme)
           ),
           const SizedBox(height: 40),
           // QR code container (reduced size) PNG placeholder
           Container(
             width: 220,
             height: 220,
-            decoration: const BoxDecoration(color: Color(0xFFFFFBF1)),
+            decoration: const BoxDecoration(color: Color(0xFFFFFCF5)), // Same as background for light theme
             alignment: Alignment.center,
             child: Image.asset(
               'assets/images/Static/qr.png',
@@ -169,13 +170,13 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
           const Text(
             'Scan this code at the counter to pay with your wallet.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+            style: TextStyle(fontSize: 14, color: Color(0xCC1A1A1A)), // dark/text secondary (light theme)
           ),
           const SizedBox(height: 32),
           Row(
             children: [
               Expanded(
-                child: Container(height: 1, color: const Color(0xFF454545)),
+                child: Container(height: 1, color: const Color(0x33878787)), // light theme divider
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
@@ -184,12 +185,12 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFFFEFEFF),
+                    color: Color(0xFF1A1A1A), // dark/text primary (light theme)
                   ),
                 ),
               ),
               Expanded(
-                child: Container(height: 1, color: const Color(0xFF454545)),
+                child: Container(height: 1, color: const Color(0x33878787)), // light theme divider
               ),
             ],
           ),
@@ -200,7 +201,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFFFC940), width: 1),
+                border: Border.all(color: const Color(0xFFFFC940), width: 1), // Keep accent color
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
@@ -209,7 +210,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
-                  color: Color(0xFFFEFEFF),
+                  color: Color(0xFF1A1A1A), // dark/text primary (light theme)
                 ),
               ),
             ),
@@ -221,7 +222,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.visible,
-            style: TextStyle(fontSize: 14, color: Color(0xCCFEFEFF)),
+            style: TextStyle(fontSize: 14, color: Color(0xCC1A1A1A)), // dark/text secondary (light theme)
           ),
           const SizedBox(height: 48),
           _infoRow('Total Amount', '10,000'),
@@ -241,7 +242,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: Color(0xFFFEFEFF),
+              color: Color(0xFF1A1A1A), // dark/text primary (light theme)
             ),
           ),
         ),
@@ -253,7 +254,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFFEFEFF),
+                color: Color(0xFF1A1A1A), // dark/text primary (light theme)
               ),
             ),
             const SizedBox(width: 4),
@@ -262,7 +263,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
               width: 12,
               height: 14,
               colorFilter: const ColorFilter.mode(
-                Color(0xFFFEFEFF),
+                Color(0xFF1A1A1A), // dark/text primary (light theme)
                 BlendMode.srcIn,
               ),
             ),
@@ -281,7 +282,7 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
         8 + MediaQuery.of(context).padding.bottom,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFF121212),
+        color: Color(0xFFF5F5F5), // Light theme bottom bar background
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(48),
           topRight: Radius.circular(48),
@@ -292,8 +293,8 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
           Expanded(
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFFFEFEFF),
-                side: const BorderSide(color: Color(0xFFFEFEFF), width: 1),
+                foregroundColor: const Color(0xFF1A1A1A), // dark/text primary (light theme)
+                side: const BorderSide(color: Color(0xFF1A1A1A), width: 1), // dark/text primary border
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),
@@ -311,8 +312,8 @@ class _MyWalletScreenState extends ConsumerState<MyWalletScreen> {
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFFBF1),
-                foregroundColor: const Color(0xFF242424),
+                backgroundColor: const Color(0xFF1A1A1A), // dark/sand (light theme)
+                foregroundColor: const Color(0xFFFEFEFF), // dark/accent (light theme)
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),

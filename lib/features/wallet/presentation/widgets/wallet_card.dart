@@ -4,7 +4,7 @@ import 'dart:ui';
 import '../../domain/entities/wallet_entities.dart';
 
 /// Wallet Card Widget - Displays individual wallet information
-/// Pixel-perfect implementation matching Figma design specifications
+/// Light theme implementation matching Figma design specifications
 class WalletCard extends StatelessWidget {
   final WalletEntity wallet;
   final VoidCallback onTap;
@@ -64,10 +64,10 @@ class WalletCard extends StatelessWidget {
                             wallet.displayName ?? wallet.currency,
                             style: const TextStyle(
                               fontFamily: 'Roboto',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500, // Medium
-                              color: Color(0xFFFEFEFF), // indpt/text primary
-                              height: 24 / 16,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400, // Regular (matches Figma Indpt/Text 2)
+                              color: Color(0xFFFEFEFF), // White text on glass overlay
+                              height: 21 / 14,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -88,20 +88,20 @@ class WalletCard extends StatelessWidget {
                                     style: const TextStyle(
                                       fontFamily: 'Roboto',
                                       fontSize: 24,
-                                      fontWeight: FontWeight.w700, // Bold
-                                      color: Color(0xFFFEFEFF), // indpt/text primary
+                                      fontWeight: FontWeight.w700, // Bold (matches Figma Indpt/Title 1)
+                                      color: Color(0xFFFEFEFF), // White text on glass overlay
                                       height: 32 / 24,
                                     ),
                                   ),
                                   
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: 2), // Reduced spacing to match Figma
                                   
                                   SvgPicture.asset(
                                     'assets/images/icons/Payment_Methods/SAR.svg',
                                     width: 16,
-                                    height: 19,
+                                    height: 17.92, // Exact height from Figma
                                     colorFilter: const ColorFilter.mode(
-                                      Color(0xFFFEFEFF), // indpt/text primary
+                                      Color(0xFFFEFEFF), // White text on glass overlay
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -117,8 +117,8 @@ class WalletCard extends StatelessWidget {
                                   style: const TextStyle(
                                     fontFamily: 'Roboto',
                                     fontSize: 12,
-                                    fontWeight: FontWeight.w400, // Regular
-                                    color: Color(0xCCFEFEFF), // indpt/text secondary (80% opacity)
+                                    fontWeight: FontWeight.w400, // Regular (matches Figma Indpt/Text 3)
+                                    color: Color(0xFFFEFEFF), // White text on glass overlay
                                     height: 18 / 12,
                                   ),
                                   textAlign: TextAlign.center,
