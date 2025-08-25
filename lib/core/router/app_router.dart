@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../auth/auth_provider.dart';
 import 'package:independent/features/settings/presentation/settings_screen.dart';
 import 'package:independent/features/settings/presentation/screens/theme_screen.dart';
+import 'package:independent/features/settings/presentation/screens/profile_edit_screen.dart';
+import 'package:independent/features/settings/presentation/screens/payment_methods_screen.dart';
+import 'package:independent/features/settings/presentation/screens/add_new_card_screen.dart' as settings;
 import 'package:independent/features/home/presentation/main_navigation_screen.dart';
 import 'package:independent/features/loyalty/presentation/pages/loyalty_hub_screen.dart';
 import 'package:independent/features/shared/cart/presentation/pages/cart_screen.dart';
@@ -18,7 +21,7 @@ import 'package:independent/features/loyalty/presentation/pages/redeemed_qr_scre
 import 'package:independent/features/shared/checkout/presentation/pages/pickup_details_screen.dart';
 import 'package:independent/features/shared/checkout/presentation/pages/payment_method_screen.dart';
 import 'package:independent/features/shared/checkout/presentation/pages/wallet_selection_screen.dart';
-import 'package:independent/features/shared/checkout/presentation/pages/add_new_card_screen.dart';
+import 'package:independent/features/shared/checkout/presentation/pages/add_new_card_screen.dart' as checkout;
 import 'package:independent/features/shared/checkout/presentation/pages/review_order_screen.dart';
 import 'package:independent/features/shared/checkout/presentation/pages/payment_success_screen.dart';
 import 'package:independent/features/shared/checkout/domain/entities/checkout_entities.dart';
@@ -90,6 +93,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     GoRoute(
       path: '/settings/theme',
       builder: (context, state) => const ThemeScreen(),
+    ),
+    GoRoute(
+      path: '/settings/profile-edit',
+      builder: (context, state) => const ProfileEditScreen(),
+    ),
+    GoRoute(
+      path: '/payment-methods',
+      builder: (context, state) => const PaymentMethodsScreen(),
+    ),
+    GoRoute(
+      path: '/settings/add-new-card',
+      builder: (context, state) => const settings.AddNewCardScreen(),
     ),
     GoRoute(
       path: '/loyalty-hub',
@@ -245,7 +260,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         final total = (extra?['total'] as num?)?.toDouble() ?? 0.0;
         final currency = extra?['currency'] as String? ?? 'SAR';
         
-        return AddNewCardScreen(
+        return checkout.AddNewCardScreen(
           total: total,
           currency: currency,
         );
@@ -409,6 +424,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/settings/theme',
       builder: (context, state) => const ThemeScreen(),
+    ),
+    GoRoute(
+      path: '/settings/profile-edit',
+      builder: (context, state) => const ProfileEditScreen(),
+    ),
+    GoRoute(
+      path: '/payment-methods',
+      builder: (context, state) => const PaymentMethodsScreen(),
+    ),
+    GoRoute(
+      path: '/settings/add-new-card',
+      builder: (context, state) => const settings.AddNewCardScreen(),
     ),
     GoRoute(
       path: '/loyalty-hub',
@@ -578,7 +605,7 @@ final GoRouter appRouter = GoRouter(
         final total = (extra?['total'] as num?)?.toDouble() ?? 0.0;
         final currency = extra?['currency'] as String? ?? 'SAR';
         
-        return AddNewCardScreen(
+        return checkout.AddNewCardScreen(
           total: total,
           currency: currency,
         );

@@ -82,7 +82,7 @@ class SettingsScreen extends ConsumerWidget {
                     
                     // Profile Header
                     Expanded(
-                      child: _buildProfileHeader(isLightTheme),
+                      child: _buildProfileHeader(context, isLightTheme),
                     ),
                   ],
                 ),
@@ -184,73 +184,76 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileHeader(bool isLightTheme) {
-    return Row(
-      children: [
-        // Profile Image - Responsive size
-        Container(
-          width: 75,
-          height: 75,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            image: const DecorationImage(
-              image: AssetImage(
-                'assets/images/illustrations/profile_Image.jpg',
+  Widget _buildProfileHeader(BuildContext context, bool isLightTheme) {
+    return GestureDetector(
+      onTap: () => _handleNavigation(context, '/settings/profile-edit'),
+      child: Row(
+        children: [
+          // Profile Image - Responsive size
+          Container(
+            width: 75,
+            height: 75,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              image: const DecorationImage(
+                image: AssetImage(
+                  'assets/images/illustrations/profile_Image.jpg',
+                ),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover,
             ),
           ),
-        ),
-        const SizedBox(width: 24),
-        // Profile Info
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'John Smith',
-                style: TextStyle(
-                  color: isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w500,
-                  height: 24 / 16,
+          const SizedBox(width: 24),
+          // Profile Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'John Smith',
+                  style: TextStyle(
+                    color: isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    height: 24 / 16,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'independent@example.com',
-                style: TextStyle(
-                  color: isLightTheme 
-                    ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
-                    : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
-                  fontSize: 12,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.normal,
-                  height: 18 / 12,
+                const SizedBox(height: 4),
+                Text(
+                  'independent@example.com',
+                  style: TextStyle(
+                    color: isLightTheme 
+                      ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
+                      : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                    fontSize: 12,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.normal,
+                    height: 18 / 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '+971 50 123 4567',
-                style: TextStyle(
-                  color: isLightTheme 
-                    ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
-                    : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
-                  fontSize: 12,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.normal,
-                  height: 18 / 12,
+                const SizedBox(height: 2),
+                Text(
+                  '+971 50 123 4567',
+                  style: TextStyle(
+                    color: isLightTheme 
+                      ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
+                      : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                    fontSize: 12,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.normal,
+                    height: 18 / 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
