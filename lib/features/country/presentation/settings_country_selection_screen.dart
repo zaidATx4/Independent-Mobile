@@ -3,26 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-enum Language {
-  english('English (UK)', 'assets/images/icons/Language_Icons/English.svg', 'en'),
-  arabic('Arabic', 'assets/images/icons/Language_Icons/Arabic.svg', 'ar');
+enum Country {
+  uae('United Arab Emirates', 'assets/images/icons/Country_Icons/UAE_Icon.svg', 'ae', '+971'),
+  saudi('Saudi Arabia', 'assets/images/icons/Country_Icons/Saudi_Icon.svg', 'sa', '+966'),
+  qatar('Qatar', 'assets/images/icons/Country_Icons/Qatar_Icon.svg', 'qa', '+974'),
+  uk('United Kingdom', 'assets/images/icons/Country_Icons/UK_Icon.svg', 'uk', '+44');
 
-  const Language(this.displayName, this.iconPath, this.code);
+  const Country(this.displayName, this.iconPath, this.code, this.countryCode);
   final String displayName;
   final String iconPath;
   final String code;
+  final String countryCode;
 }
 
-final selectedLanguageProvider = StateProvider<Language>(
-  (ref) => Language.english,
+final settingsSelectedCountryProvider = StateProvider<Country>(
+  (ref) => Country.uae,
 );
 
-class LanguageSelectionScreen extends ConsumerWidget {
-  const LanguageSelectionScreen({super.key});
+class SettingsCountrySelectionScreen extends ConsumerWidget {
+  const SettingsCountrySelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLanguage = ref.watch(selectedLanguageProvider);
+    final selectedCountry = ref.watch(settingsSelectedCountryProvider);
     final theme = Theme.of(context);
     final isLightTheme = theme.brightness == Brightness.light;
 
@@ -34,7 +37,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
             // Header
             _buildHeader(context, isLightTheme),
             
-            // Language Options
+            // Country Options
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -43,7 +46,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                   children: [
                     // Title
                     Text(
-                      'Select language',
+                      'Select country',
                       style: TextStyle(
                         color: isLightTheme 
                           ? const Color(0xCC1A1A1A)
@@ -57,19 +60,33 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     
                     const SizedBox(height: 16),
                     
-                    // Language List
-                    _buildLanguageOption(
+                    // Country List
+                    _buildCountryOption(
                       context,
                       ref,
-                      Language.english,
-                      selectedLanguage == Language.english,
+                      Country.uae,
+                      selectedCountry == Country.uae,
                       isLightTheme,
                     ),
-                    _buildLanguageOption(
+                    _buildCountryOption(
                       context,
                       ref,
-                      Language.arabic,
-                      selectedLanguage == Language.arabic,
+                      Country.saudi,
+                      selectedCountry == Country.saudi,
+                      isLightTheme,
+                    ),
+                    _buildCountryOption(
+                      context,
+                      ref,
+                      Country.qatar,
+                      selectedCountry == Country.qatar,
+                      isLightTheme,
+                    ),
+                    _buildCountryOption(
+                      context,
+                      ref,
+                      Country.uk,
+                      selectedCountry == Country.uk,
                       isLightTheme,
                     ),
                   ],
@@ -115,7 +132,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
           // Title
           Expanded(
             child: Text(
-              'Language',
+              'Country',
               style: TextStyle(
                 color: isLightTheme 
                   ? const Color(0xCC1A1A1A)
@@ -132,16 +149,16 @@ class LanguageSelectionScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLanguageOption(
+  Widget _buildCountryOption(
     BuildContext context,
     WidgetRef ref,
-    Language language,
+    Country country,
     bool isSelected,
     bool isLightTheme,
   ) {
     return GestureDetector(
       onTap: () {
-        ref.read(selectedLanguageProvider.notifier).state = language;
+        ref.read(settingsSelectedCountryProvider.notifier).state = country;
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -163,52 +180,35 @@ class LanguageSelectionScreen extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            // Language flag/icon - circular with zoomed SVG
+            // Country flag icon - clean display like onboarding screen
             Container(
               width: 40,
               height: 40,
+              padding: EdgeInsets.zero,
               decoration: BoxDecoration(
-                color: isLightTheme 
-                  ? const Color(0xFFFEFEFF)
-                  : const Color(0xFF000000),
-                shape: BoxShape.circle, // Make it circular
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  language.iconPath,
-                  width: 32, // Increased size for better visibility
-                  height: 32, // Increased size for better visibility
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          language == Language.english ? 'UK' : 'عربي',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              child: SvgPicture.asset(
+                country.iconPath,
+                width: 40,
+                height: 40,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.flag,
+                    color: Colors.red,
+                    size: 40,
+                  );
+                },
               ),
             ),
             
             const SizedBox(width: 16),
             
-            // Language name
+            // Country name
             Expanded(
               child: Text(
-                language.displayName,
+                country.displayName,
                 style: TextStyle(
                   color: isLightTheme 
                     ? const Color(0xCC1A1A1A)

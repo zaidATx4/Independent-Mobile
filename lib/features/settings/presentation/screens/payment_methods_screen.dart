@@ -205,7 +205,9 @@ class PaymentMethodsScreen extends ConsumerWidget {
     SecurePaymentMethod method,
     bool isLightTheme,
   ) {
-    return Container(
+    return GestureDetector(
+      onTap: () => context.push('/settings/card-details/${method.id}'),
+      child: Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         border: Border(
@@ -289,6 +291,7 @@ class PaymentMethodsScreen extends ConsumerWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

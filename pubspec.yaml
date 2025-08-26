@@ -97,6 +97,8 @@ flutter:
     - assets/videos/
     - assets/images/logos/
     - assets/images/icons/
+    - assets/images/icons/Country_Icons/
+    - assets/images/icons/Language_Icons/
     - assets/images/icons/Payment_Methods/
     - assets/images/icons/Payment_Methods/Colored_Icons/
     - assets/images/logos/brands/
@@ -107,6 +109,7 @@ flutter:
     - assets/images/icons/Payment_Methods/
     - assets/images/backgrounds/
     - assets/images/illustrations/
+    - assets/images/illustrations/Payement_Card_designs/
     - assets/images/Static/
     - assets/images/Static/Restaurant_Foods/
     - assets/images/Static/Food_Categories/
