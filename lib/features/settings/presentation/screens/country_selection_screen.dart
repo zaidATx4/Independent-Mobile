@@ -20,8 +20,8 @@ final settingsSelectedCountryProvider = StateProvider<Country>(
   (ref) => Country.uae,
 );
 
-class SettingsCountrySelectionScreen extends ConsumerWidget {
-  const SettingsCountrySelectionScreen({super.key});
+class CountrySelectionScreen extends ConsumerWidget {
+  const CountrySelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

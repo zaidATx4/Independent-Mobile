@@ -31,7 +31,8 @@ import 'package:independent/features/shared/checkout/domain/entities/checkout_en
 import 'package:independent/features/language/presentation/language_selection_screen.dart';
 import 'package:independent/features/language/presentation/initial_language_selection_screen.dart';
 import 'package:independent/features/country/presentation/country_selection_screen.dart';
-import 'package:independent/features/country/presentation/settings_country_selection_screen.dart';
+import 'package:independent/features/settings/presentation/screens/country_selection_screen.dart'
+    as settings_country;
 import 'package:independent/features/auth/presentation/welcome_screen.dart';
 import 'package:independent/features/auth/presentation/sign_up_screen.dart';
 import 'package:independent/features/auth/presentation/otp_verification_screen.dart';
@@ -45,9 +46,12 @@ import 'package:independent/features/wallet/presentation/pages/add_money_confirm
 import 'package:independent/features/wallet/presentation/pages/manage_wallet_screen.dart';
 import 'package:independent/features/wallet/presentation/pages/add_wallet_screen.dart';
 import 'package:independent/features/wallet/presentation/pages/wallet_payment_options_screen.dart';
+import 'package:independent/features/settings/presentation/screens/order_history_screen.dart';
+import 'package:independent/features/settings/presentation/screens/top_choices_screen.dart';
+import 'package:independent/features/settings/presentation/screens/terms_and_conditions_screen.dart';
 
 // TESTING FLAG: Set to true to skip authorization flow during development
-const bool BYPASS_AUTH_FOR_TESTING = false;
+const bool BYPASS_AUTH_FOR_TESTING = true;
 
 // Router provider with authentication logic
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -73,7 +77,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/country',
-        builder: (context, state) => const SettingsCountrySelectionScreen(),
+        builder: (context, state) =>
+            const settings_country.CountrySelectionScreen(),
       ),
       // Authentication Routes
       GoRoute(
@@ -348,6 +353,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/wallet/payment-options',
         builder: (context, state) => const WalletPaymentOptionsScreen(),
       ),
+      GoRoute(
+        path: '/order-history',
+        builder: (context, state) => const OrderHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/favorites',
+        builder: (context, state) => const TopChoicesScreen(),
+      ),
+      GoRoute(
+        path: '/terms',
+        builder: (context, state) => const TermsAndConditionsScreen(),
+      ),
     ],
   );
 });
@@ -384,7 +401,7 @@ String? _handleRedirect(GoRouterState state, AuthState authState) {
     '/sign-up',
     '/otp-verification',
   ];
-  
+
   // Settings routes - accessible when authenticated
   const settingsRoutes = [
     '/country', // Settings country selection
@@ -439,7 +456,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/country',
-      builder: (context, state) => const SettingsCountrySelectionScreen(),
+      builder: (context, state) =>
+          const settings_country.CountrySelectionScreen(),
     ),
     // Authentication Routes
     GoRoute(
@@ -740,6 +758,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/wallet/payment-options',
       builder: (context, state) => const WalletPaymentOptionsScreen(),
+    ),
+    GoRoute(
+      path: '/order-history',
+      builder: (context, state) => const OrderHistoryScreen(),
+    ),
+    GoRoute(
+      path: '/favorites',
+      builder: (context, state) => const TopChoicesScreen(),
+    ),
+    GoRoute(
+      path: '/terms',
+      builder: (context, state) => const TermsAndConditionsScreen(),
     ),
     // Add other routes here
   ],

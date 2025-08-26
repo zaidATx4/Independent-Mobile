@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/auth/auth_provider.dart';
+import 'components/logout_confirmation_banner.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -14,12 +15,14 @@ class SettingsScreen extends ConsumerWidget {
     final screenWidth = screenSize.width;
     final theme = Theme.of(context);
     final isLightTheme = theme.brightness == Brightness.light;
-    
+
     // Responsive banner height (minimum 160px, maximum 220px)
     final bannerHeight = (screenHeight * 0.25).clamp(160.0, 220.0);
-    
+
     return Scaffold(
-      backgroundColor: isLightTheme ? const Color(0xFFFFFCF5) : const Color(0xFF1A1A1A),
+      backgroundColor: isLightTheme
+          ? const Color(0xFFFFFCF5)
+          : const Color(0xFF1A1A1A),
       body: Column(
         children: [
           // Banner Section with Header and Profile
@@ -28,9 +31,11 @@ class SettingsScreen extends ConsumerWidget {
             width: screenWidth,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(isLightTheme 
-                  ? 'assets/images/illustrations/Settings_Banner_design_light.png'
-                  : 'assets/images/illustrations/Settings_Banner_design_Dark.png'),
+                image: AssetImage(
+                  isLightTheme
+                      ? 'assets/images/illustrations/Settings_Banner_design_light.png'
+                      : 'assets/images/illustrations/Settings_Banner_design_Dark.png',
+                ),
                 fit: BoxFit.cover,
                 opacity: 0.2,
               ),
@@ -47,9 +52,9 @@ class SettingsScreen extends ConsumerWidget {
                         Text(
                           'Profile',
                           style: TextStyle(
-                            color: isLightTheme 
-                              ? const Color(0xCC1A1A1A) 
-                              : const Color(0xFFFEFEFF),
+                            color: isLightTheme
+                                ? const Color(0xCC1A1A1A)
+                                : const Color(0xFFFEFEFF),
                             fontSize: 24,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.bold,
@@ -61,41 +66,41 @@ class SettingsScreen extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: isLightTheme 
-                                ? const Color(0xFF1A1A1A) 
-                                : const Color(0xFFFFFBF1),
+                              color: isLightTheme
+                                  ? const Color(0xFF1A1A1A)
+                                  : const Color(0xFFFFFBF1),
                               borderRadius: BorderRadius.circular(44),
                             ),
                             child: Icon(
                               Icons.close,
-                              color: isLightTheme 
-                                ? const Color(0xFFFEFEFF) 
-                                : const Color(0xFF242424),
+                              color: isLightTheme
+                                  ? const Color(0xFFFEFEFF)
+                                  : const Color(0xFF242424),
                               size: 16,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Profile Header
-                    Expanded(
-                      child: _buildProfileHeader(context, isLightTheme),
-                    ),
+                    Expanded(child: _buildProfileHeader(context, isLightTheme)),
                   ],
                 ),
               ),
             ),
           ),
-          
+
           // Settings Menu Section
           Expanded(
             child: Container(
               width: screenWidth,
               decoration: BoxDecoration(
-                color: isLightTheme ? const Color(0xFFFFFCF5) : const Color(0xFF1A1A1A),
+                color: isLightTheme
+                    ? const Color(0xFFFFFCF5)
+                    : const Color(0xFF1A1A1A),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(24),
                   topRight: Radius.circular(24),
@@ -108,71 +113,92 @@ class SettingsScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Payment_Method_Icon_Dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Payment_method_icon_Light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Payment_Method_Icon_Dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Payment_method_icon_Light.svg',
                         title: 'Payment Methods',
                         subtitle: 'Add Cards, Delete Cards',
-                        onTap: () => _handleNavigation(context, '/payment-methods'),
+                        onTap: () =>
+                            _handleNavigation(context, '/payment-methods'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Theme_Icon_dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Theme_Icon_light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Theme_Icon_dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Theme_Icon_light.svg',
                         title: 'Theme',
                         subtitle: 'Select theme',
-                        onTap: () => _handleNavigation(context, '/settings/theme'),
+                        onTap: () =>
+                            _handleNavigation(context, '/settings/theme'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Language_Icon_dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Language_Icon_light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Language_Icon_dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Language_Icon_light.svg',
                         title: 'Language',
                         subtitle: 'Select Language',
                         onTap: () => _handleNavigation(context, '/language'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Country_Icon_Dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Country_Icon_Light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Country_Icon_Dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Country_Icon_Light.svg',
                         title: 'Country',
                         subtitle: 'Select Country',
                         onTap: () => _handleNavigation(context, '/country'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Order_History_dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Order_History_lightsvg.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Order_History_dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Order_History_lightsvg.svg',
                         title: 'Order History',
                         subtitle: 'Order details, Download Invoice',
-                        onTap: () => _handleNavigation(context, '/order-history'),
+                        onTap: () =>
+                            _handleNavigation(context, '/order-history'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Top_Choices_Dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Top_Choices_Light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Top_Choices_Dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Top_Choices_Light.svg',
                         title: 'Top Choices',
                         subtitle: 'Favorite Dishes, Favorite Restaurants',
                         onTap: () => _handleNavigation(context, '/favorites'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Terms_And_Conditions_dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Terms_And_Conditions_light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Terms_And_Conditions_dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Terms_And_Conditions_light.svg',
                         title: 'Terms & Conditions',
                         subtitle: 'Payment Policy, Loyalty & Rewards Terms',
                         onTap: () => _handleNavigation(context, '/terms'),
                         isLightTheme: isLightTheme,
                       ),
                       _buildSettingsItem(
-                        darkSvgPath: 'assets/images/icons/SVGs/Settings/Log_Out_dark.svg',
-                        lightSvgPath: 'assets/images/icons/SVGs/Settings/Log_Out_light.svg',
+                        darkSvgPath:
+                            'assets/images/icons/SVGs/Settings/Log_Out_dark.svg',
+                        lightSvgPath:
+                            'assets/images/icons/SVGs/Settings/Log_Out_light.svg',
                         title: 'Log out',
                         onTap: () => _handleLogout(context, ref),
                         isLightTheme: isLightTheme,
                         isLogout: true,
                       ),
                       // Extra padding at bottom to ensure no overlap
-                      SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.bottom + 16,
+                      ),
                     ],
                   ),
                 ),
@@ -213,7 +239,9 @@ class SettingsScreen extends ConsumerWidget {
                 Text(
                   'John Smith',
                   style: TextStyle(
-                    color: isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
+                    color: isLightTheme
+                        ? const Color(0xFF1A1A1A)
+                        : const Color(0xFFFEFEFF),
                     fontSize: 16,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
@@ -225,9 +253,9 @@ class SettingsScreen extends ConsumerWidget {
                 Text(
                   'independent@example.com',
                   style: TextStyle(
-                    color: isLightTheme 
-                      ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
-                      : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                    color: isLightTheme
+                        ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
+                        : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
                     fontSize: 12,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.normal,
@@ -239,9 +267,9 @@ class SettingsScreen extends ConsumerWidget {
                 Text(
                   '+971 50 123 4567',
                   style: TextStyle(
-                    color: isLightTheme 
-                      ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
-                      : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                    color: isLightTheme
+                        ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
+                        : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
                     fontSize: 12,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.normal,
@@ -272,10 +300,14 @@ class SettingsScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(
-            color: isLightTheme ? const Color(0xFFD9D9D9) : const Color(0xFF4D4E52), 
-            width: 1
-          )),
+          border: Border(
+            top: BorderSide(
+              color: isLightTheme
+                  ? const Color(0xFFD9D9D9)
+                  : const Color(0xFF4D4E52),
+              width: 1,
+            ),
+          ),
         ),
         child: Row(
           children: [
@@ -301,7 +333,9 @@ class SettingsScreen extends ConsumerWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFEFEFF),
+                      color: isLightTheme
+                          ? const Color(0xFF1A1A1A)
+                          : const Color(0xFFFEFEFF),
                       fontSize: 14,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
@@ -315,7 +349,9 @@ class SettingsScreen extends ConsumerWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        color: isLightTheme ? const Color(0xFF878787) : const Color(0xFF9C9C9D),
+                        color: isLightTheme
+                            ? const Color(0xFF878787)
+                            : const Color(0xFF9C9C9D),
                         fontSize: 12,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.normal,
@@ -339,9 +375,24 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _handleLogout(BuildContext context, WidgetRef ref) {
-    // Clear authentication state
-    ref.read(authProvider.notifier).logout();
-    // Navigate to welcome screen
-    context.go('/welcome');
+    _showLogoutConfirmation(context, ref);
+  }
+
+  void _showLogoutConfirmation(BuildContext context, WidgetRef ref) {
+    LogoutConfirmationBanner.show(
+      context: context,
+      title: 'Enter your name',
+      message: 'Are you sure want to log out?',
+      onConfirmLogout: () {
+        Navigator.of(context).pop();
+        // Clear authentication state
+        ref.read(authProvider.notifier).logout();
+        // Navigate to welcome screen
+        context.go('/welcome');
+      },
+      onCancel: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 }
