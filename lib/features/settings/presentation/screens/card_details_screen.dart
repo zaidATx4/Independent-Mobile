@@ -27,7 +27,8 @@ class CardDetailsScreen extends ConsumerWidget {
 
             // Card Display
             Expanded(
-              child: Center(
+              child: Align(
+                alignment: const Alignment(0, -0.3), // Move up from center (-1 is top, 0 is center, 1 is bottom)
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: _buildCardWithPNG(cardData, isLightTheme),

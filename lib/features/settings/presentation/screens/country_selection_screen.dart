@@ -221,38 +221,19 @@ class CountrySelectionScreen extends ConsumerWidget {
               ),
             ),
             
-            // Radio button
-            Container(
+            // SVG Radio button matching theme screen
+            SvgPicture.asset(
+              isSelected
+                  ? 'assets/images/icons/SVGs/Settings/Radio_button _selected.svg'
+                  : 'assets/images/icons/SVGs/Settings/Radio_button _Unselected.svg',
               width: 24,
               height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? (isLightTheme 
-                            ? const Color(0xFF1A1A1A)
-                            : const Color(0xFFFEFEFF))
-                      : (isLightTheme 
-                            ? const Color(0xFF878787)
-                            : const Color(0xFF9C9C9D)),
-                  width: 2,
-                ),
-                color: Colors.transparent,
+              colorFilter: ColorFilter.mode(
+                isSelected
+                    ? (isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFFFBF1))
+                    : const Color(0xFF9C9C9D),
+                BlendMode.srcIn,
               ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isLightTheme 
-                            ? const Color(0xFF1A1A1A)
-                            : const Color(0xFFFEFEFF),
-                        ),
-                      ),
-                    )
-                  : null,
             ),
           ],
         ),

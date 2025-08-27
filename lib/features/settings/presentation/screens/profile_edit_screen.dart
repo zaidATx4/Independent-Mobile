@@ -416,9 +416,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           alignment: Alignment.bottomCenter,
           child: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF242424), // Dark background matching Figma
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: isLightTheme
+                  ? const Color(0xFFFFFCF5) // Light background
+                  : const Color(0xFF242424), // Dark background
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
                 bottomLeft: Radius.circular(40),
@@ -434,16 +436,18 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   Container(
                     height: 21,
                     width: double.infinity,
-                    child: const Center(
+                    child: Center(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 8.0),
                         child: SizedBox(
                           width: 55,
                           height: 5,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: Color(0xFF888888),
-                              borderRadius: BorderRadius.all(
+                              color: isLightTheme
+                                  ? const Color(0xFFD9D9D9)
+                                  : const Color(0xFF888888),
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(100),
                               ),
                             ),
@@ -461,16 +465,23 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       vertical: 8,
                     ),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          bottom: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: const Text(
+                      child: Text(
                         'Enter your name',
                         style: TextStyle(
-                          color: Color(0xFFFEFEFF),
+                          color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFEFEFF),
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
@@ -490,8 +501,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     ),
                     child: TextField(
                       controller: _nameController,
-                      style: const TextStyle(
-                        color: Color(0xFFFEFEFF),
+                      style: TextStyle(
+                        color: isLightTheme
+                            ? const Color(0xFF1A1A1A)
+                            : const Color(0xFFFEFEFF),
                         fontSize: 16,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.normal,
@@ -517,9 +530,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          top: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          top: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(top: 8),
@@ -536,15 +554,19 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: const Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Cancel',
                                 style: TextStyle(
-                                  color: Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
@@ -568,13 +590,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                                 vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFFBF1),
+                                color: isLightTheme
+                                    ? const Color(0xFF1A1A1A)
+                                    : const Color(0xFFFFFBF1),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Save',
                                 style: TextStyle(
-                                  color: Color(0xFF242424),
+                                  color: isLightTheme
+                                      ? const Color(0xFFFEFEFF)
+                                      : const Color(0xFF242424),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
@@ -639,9 +665,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           alignment: Alignment.bottomCenter,
           child: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF242424),
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: isLightTheme
+                  ? const Color(0xFFFFFCF5) // Light background
+                  : const Color(0xFF242424), // Dark background
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
                 bottomLeft: Radius.circular(40),
@@ -657,16 +685,18 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   Container(
                     height: 21,
                     width: double.infinity,
-                    child: const Center(
+                    child: Center(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 8.0),
                         child: SizedBox(
                           width: 55,
                           height: 5,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: Color(0xFF888888),
-                              borderRadius: BorderRadius.all(
+                              color: isLightTheme
+                                  ? const Color(0xFFD9D9D9)
+                                  : const Color(0xFF888888),
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(100),
                               ),
                             ),
@@ -684,16 +714,23 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       vertical: 8,
                     ),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          bottom: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: const Text(
+                      child: Text(
                         'Enter your phone number',
                         style: TextStyle(
-                          color: Color(0xFFFEFEFF),
+                          color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFEFEFF),
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
@@ -714,8 +751,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
-                      style: const TextStyle(
-                        color: Color(0xFFFEFEFF),
+                      style: TextStyle(
+                        color: isLightTheme
+                            ? const Color(0xFF1A1A1A)
+                            : const Color(0xFFFEFEFF),
                         fontSize: 16,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.normal,
@@ -741,9 +780,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          top: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          top: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(top: 8),
@@ -760,15 +804,19 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: const Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Cancel',
                                 style: TextStyle(
-                                  color: Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
@@ -792,13 +840,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                                 vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFFBF1),
+                                color: isLightTheme
+                                    ? const Color(0xFF1A1A1A)
+                                    : const Color(0xFFFFFBF1),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Save',
                                 style: TextStyle(
-                                  color: Color(0xFF242424),
+                                  color: isLightTheme
+                                      ? const Color(0xFFFEFEFF)
+                                      : const Color(0xFF242424),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
@@ -831,9 +883,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           alignment: Alignment.bottomCenter,
           child: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF242424),
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: isLightTheme
+                  ? const Color(0xFFFFFCF5) // Light background
+                  : const Color(0xFF242424), // Dark background
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
                 bottomLeft: Radius.circular(40),
@@ -849,16 +903,18 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   Container(
                     height: 21,
                     width: double.infinity,
-                    child: const Center(
+                    child: Center(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 8.0),
                         child: SizedBox(
                           width: 55,
                           height: 5,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: Color(0xFF888888),
-                              borderRadius: BorderRadius.all(
+                              color: isLightTheme
+                                  ? const Color(0xFFD9D9D9)
+                                  : const Color(0xFF888888),
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(100),
                               ),
                             ),
@@ -876,16 +932,23 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       vertical: 8,
                     ),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          bottom: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: const Text(
+                      child: Text(
                         'Enter your email',
                         style: TextStyle(
-                          color: Color(0xFFFEFEFF),
+                          color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFEFEFF),
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
@@ -906,8 +969,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     child: TextField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(
-                        color: Color(0xFFFEFEFF),
+                      style: TextStyle(
+                        color: isLightTheme
+                            ? const Color(0xFF1A1A1A)
+                            : const Color(0xFFFEFEFF),
                         fontSize: 16,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.normal,
@@ -933,9 +998,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
-                          top: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                          top: BorderSide(
+                            color: isLightTheme
+                                ? const Color(0xFFD9D9D9)
+                                : const Color(0xFF4D4E52),
+                            width: 1,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.only(top: 8),
@@ -952,15 +1022,19 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: const Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Cancel',
                                 style: TextStyle(
-                                  color: Color(0xFFFEFEFF),
+                                  color: isLightTheme
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFFFEFEFF),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
@@ -984,13 +1058,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                                 vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFFBF1),
+                                color: isLightTheme
+                                    ? const Color(0xFF1A1A1A)
+                                    : const Color(0xFFFFFBF1),
                                 borderRadius: BorderRadius.circular(44),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Save',
                                 style: TextStyle(
-                                  color: Color(0xFF242424),
+                                  color: isLightTheme
+                                      ? const Color(0xFFFEFEFF)
+                                      : const Color(0xFF242424),
                                   fontSize: 16,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,

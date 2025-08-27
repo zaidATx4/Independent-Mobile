@@ -264,27 +264,19 @@ class InitialLanguageSelectionScreen extends ConsumerWidget {
               ),
             ),
 
-            // Radio button with thick white dot
-            Container(
+            // SVG Radio button matching theme screen
+            SvgPicture.asset(
+              isSelected
+                  ? 'assets/images/icons/SVGs/Settings/Radio_button _selected.svg'
+                  : 'assets/images/icons/SVGs/Settings/Radio_button _Unselected.svg',
               width: 24,
               height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AuthColors.textPrimary, width: 2),
-                color: Colors.transparent,
+              colorFilter: ColorFilter.mode(
+                isSelected
+                    ? AuthColors.textPrimary
+                    : const Color(0xFF9C9C9D),
+                BlendMode.srcIn,
               ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AuthColors.textPrimary,
-                        ),
-                      ),
-                    )
-                  : null,
             ),
 
             const SizedBox(width: 16), // gap: 16px

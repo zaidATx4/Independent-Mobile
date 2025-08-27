@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 final selectedLanguageProvider = StateProvider<String>((ref) => 'English');
@@ -10,9 +11,11 @@ class LanguageScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLanguage = ref.watch(selectedLanguageProvider);
+    final theme = Theme.of(context);
+    final isLightTheme = theme.brightness == Brightness.light;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: isLightTheme ? const Color(0xFFFFFCF5) : const Color(0xFF1A1A1A),
       body: Stack(
         children: [
           // Main Content
@@ -26,10 +29,12 @@ class LanguageScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Language',
                         style: TextStyle(
-                          color: Color(0xFFFEFEFF),
+                          color: isLightTheme 
+                            ? const Color(0xCC1A1A1A)
+                            : const Color(0xFFFEFEFF),
                           fontSize: 24,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
@@ -41,12 +46,16 @@ class LanguageScreen extends ConsumerWidget {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF1),
+                            color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFFFBF1),
                             borderRadius: BorderRadius.circular(44),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.close,
-                            color: Color(0xFF242424),
+                            color: isLightTheme
+                              ? const Color(0xFFFEFEFF)
+                              : const Color(0xFF242424),
                             size: 16,
                           ),
                         ),
@@ -68,6 +77,7 @@ class LanguageScreen extends ConsumerWidget {
                           'English (US)',
                           'en',
                           selectedLanguage == 'English',
+                          isLightTheme,
                         ),
                         const SizedBox(height: 12),
                         _buildLanguageOption(
@@ -77,6 +87,7 @@ class LanguageScreen extends ConsumerWidget {
                           'العربية',
                           'ar',
                           selectedLanguage == 'Arabic',
+                          isLightTheme,
                         ),
                         const SizedBox(height: 12),
                         _buildLanguageOption(
@@ -86,6 +97,7 @@ class LanguageScreen extends ConsumerWidget {
                           'Français',
                           'fr',
                           selectedLanguage == 'French',
+                          isLightTheme,
                         ),
                       ],
                     ),
@@ -106,12 +118,19 @@ class LanguageScreen extends ConsumerWidget {
     String nativeName,
     String code,
     bool isSelected,
+    bool isLightTheme,
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.25),
+        color: isLightTheme
+          ? Colors.grey.withValues(alpha: 0.1)
+          : Colors.white.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: isLightTheme
+            ? const Color(0xFFD9D9D9)
+            : Colors.white.withValues(alpha: 0.2)
+        ),
       ),
       child: Material(
         color: Colors.transparent,
@@ -127,7 +146,9 @@ class LanguageScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: isLightTheme
+                      ? const Color(0xFF1A1A1A)
+                      : Colors.black,
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: Text(
@@ -147,8 +168,10 @@ class LanguageScreen extends ConsumerWidget {
                     children: [
                       Text(
                         language,
-                        style: const TextStyle(
-                          color: Color(0xFFFEFEFF),
+                        style: TextStyle(
+                          color: isLightTheme
+                            ? const Color(0xFF1A1A1A)
+                            : const Color(0xFFFEFEFF),
                           fontSize: 14,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
@@ -158,7 +181,9 @@ class LanguageScreen extends ConsumerWidget {
                       Text(
                         nativeName,
                         style: TextStyle(
-                          color: const Color(0xFFFEFEFF).withValues(alpha: 0.8),
+                          color: isLightTheme
+                            ? const Color(0xFF1A1A1A).withValues(alpha: 0.8)
+                            : const Color(0xFFFEFEFF).withValues(alpha: 0.8),
                           fontSize: 12,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.normal,
@@ -167,12 +192,20 @@ class LanguageScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                if (isSelected)
-                  const Icon(
-                    Icons.check_circle,
-                    color: Color(0xFFFFFBF1),
-                    size: 24,
+                // SVG Radio button matching theme screen
+                SvgPicture.asset(
+                  isSelected
+                      ? 'assets/images/icons/SVGs/Settings/Radio_button _selected.svg'
+                      : 'assets/images/icons/SVGs/Settings/Radio_button _Unselected.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    isSelected
+                        ? (isLightTheme ? const Color(0xFF1A1A1A) : const Color(0xFFFFFBF1))
+                        : const Color(0xFF9C9C9D),
+                    BlendMode.srcIn,
                   ),
+                ),
               ],
             ),
           ),

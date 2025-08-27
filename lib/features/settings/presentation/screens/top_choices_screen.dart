@@ -436,12 +436,16 @@ class TopChoicesScreen extends ConsumerWidget {
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF1),
+                            color: isLightTheme
+                                ? const Color(0xFF1A1A1A) // Dark background for light theme
+                                : const Color(0xFFFFFBF1), // Light background for dark theme
                             borderRadius: BorderRadius.circular(44),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.add,
-                            color: Color(0xFF242424),
+                            color: isLightTheme
+                                ? const Color(0xFFFEFEFF) // Light plus symbol for light theme
+                                : const Color(0xFF242424), // Dark plus symbol for dark theme
                             size: 16,
                           ),
                         ),

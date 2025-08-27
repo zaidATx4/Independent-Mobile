@@ -39,12 +39,15 @@ class LogoutConfirmationBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Banner design is fixed dark style per spec
+    final theme = Theme.of(context);
+    final isLightTheme = theme.brightness == Brightness.light;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF242424),
+        color: isLightTheme
+            ? const Color(0xFFFFFCF5) // Light background
+            : const Color(0xFF242424), // Dark background
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -66,7 +69,9 @@ class LogoutConfirmationBanner extends ConsumerWidget {
                 width: 55,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF888888),
+                  color: isLightTheme
+                      ? const Color(0xFFD9D9D9)
+                      : const Color(0xFF888888),
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
@@ -78,16 +83,23 @@ class LogoutConfirmationBanner extends ConsumerWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                  bottom: BorderSide(
+                    color: isLightTheme
+                        ? const Color(0xFFD9D9D9)
+                        : const Color(0xFF4D4E52),
+                    width: 1,
+                  ),
                 ),
               ),
               child: Text(
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: const Color(0xFFFEFEFF),
+                  color: isLightTheme
+                      ? const Color(0xFF1A1A1A)
+                      : const Color(0xFFFEFEFF),
                   fontSize: 16,
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w500,
@@ -103,7 +115,9 @@ class LogoutConfirmationBanner extends ConsumerWidget {
             child: Text(
               message,
               style: TextStyle(
-                color: const Color(0xFFFEFEFF),
+                color: isLightTheme
+                    ? const Color(0xFF1A1A1A)
+                    : const Color(0xFFFEFEFF),
                 fontSize: 16,
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.normal,
@@ -116,9 +130,14 @@ class LogoutConfirmationBanner extends ConsumerWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                top: BorderSide(
+                  color: isLightTheme
+                      ? const Color(0xFFD9D9D9)
+                      : const Color(0xFF4D4E52),
+                  width: 1,
+                ),
               ),
             ),
             child: Row(
@@ -135,7 +154,9 @@ class LogoutConfirmationBanner extends ConsumerWidget {
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: const Color(0xFFFEFEFF),
+                          color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFEFEFF),
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(44),
@@ -144,7 +165,9 @@ class LogoutConfirmationBanner extends ConsumerWidget {
                         'Cancel',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: const Color(0xFFFEFEFF),
+                          color: isLightTheme
+                              ? const Color(0xFF1A1A1A)
+                              : const Color(0xFFFEFEFF),
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
@@ -166,14 +189,18 @@ class LogoutConfirmationBanner extends ConsumerWidget {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBF1),
+                        color: isLightTheme
+                            ? const Color(0xFF1A1A1A)
+                            : const Color(0xFFFFFBF1),
                         borderRadius: BorderRadius.circular(44),
                       ),
                       child: Text(
                         'Log out',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: const Color(0xFF242424),
+                          color: isLightTheme
+                              ? const Color(0xFFFEFEFF)
+                              : const Color(0xFF242424),
                           fontSize: 16,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
