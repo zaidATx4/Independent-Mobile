@@ -381,7 +381,6 @@ class SettingsScreen extends ConsumerWidget {
   void _showLogoutConfirmation(BuildContext context, WidgetRef ref) {
     LogoutConfirmationBanner.show(
       context: context,
-      title: 'Enter your name',
       message: 'Are you sure want to log out?',
       onConfirmLogout: () {
         Navigator.of(context).pop();

@@ -20,7 +20,7 @@ class LogoutConfirmationBanner extends ConsumerWidget {
     required BuildContext context,
     required VoidCallback onConfirmLogout,
     required VoidCallback onCancel,
-    String title = 'Enter your name',
+    String title = '',
     String message = 'Are you sure want to log out?',
   }) {
     return showModalBottomSheet<T>(
@@ -73,27 +73,28 @@ class LogoutConfirmationBanner extends ConsumerWidget {
             ),
           ),
 
-          // Title section
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+          // Title section - only show if title is not empty
+          if (title.isNotEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Color(0xFF4D4E52), width: 1),
+                ),
+              ),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFFFEFEFF),
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  height: 24 / 16,
+                ),
               ),
             ),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: const Color(0xFFFEFEFF),
-                fontSize: 16,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w500,
-                height: 24 / 16,
-              ),
-            ),
-          ),
 
           // Content section
           Container(
