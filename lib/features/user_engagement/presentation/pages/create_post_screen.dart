@@ -35,7 +35,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
     return Scaffold(
       backgroundColor: isLight
-          ? const Color(0xFFFFFBF1)
+          ? Colors.white
           : const Color(0xFF1A1A1A),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -165,8 +165,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isLight
-                  ? const Color(0xFF242424).withOpacity(0.64)
-                  : const Color(0xFFFEFEFF).withOpacity(0.64),
+                  ? const Color(0xFF242424).withValues(alpha: 0.3)
+                  : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
               width: 1,
             ),
           ),
@@ -174,8 +174,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isLight
-                  ? const Color(0xFF242424).withOpacity(0.64)
-                  : const Color(0xFFFEFEFF).withOpacity(0.64),
+                  ? const Color(0xFF242424).withValues(alpha: 0.3)
+                  : const Color(0xFFFEFEFF).withValues(alpha: 0.64),
               width: 1,
             ),
           ),
@@ -183,8 +183,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(
               color: isLight
-                  ? const Color(0xFF242424).withOpacity(0.9)
-                  : const Color(0xFFFEFEFF).withOpacity(0.9),
+                  ? const Color(0xFF242424)
+                  : const Color(0xFFFEFEFF).withValues(alpha: 0.9),
               width: 1,
             ),
           ),
@@ -201,8 +201,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
     // Transparent, pill-shaped upload button with centered label+icon.
     const double buttonHeight = 56.0;
     final borderColor = isLight
-        ? const Color(0xFF242424).withOpacity(0.6)
-        : const Color(0xFFFEFEFF).withOpacity(0.6);
+        ? const Color(0xFF242424).withValues(alpha: 0.3)
+        : const Color(0xFFFEFEFF).withValues(alpha: 0.6);
 
     return Container(
       width: double.infinity,
@@ -235,9 +235,12 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
               'assets/images/icons/SVGs/Photo_Icon.svg',
               width: 20,
               height: 20,
-              color: isLight
-                  ? const Color(0xFF242424)
-                  : const Color(0xFFFFFBF1),
+              colorFilter: ColorFilter.mode(
+                isLight
+                    ? const Color(0xFF242424)
+                    : const Color(0xFFFFFBF1),
+                BlendMode.srcIn,
+              ),
             ),
           ],
         ),
@@ -299,7 +302,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                     'Post',
                     style: TextStyle(
                       color: isLight
-                          ? const Color(0xFFFFFBF1)
+                          ? Colors.white
                           : const Color(0xFF242424),
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
