@@ -5,6 +5,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/navigation_providers.dart';
 import '../../loyalty/presentation/pages/scan_screen.dart';
 import '../../food_ordering/presentation/pages/brand_selection_screen.dart';
+import '../../user_engagement/presentation/pages/feed_screen.dart';
 import 'home_screen_without_bottom_nav.dart';
 
 class MainNavigationScreen extends ConsumerWidget {
@@ -148,7 +149,7 @@ class MainNavigationScreen extends ConsumerWidget {
       case 3:
         return const PlaceholderScreen(title: 'Reserve');
       case 4:
-        return const PlaceholderScreen(title: 'Feed');
+        return const FeedScreen();
       case 5:
         return const PlaceholderScreen(title: 'Location');
       default:

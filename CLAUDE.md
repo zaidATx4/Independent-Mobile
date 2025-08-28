@@ -3,7 +3,7 @@
 ## Project Overview
 **Name**: Independent Mobile  
 **Type**: Flutter cross-platform mobile application  
-**Domain**: Restaurant management platform with reservations, loyalty, ordering, wallet, gift cards, and events  
+**Domain**: Restaurant management platform with reservations, loyalty, ordering, wallet, gift cards,events,User engagement   
 **Current Status**: Early development - basic "Hello Claude" screen implemented  
 
 ## Essential Development Commands
