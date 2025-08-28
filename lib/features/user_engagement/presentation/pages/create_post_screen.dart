@@ -58,7 +58,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               _buildTextInput(context, isLight),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 20),
                               _buildUploadButton(context, isLight),
                               const Spacer(),
                               Padding(
@@ -201,16 +201,17 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
     // Transparent, pill-shaped upload button with centered label+icon.
     const double buttonHeight = 56.0;
     final borderColor = isLight
-        ? const Color(0xFF242424).withValues(alpha: 0.3)
+        ? const Color(0xFF242424).withValues(alpha: 0.4)
         : const Color(0xFFFEFEFF).withValues(alpha: 0.6);
 
     return Container(
       width: double.infinity,
       height: buttonHeight,
+      margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(buttonHeight / 2), // pill shape
-        border: Border.all(color: borderColor, width: 1),
+        border: Border.all(color: borderColor, width: 1.5),
       ),
       child: Center(
         child: Row(
