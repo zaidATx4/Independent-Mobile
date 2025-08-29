@@ -65,6 +65,9 @@ dependencies:
   
   # Equatable for value comparison
   equatable: ^2.0.5
+  
+  # Internationalization support
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -118,6 +121,7 @@ flutter:
     - assets/images/Static/Restaurant/
     - assets/images/Static/Restaurant_Foods/
     - assets/images/Static/Food_Categories/
+    - assets/images/Static/Events/
     - assets/animations/
     - assets/sounds/
     - assets/images/avatars/

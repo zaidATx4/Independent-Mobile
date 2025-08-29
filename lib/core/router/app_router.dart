@@ -49,6 +49,9 @@ import 'package:independent/features/wallet/presentation/pages/wallet_payment_op
 import 'package:independent/features/settings/presentation/screens/order_history_screen.dart';
 import 'package:independent/features/settings/presentation/screens/top_choices_screen.dart';
 import 'package:independent/features/settings/presentation/screens/terms_and_conditions_screen.dart';
+import 'package:independent/features/events/presentation/pages/events_screen.dart';
+import 'package:independent/features/events/presentation/pages/single_event_screen.dart';
+import 'package:independent/features/events/domain/entities/event_entity.dart';
 
 // TESTING FLAG: Set to true to skip authorization flow during development
 const bool BYPASS_AUTH_FOR_TESTING = true;
@@ -364,6 +367,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/terms',
         builder: (context, state) => const TermsAndConditionsScreen(),
+      ),
+      GoRoute(
+        path: '/events',
+        builder: (context, state) => const EventsScreen(),
+      ),
+      GoRoute(
+        path: '/events/:eventId',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final event = extra?['event'] as EventEntity?;
+          
+          if (event == null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pop();
+            });
+            return const SizedBox.shrink();
+          }
+          
+          return SingleEventScreen(event: event);
+        },
       ),
     ],
   );
@@ -770,6 +793,26 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/terms',
       builder: (context, state) => const TermsAndConditionsScreen(),
+    ),
+    GoRoute(
+      path: '/events',
+      builder: (context, state) => const EventsScreen(),
+    ),
+    GoRoute(
+      path: '/events/:eventId',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final event = extra?['event'] as EventEntity?;
+        
+        if (event == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+          });
+          return const SizedBox.shrink();
+        }
+        
+        return SingleEventScreen(event: event);
+      },
     ),
     // Add other routes here
   ],

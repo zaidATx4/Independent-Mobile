@@ -831,6 +831,6 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _navigateToFeature(BuildContext context, String route) {
-    context.go(route);
+    context.push(route);
   }
 }
